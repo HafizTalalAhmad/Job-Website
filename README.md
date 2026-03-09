@@ -1,4 +1,4 @@
-# Hashtag - Social Media Marketing Agency Template
+# Hashtag - Job Site
 
 React + Vite version of the Hashtag website template, built from the Webflow design at [https://hashtag-template.webflow.io/home/3](https://hashtag-template.webflow.io/home/3).
 
@@ -70,3 +70,4 @@ vite.config.js        # Vite configuration
 ## License
 
 This template is for educational and project use.
+
