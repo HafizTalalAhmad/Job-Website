@@ -1,20 +1,5 @@
 # Hashtag - Job Site
 
-React + Vite version of the Hashtag website template, built from the Webflow design at [https://hashtag-template.webflow.io/home/3](https://hashtag-template.webflow.io/home/3).
-
-Modern, responsive website template for a social media marketing agency with hero section, portfolio showcase, team info, and more.
-
-## Features
-
-- **Hero Section** - Eye-catching intro with call-to-action buttons
-- **Portfolio/Cases** - Showcase of completed projects with images
-- **Services Section** - Description of services offered
-- **Team Section** - Team introduction with photos
-- **Stats** - Key metrics (clients, countries, team size, awards)
-- **Footer** - Full navigation and company information
-- **Responsive Design** - Mobile-friendly layout
-- **Fast Build** - Built on Vite for rapid development
-
 ## Quick Start
 
 Install dependencies:
@@ -70,4 +55,5 @@ vite.config.js        # Vite configuration
 ## License
 
 This template is for educational and project use.
+
 
