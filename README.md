@@ -1,59 +1,142 @@
-# Hashtag - Job Site
+# Pakistan Jobs Hub (React)
 
-## Quick Start
+A modern, mobile-friendly React job-posting portal inspired by the practical structure of Pakistan Jobs Bank.
 
-Install dependencies:
+## Features
+
+- Home page with latest jobs grouped by posting date and source
+- Search + multi-filter system (location, profession, industry, organization, type, posting date)
+- Sorting (latest, deadline, alphabetical)
+- Routes for:
+  - Home
+  - Jobs by Date
+  - Jobs by Location
+  - Jobs by Profession
+  - Jobs by Industry
+  - Jobs by Organization
+  - Archives
+  - About
+- Job detail page with requirements, apply procedure, related jobs
+- Archives grouped by month/year
+- Sidebar quick links + Today/Government widgets
+- Featured jobs panel + latest jobs ticker
+- Load More behavior and empty states
+- Modular component structure for easy API integration later
+
+## Tech Stack
+
+- React
+- React Router
+- Functional components with hooks
+- Plain CSS
+- Supabase REST (for public shared job posts)
+
+## Setup
+
 ```bash
 npm install
-```
-
-Start development server:
-```bash
 npm run dev
 ```
 
-The app will be available at `http://localhost:5173`
+## Windows Notes (if `npm` or Vite fails)
 
-## Build for Production
+If PowerShell blocks `npm`/`npx` scripts, use:
 
-Create optimized production build:
 ```bash
-npm run build
+npm.cmd install
+npm.cmd run dev
 ```
 
-Preview production build locally:
+If you see `spawn EPERM` from Vite/esbuild, run terminal as Administrator once and retry:
+
 ```bash
+npm.cmd run build
+npm.cmd run dev
+```
+
+Also allow `node.exe` and `node_modules\\esbuild\\esbuild.exe` in antivirus/Controlled Folder Access if enabled.
+
+Build for production:
+
+```bash
+npm run build
 npm run preview
 ```
 
-Output is in the `dist/` folder.
+## Public Daily Posting Setup (Required)
 
-## Project Structure
+To make posted jobs visible to all public users, configure Supabase:
 
+1. Create a Supabase project.
+2. Create table `jobs_public` with this SQL:
+
+```sql
+create extension if not exists pgcrypto;
+
+create table if not exists public.jobs_public (
+  id uuid primary key default gen_random_uuid(),
+  title text not null,
+  organization text not null,
+  location text not null,
+  city text not null,
+  category text not null,
+  industry text not null,
+  type text not null,
+  source text not null,
+  post_date date not null,
+  deadline date not null,
+  summary text not null,
+  description text not null,
+  requirements text[] not null default '{}',
+  apply_procedure text not null,
+  apply_link text not null,
+  is_featured boolean not null default false,
+  created_at timestamptz not null default now()
+);
+
+alter table public.jobs_public enable row level security;
+
+create policy "public read jobs"
+on public.jobs_public
+for select
+to anon
+using (true);
+
+create policy "public insert jobs"
+on public.jobs_public
+for insert
+to anon
+with check (true);
 ```
+
+3. Copy `.env.example` to `.env` and set values:
+
+```bash
+VITE_SUPABASE_URL=...
+VITE_SUPABASE_ANON_KEY=...
+VITE_ADMIN_PASSCODE=...
+```
+
+4. Restart dev server.
+
+Now `/admin` (hidden from navbar) is your admin posting page. It requires `VITE_ADMIN_PASSCODE` to unlock posting.
+Published jobs write to Supabase and all users can see new jobs.
+
+## Folder Structure
+
+```text
 src/
-  ├── App.jsx          # Main app component with all sections
-  ├── App.css          # Component-specific styles
-  ├── main.jsx         # Entry point
-  ├── index.css        # Global styles
-index.html            # HTML template
-vite.config.js        # Vite configuration
+  components/
+  pages/
+  data/
+  utils/
+  App.jsx
+  main.jsx
+  styles.css
 ```
 
-## Customization
+## Notes for Backend Integration
 
-- **Edit Content**: Modify text, images, and links in [src/App.jsx](src/App.jsx)
-- **Update Styles**: Adjust colors, spacing, and layout in [src/index.css](src/index.css)
-- **Add Components**: Split sections into separate React components in `src/components/`
-
-## Technologies
-
-- **React 18**
-- **Vite 5**
-- **CSS 3**
-
-## License
-
-This template is for educational and project use.
-
-
+- Replace `src/data/jobs.js` with API calls.
+- Keep filter and grouping utilities in `src/utils/jobs.js` and map API response fields to the same shape.
+- Add loading and error states in pages/components when connecting real endpoints.
