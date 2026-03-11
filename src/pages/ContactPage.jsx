@@ -1,15 +1,44 @@
 import React, { useState } from 'react'
 import Breadcrumbs from '../components/Breadcrumbs'
+import { createContactMessage, hasSupabaseConfig } from '../lib/jobsApi'
 
 function ContactPage() {
+  const [form, setForm] = useState({
+    fullName: '',
+    email: '',
+    subject: '',
+    message: ''
+  })
   const [submitted, setSubmitted] = useState(false)
+  const [submitError, setSubmitError] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [email, setEmail] = useState('')
   const [subscribed, setSubscribed] = useState(false)
 
-  const handleSubmit = (event) => {
+  const onChange = (key, value) => setForm((prev) => ({ ...prev, [key]: value }))
+
+  const handleSubmit = async (event) => {
     event.preventDefault()
-    setSubmitted(true)
+    setSubmitted(false)
+    setSubmitError('')
+
+    if (!hasSupabaseConfig) {
+      setSubmitError('Contact form backend is not configured yet. Add Supabase URL/Key in .env.')
+      return
+    }
+
+    setIsSubmitting(true)
+    try {
+      await createContactMessage(form)
+      setSubmitted(true)
+      setForm({ fullName: '', email: '', subject: '', message: '' })
+    } catch (error) {
+      setSubmitError(error.message || 'Unable to submit your message right now.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
+
   const handleSubscribe = (event) => {
     event.preventDefault()
     if (!email.trim()) return
@@ -25,13 +54,40 @@ function ContactPage() {
           <h1 className="panel-title">Contact Us</h1>
           <p className="panel-intro">Send your query regarding jobs, posting issues, or suggestions.</p>
           <form className="contact-form" onSubmit={handleSubmit}>
-            <input type="text" placeholder="Full Name" required />
-            <input type="email" placeholder="Email Address" required />
-            <input type="text" placeholder="Subject" required />
-            <textarea placeholder="Message" rows="6" required />
-            <button type="submit" className="load-more-btn">Submit</button>
+            <input
+              type="text"
+              placeholder="Full Name"
+              value={form.fullName}
+              onChange={(e) => onChange('fullName', e.target.value)}
+              required
+            />
+            <input
+              type="email"
+              placeholder="Email Address"
+              value={form.email}
+              onChange={(e) => onChange('email', e.target.value)}
+              required
+            />
+            <input
+              type="text"
+              placeholder="Subject"
+              value={form.subject}
+              onChange={(e) => onChange('subject', e.target.value)}
+              required
+            />
+            <textarea
+              placeholder="Message"
+              rows="6"
+              value={form.message}
+              onChange={(e) => onChange('message', e.target.value)}
+              required
+            />
+            <button type="submit" className="load-more-btn" disabled={isSubmitting}>
+              {isSubmitting ? 'Submitting...' : 'Submit'}
+            </button>
           </form>
           {submitted && <p className="form-success">Your message has been submitted.</p>}
+          {submitError && <p className="form-error">{submitError}</p>}
         </div>
 
         <aside className="contact-right">

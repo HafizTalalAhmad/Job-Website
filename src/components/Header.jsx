@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useJobs } from '../context/JobsContext'
 
-function Header() {
+function Header({ theme, onToggleTheme }) {
   const { jobs } = useJobs()
   const navigate = useNavigate()
   const [keyword, setKeyword] = useState('')
@@ -21,15 +21,26 @@ function Header() {
           <p className="meta-line">Latest Jobs Update: {latestDate}</p>
         </div>
         <div className="hero-right">
-          <form className="hero-search" onSubmit={onSearch}>
-            <input
-              type="search"
-              value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
-              placeholder="Search jobs..."
-            />
-            <button type="submit">Search</button>
-          </form>
+          <div className="hero-tools">
+            <form className="hero-search" onSubmit={onSearch}>
+              <input
+                type="search"
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
+                placeholder="Search jobs..."
+              />
+              <button type="submit">Search</button>
+            </form>
+            <button
+              type="button"
+              className="theme-toggle-btn moon-btn"
+              onClick={onToggleTheme}
+              title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              aria-label={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            >
+              {theme === 'dark' ? '☀' : '🌙'}
+            </button>
+          </div>
         </div>
       </div>
     </header>

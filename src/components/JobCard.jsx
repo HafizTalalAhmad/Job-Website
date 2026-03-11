@@ -6,7 +6,7 @@ function JobCard({ job }) {
   const positions = (job.jobPositions || job.requirements || []).slice(0, 12)
   const countryText = job.country || 'In Pakistan'
   const provinceText = job.province || (job.location ? String(job.location).split(',')[0].trim() : '')
-  const locationLine = [job.city, provinceText, countryText].filter(Boolean).join(', ')
+  const locationLine = [job.city, provinceText].filter(Boolean).join(', ')
 
   return (
     <article className="job-card">

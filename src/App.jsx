@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { HashRouter, Route, Routes, useLocation } from 'react-router-dom'
 import Header from './components/Header'
 import Navbar from './components/Navbar'
@@ -17,11 +17,37 @@ import NotFoundPage from './pages/NotFoundPage'
 function AppContent() {
   const location = useLocation()
   const isJobDetailPage = location.pathname.startsWith('/job/')
+  const [theme, setTheme] = useState(() => localStorage.getItem('jobs_theme') || 'light')
+  const [showThemePrompt, setShowThemePrompt] = useState(
+    () => localStorage.getItem('jobs_theme_prompt_seen') !== '1'
+  )
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+    localStorage.setItem('jobs_theme', theme)
+  }, [theme])
+
+  const onToggleTheme = () => {
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))
+  }
+
+  const onDismissThemePrompt = () => {
+    setShowThemePrompt(false)
+    localStorage.setItem('jobs_theme_prompt_seen', '1')
+  }
 
   return (
     <>
-      <Header />
+      <Header theme={theme} onToggleTheme={onToggleTheme} />
       <Navbar />
+      {showThemePrompt && (
+        <section className="container theme-prompt">
+          <p>Tip: Use the moon button next to the Search bar in the header to turn on Dark Mode.</p>
+          <div className="theme-prompt-actions">
+            <button type="button" className="action-btn secondary" onClick={onDismissThemePrompt}>Got It</button>
+          </div>
+        </section>
+      )}
       {!isJobDetailPage && (
         <>
           <section className="container about-strip">

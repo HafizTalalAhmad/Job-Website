@@ -14,7 +14,7 @@ function HomePage() {
 
   const filtered = useMemo(
     () => sortJobs(applyFilters(jobs, { keyword: query, location: '', category: '', industry: '', organization: '', type: '', postDate: '' }), 'latest'),
-    [query]
+    [jobs, query]
   )
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize))
@@ -25,7 +25,7 @@ function HomePage() {
 
   useEffect(() => {
     setCurrentPage(1)
-  }, [query])
+  }, [jobs, query])
 
   return (
     <>

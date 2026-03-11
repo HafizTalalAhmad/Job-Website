@@ -287,4 +287,110 @@ async function deletePublicJob(jobId) {
   return true
 }
 
-export { hasSupabaseConfig, fetchPublicJobs, createPublicJob, updatePublicJob, deletePublicJob }
+async function createContactMessage(contactInput) {
+  if (!hasSupabaseConfig) {
+    throw new Error('Supabase is not configured. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in .env')
+  }
+
+  const payload = {
+    full_name: contactInput.fullName,
+    email: contactInput.email,
+    subject: contactInput.subject,
+    message: contactInput.message
+  }
+
+  const response = await fetch(
+    `${SUPABASE_URL}/rest/v1/contact_messages`,
+    {
+      method: 'POST',
+      headers: {
+        ...headers(),
+        Prefer: 'return=representation'
+      },
+      body: JSON.stringify(payload)
+    }
+  )
+
+  if (!response.ok) {
+    const message = await response.text()
+    throw new Error(message || `Failed to submit contact message: ${response.status}`)
+  }
+
+  const rows = await response.json()
+  return rows[0]
+}
+
+function mapContactRow(row) {
+  return {
+    id: String(row.id),
+    fullName: row.full_name,
+    email: row.email,
+    subject: row.subject,
+    message: row.message,
+    isRead: Boolean(row.is_read),
+    replyStatus: row.reply_status || 'pending',
+    createdAt: row.created_at,
+    updatedAt: row.updated_at
+  }
+}
+
+async function fetchContactMessages() {
+  if (!hasSupabaseConfig) {
+    throw new Error('Supabase is not configured. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in .env')
+  }
+
+  const response = await fetch(
+    `${SUPABASE_URL}/rest/v1/contact_messages?select=*&order=created_at.desc`,
+    { headers: headers() }
+  )
+
+  if (!response.ok) {
+    const message = await response.text()
+    throw new Error(message || `Failed to fetch contact messages: ${response.status}`)
+  }
+
+  const rows = await response.json()
+  return rows.map(mapContactRow)
+}
+
+async function updateContactMessage(messageId, patchInput) {
+  if (!hasSupabaseConfig) {
+    throw new Error('Supabase is not configured. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in .env')
+  }
+
+  const payload = {}
+  if (typeof patchInput.isRead === 'boolean') payload.is_read = patchInput.isRead
+  if (typeof patchInput.replyStatus === 'string') payload.reply_status = patchInput.replyStatus
+  payload.updated_at = new Date().toISOString()
+
+  const response = await fetch(
+    `${SUPABASE_URL}/rest/v1/contact_messages?id=eq.${encodeURIComponent(messageId)}`,
+    {
+      method: 'PATCH',
+      headers: {
+        ...headers(),
+        Prefer: 'return=representation'
+      },
+      body: JSON.stringify(payload)
+    }
+  )
+
+  if (!response.ok) {
+    const message = await response.text()
+    throw new Error(message || `Failed to update contact message: ${response.status}`)
+  }
+
+  const rows = await response.json()
+  return mapContactRow(rows[0])
+}
+
+export {
+  hasSupabaseConfig,
+  fetchPublicJobs,
+  createPublicJob,
+  updatePublicJob,
+  deletePublicJob,
+  createContactMessage,
+  fetchContactMessages,
+  updateContactMessage
+}

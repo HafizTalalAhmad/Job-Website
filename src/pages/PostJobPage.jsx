@@ -1,7 +1,8 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Breadcrumbs from '../components/Breadcrumbs'
 import { useJobs } from '../context/JobsContext'
+import { fetchContactMessages, updateContactMessage } from '../lib/jobsApi'
 
 const defaultCityRecords = [
   { name: 'Lahore', province: 'Punjab' },
@@ -61,6 +62,12 @@ function PostJobPage() {
   const [lastAction, setLastAction] = useState('create')
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [messages, setMessages] = useState([])
+  const [messagesError, setMessagesError] = useState('')
+  const [isLoadingMessages, setIsLoadingMessages] = useState(false)
+  const [messageReadFilter, setMessageReadFilter] = useState('all')
+  const [messageReplyFilter, setMessageReplyFilter] = useState('all')
+  const [messageSearch, setMessageSearch] = useState('')
 
   const cityOptions = useMemo(
     () => [...new Set(cityRecords.map((row) => row.name))].sort((a, b) => a.localeCompare(b)),
@@ -68,6 +75,30 @@ function PostJobPage() {
   )
 
   const onChange = (key, value) => setForm((prev) => ({ ...prev, [key]: value }))
+
+  const filteredMessages = useMemo(() => {
+    const keyword = messageSearch.trim().toLowerCase()
+
+    return messages.filter((item) => {
+      const readMatch =
+        messageReadFilter === 'all' ||
+        (messageReadFilter === 'read' && item.isRead) ||
+        (messageReadFilter === 'unread' && !item.isRead)
+
+      const replyMatch =
+        messageReplyFilter === 'all' ||
+        (item.replyStatus || 'pending') === messageReplyFilter
+
+      const keywordMatch =
+        !keyword ||
+        item.fullName.toLowerCase().includes(keyword) ||
+        item.email.toLowerCase().includes(keyword) ||
+        item.subject.toLowerCase().includes(keyword) ||
+        item.message.toLowerCase().includes(keyword)
+
+      return readMatch && replyMatch && keywordMatch
+    })
+  }, [messages, messageReadFilter, messageReplyFilter, messageSearch])
 
   const isValidUrl = (value) => {
     try {
@@ -276,6 +307,47 @@ function PostJobPage() {
     sessionStorage.removeItem('admin_unlocked')
   }
 
+  const loadMessages = async () => {
+    setMessagesError('')
+    if (!hasSupabaseConfig) {
+      setMessagesError('Supabase is not configured for contact message storage.')
+      return
+    }
+
+    setIsLoadingMessages(true)
+    try {
+      const rows = await fetchContactMessages()
+      setMessages(rows)
+    } catch (loadError) {
+      setMessagesError(loadError.message || 'Unable to load contact messages.')
+    } finally {
+      setIsLoadingMessages(false)
+    }
+  }
+
+  const onToggleRead = async (item) => {
+    try {
+      const updated = await updateContactMessage(item.id, { isRead: !item.isRead })
+      setMessages((prev) => prev.map((row) => (row.id === item.id ? updated : row)))
+    } catch (updateError) {
+      setMessagesError(updateError.message || 'Unable to update read status.')
+    }
+  }
+
+  const onReplyStatusChange = async (item, nextStatus) => {
+    try {
+      const updated = await updateContactMessage(item.id, { replyStatus: nextStatus })
+      setMessages((prev) => prev.map((row) => (row.id === item.id ? updated : row)))
+    } catch (updateError) {
+      setMessagesError(updateError.message || 'Unable to update reply status.')
+    }
+  }
+
+  useEffect(() => {
+    if (!isAuthorized) return
+    loadMessages()
+  }, [isAuthorized])
+
   if (!isAuthorized) {
     return (
       <main className="container page-block">
@@ -302,6 +374,67 @@ function PostJobPage() {
   return (
     <main className="container page-block">
       <Breadcrumbs />
+      <section className="panel">
+        <div className="panel-head-row">
+          <h2 className="panel-title">Contact Messages</h2>
+          <button type="button" className="action-btn secondary" onClick={loadMessages}>
+            Refresh
+          </button>
+        </div>
+
+        <div className="admin-message-filters">
+          <select value={messageReadFilter} onChange={(e) => setMessageReadFilter(e.target.value)}>
+            <option value="all">All Read Status</option>
+            <option value="read">Read</option>
+            <option value="unread">Unread</option>
+          </select>
+          <select value={messageReplyFilter} onChange={(e) => setMessageReplyFilter(e.target.value)}>
+            <option value="all">All Reply Status</option>
+            <option value="pending">Pending</option>
+            <option value="replied">Replied</option>
+            <option value="closed">Closed</option>
+          </select>
+          <input
+            value={messageSearch}
+            onChange={(e) => setMessageSearch(e.target.value)}
+            placeholder="Search by name, email, subject..."
+          />
+        </div>
+
+        {isLoadingMessages && <p className="panel-intro">Loading messages...</p>}
+        {messagesError && <p className="form-error">{messagesError}</p>}
+        {!isLoadingMessages && !filteredMessages.length && <p className="panel-intro">No contact messages found.</p>}
+
+        <div className="admin-message-list">
+          {filteredMessages.map((item) => (
+            <article key={item.id} className="admin-message-item">
+              <div className="admin-message-head">
+                <h3>{item.subject}</h3>
+                <span className={`msg-read-badge ${item.isRead ? 'is-read' : 'is-unread'}`}>
+                  {item.isRead ? 'Read' : 'Unread'}
+                </span>
+              </div>
+              <p className="admin-message-meta">
+                {item.fullName} | {item.email} | {new Date(item.createdAt).toLocaleString()}
+              </p>
+              <p className="admin-message-body">{item.message}</p>
+              <div className="admin-message-actions">
+                <button type="button" className="action-btn secondary" onClick={() => onToggleRead(item)}>
+                  {item.isRead ? 'Mark Unread' : 'Mark Read'}
+                </button>
+                <select
+                  value={item.replyStatus || 'pending'}
+                  onChange={(e) => onReplyStatusChange(item, e.target.value)}
+                >
+                  <option value="pending">Pending</option>
+                  <option value="replied">Replied</option>
+                  <option value="closed">Closed</option>
+                </select>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
       <section className="panel">
         <div className="panel-head-row">
           <h1 className="panel-title">Admin: Post a Job</h1>
