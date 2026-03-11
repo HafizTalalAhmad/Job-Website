@@ -1376,9 +1376,12 @@ a:hover {
 
   .layout,
   .hero-inner,
-  .detail-grid,
-  .job-row {
+  .detail-grid {
     grid-template-columns: 1fr;
+  }
+
+  .job-row {
+    grid-template-columns: 1.05fr 0.95fr;
   }
 
   .filter-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -1429,6 +1432,7 @@ a:hover {
   .job-summary { font-size: 18px; }
   .legacy-bullets li { font-size: 13px; }
   .panel-title { font-size: 22px; }
+  .job-row { grid-template-columns: 1fr 1fr; }
 }
 
 .blog-post-card {
