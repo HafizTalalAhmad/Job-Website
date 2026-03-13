@@ -40,27 +40,27 @@ function AppContent() {
     <>
       <Header theme={theme} onToggleTheme={onToggleTheme} />
       <Navbar />
-      {showThemePrompt && (
-        <section className="container theme-prompt">
-          <p>Tip: Use the moon button next to the Search bar in the header to turn on Dark Mode.</p>
-          <div className="theme-prompt-actions">
-            <button type="button" className="action-btn secondary" onClick={onDismissThemePrompt}>Got It</button>
-          </div>
-        </section>
-      )}
-      {!isJobDetailPage && (
-        <>
-          <section className="container about-strip">
-            <p>
-              <strong>About Us:</strong> Pakistan Jobs Hub is a public service style job portal that organizes newspaper and organization
-              job ads in a fast, readable format for job seekers across Pakistan.
-            </p>
-          </section>
-          <div className="container ad-top">Google Advertisement Space (Top Banner)</div>
-        </>
-      )}
       <div className="with-side-ads">
         <div className="route-zone">
+          {showThemePrompt && (
+            <section className="theme-prompt top-align-block">
+              <p>Tip: Use the moon button next to the Search bar in the header to turn on Dark Mode.</p>
+              <div className="theme-prompt-actions">
+                <button type="button" className="action-btn secondary" onClick={onDismissThemePrompt}>Got It</button>
+              </div>
+            </section>
+          )}
+          {!isJobDetailPage && (
+            <>
+              <section className="about-strip top-align-block">
+                <p>
+                  <strong>About Us:</strong> Pakistan Jobs Hub is a public service style job portal that organizes newspaper and organization
+                  job ads in a fast, readable format for job seekers across Pakistan.
+                </p>
+              </section>
+              <div className="ad-top top-align-block">Google Advertisement Space (Top Banner)</div>
+            </>
+          )}
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route

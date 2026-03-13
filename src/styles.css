@@ -239,6 +239,10 @@ a:hover {
   flex-wrap: wrap;
 }
 
+.top-align-block {
+  width: 100%;
+}
+
 .with-side-ads {
   width: min(1280px, 98%);
   margin: 0 auto;
