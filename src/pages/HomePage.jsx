@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom'
 import { applyFilters, groupJobs, sortJobs } from '../utils/jobs'
 import JobGroupByDate from '../components/JobGroupByDate'
 import LatestTicker from '../components/LatestTicker'
+import HeroSlider from '../components/HeroSlider'
 import { useJobs } from '../context/JobsContext'
 
 function HomePage() {
@@ -31,6 +32,7 @@ function HomePage() {
     <>
       <div className="container">
         <LatestTicker jobs={jobs} />
+        <HeroSlider />
       </div>
 
       <main className="container layout">

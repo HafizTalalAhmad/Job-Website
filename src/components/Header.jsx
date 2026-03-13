@@ -7,6 +7,7 @@ function Header({ theme, onToggleTheme }) {
   const navigate = useNavigate()
   const [keyword, setKeyword] = useState('')
   const latestDate = [...jobs].sort((a, b) => (a.postDate < b.postDate ? 1 : -1))[0]?.postDate
+
   const onSearch = (event) => {
     event.preventDefault()
     const q = keyword.trim()
@@ -38,7 +39,7 @@ function Header({ theme, onToggleTheme }) {
               title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
               aria-label={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
             >
-              {theme === 'dark' ? '☀' : '🌙'}
+              {theme === 'dark' ? 'L' : 'D'}
             </button>
           </div>
         </div>

@@ -60,7 +60,6 @@ function AppContent() {
         </>
       )}
       <div className="with-side-ads">
-        <aside className="side-ad left">Google Ad Space (Left)</aside>
         <div className="route-zone">
           <Routes>
             <Route path="/" element={<HomePage />} />
