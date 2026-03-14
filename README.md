@@ -406,6 +406,7 @@ The old passcode is only used as a local fallback when Supabase Auth is not conf
 Function source:
 
 - `supabase/functions/send-job-alert/index.ts`
+- `supabase/functions/auto-archive-jobs/index.ts`
 
 Required function secrets:
 
@@ -420,11 +421,41 @@ Deploy commands:
 
 ```bash
 supabase functions deploy send-job-alert
+supabase functions deploy auto-archive-jobs
 supabase secrets set SUPABASE_URL=...
 supabase secrets set SUPABASE_SERVICE_ROLE_KEY=...
 supabase secrets set RESEND_API_KEY=...
 supabase secrets set RESEND_FROM_EMAIL=...
 ```
+
+### 6. Automatic archiving after 30 days from deadline
+
+The `auto-archive-jobs` function archives any job where:
+
+- `is_archived = false`
+- `deadline <= current_date - 30 days`
+
+Deploy it:
+
+```bash
+supabase functions deploy auto-archive-jobs
+```
+
+It uses these secrets:
+
+```bash
+SUPABASE_URL=...
+SUPABASE_SERVICE_ROLE_KEY=...
+```
+
+Then schedule it in Supabase Dashboard:
+
+- Go to `Edge Functions`
+- Open `auto-archive-jobs`
+- Create a schedule
+- Recommended cron: `0 2 * * *`
+
+That runs every day at 2:00 AM UTC and automatically moves expired jobs into archive 30 days after their deadline date.
 
 ## Folder Structure
 
