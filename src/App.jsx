@@ -58,7 +58,6 @@ function AppContent() {
                   job ads in a fast, readable format for job seekers across Pakistan.
                 </p>
               </section>
-              <div className="ad-top top-align-block">Google Advertisement Space (Top Banner)</div>
             </>
           )}
           <Routes>

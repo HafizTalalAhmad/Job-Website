@@ -4,30 +4,39 @@ import { Link } from 'react-router-dom'
 const slides = [
   {
     id: 'slide-1',
-    eyebrow: 'Public Sector Spotlight',
-    title: 'Government hiring windows, newspaper ads, and deadlines in one place.',
-    blurb: 'Track major openings across aviation, education, utilities, railways, and public administration without scanning multiple sources.',
-    accent: 'Government Jobs',
+    department: 'Pakistan Civil Aviation Authority',
+    code: 'PCAA',
+    eyebrow: 'Aviation Recruitment Window',
+    title: 'Airport operations, communication units, and technical support openings.',
+    blurb: 'Track aviation-focused recruitment with department-level visibility, fast deadline scanning, and direct access to detail pages.',
+    accents: ['Air Traffic', 'Operations', 'Technical'],
     cta: '/jobs/government',
+    ctaLabel: 'View Government Jobs',
     tone: 'aviation'
   },
   {
     id: 'slide-2',
-    eyebrow: 'Daily Job Scan',
-    title: 'Browse fast, newspaper-style listings that stay readable on mobile.',
-    blurb: 'Date-grouped job cards, clear deadlines, location details, and direct detail pages keep the experience practical instead of flashy.',
-    accent: 'Browse by Date',
+    department: 'Federal Public Service Commission',
+    code: 'FPSC',
+    eyebrow: 'Federal Hiring Bulletin',
+    title: 'Public administration, education, and specialist vacancies grouped into one readable board.',
+    blurb: 'Daily listings stay organized by date, source, and department so users can scan opportunities without jumping across multiple portals.',
+    accents: ['Lecturers', 'Inspectors', 'Analysts'],
     cta: '/jobs/date',
-    tone: 'bulletin'
+    ctaLabel: 'Browse by Date',
+    tone: 'federal'
   },
   {
     id: 'slide-3',
-    eyebrow: 'Admin + Alerts',
-    title: 'Post jobs, manage contact messages, and maintain a clean public job board.',
-    blurb: 'Use the admin area for posting, updating, and reviewing incoming messages while the public site stays lightweight and focused.',
-    accent: 'Open Admin',
+    department: 'Pakistan Railways and Public Utilities',
+    code: 'PR',
+    eyebrow: 'National Service Hiring',
+    title: 'Technical, field, and operations posts presented in a practical newspaper-style layout.',
+    blurb: 'Use the public job board for daily tracking, then manage postings and contact messages through the admin workspace.',
+    accents: ['Workshops', 'Field Teams', 'Support Staff'],
     cta: '/admin',
-    tone: 'control'
+    ctaLabel: 'Open Admin',
+    tone: 'railways'
   }
 ]
 
@@ -37,7 +46,7 @@ function HeroSlider() {
   useEffect(() => {
     const timer = window.setInterval(() => {
       setActiveIndex((current) => (current + 1) % slides.length)
-    }, 4800)
+    }, 5000)
 
     return () => window.clearInterval(timer)
   }, [])
@@ -47,24 +56,30 @@ function HeroSlider() {
   return (
     <section className="hero-slider" aria-label="Homepage highlights">
       <div className={`hero-slide hero-slide-${activeSlide.tone}`}>
-        <div className="hero-slide-copy">
-          <span className="hero-slide-eyebrow">{activeSlide.eyebrow}</span>
-          <h2>{activeSlide.title}</h2>
-          <p>{activeSlide.blurb}</p>
-          <div className="hero-slide-actions">
-            <Link to={activeSlide.cta} className="hero-slide-btn">
-              {activeSlide.accent}
-            </Link>
+        <div className="hero-slide-overlay">
+          <div className="hero-slide-copy">
+            <span className="hero-slide-eyebrow">{activeSlide.eyebrow}</span>
+            <h2>{activeSlide.title}</h2>
+            <p>{activeSlide.blurb}</p>
+            <div className="hero-slide-tags">
+              {activeSlide.accents.map((item) => (
+                <span key={item}>{item}</span>
+              ))}
+            </div>
+            <div className="hero-slide-actions">
+              <Link to={activeSlide.cta} className="hero-slide-btn">
+                {activeSlide.ctaLabel}
+              </Link>
+            </div>
           </div>
-        </div>
 
-        <div className="hero-slide-art" aria-hidden="true">
-          <div className="art-frame">
-            <div className="art-strip" />
-            <div className="art-card art-card-primary" />
-            <div className="art-card art-card-secondary" />
-            <div className="art-grid">
-              <span />
+          <div className="hero-slide-poster" aria-hidden="true">
+            <div className="hero-slide-seal" />
+            <div className="hero-slide-dept">
+              <strong>{activeSlide.code}</strong>
+              <span>{activeSlide.department}</span>
+            </div>
+            <div className="hero-slide-lines">
               <span />
               <span />
               <span />

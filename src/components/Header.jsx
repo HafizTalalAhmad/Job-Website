@@ -38,9 +38,7 @@ function Header({ theme, onToggleTheme }) {
               onClick={onToggleTheme}
               title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
               aria-label={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
-            >
-              {theme === 'dark' ? 'L' : 'D'}
-            </button>
+            />
           </div>
         </div>
       </div>
