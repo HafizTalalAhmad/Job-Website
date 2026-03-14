@@ -244,7 +244,7 @@ a:hover {
 }
 
 .with-side-ads {
-  width: min(1090px, calc(98% - 180px));
+  width: min(1090px, 96%);
   margin: 0 auto;
   position: relative;
 }
