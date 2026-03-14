@@ -5,9 +5,9 @@ import Breadcrumbs from '../components/Breadcrumbs'
 import { useJobs } from '../context/JobsContext'
 
 function JobDetailPage() {
-  const { jobs } = useJobs()
+  const { allJobs } = useJobs()
   const { id } = useParams()
-  const job = jobs.find((item) => item.id === id)
+  const job = allJobs.find((item) => item.id === id)
 
   if (!job) {
     return (
@@ -19,7 +19,7 @@ function JobDetailPage() {
     )
   }
 
-  const relatedJobs = jobs
+  const relatedJobs = allJobs
     .filter((item) => item.id !== job.id && (item.category === job.category || item.organization === job.organization))
     .slice(0, 4)
   const provinceText = job.province || (job.location ? String(job.location).split(',')[0].trim() : '-')

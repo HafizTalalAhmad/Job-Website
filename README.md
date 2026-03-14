@@ -79,17 +79,25 @@ create table if not exists public.jobs_public (
   organization text not null,
   location text not null,
   city text not null,
+  province text,
+  country text default 'In Pakistan',
   category text not null,
   industry text not null,
   type text not null,
+  employment_type text,
   source text not null,
   post_date date not null,
   deadline date not null,
   summary text not null,
   description text not null,
   requirements text[] not null default '{}',
+  job_positions text[] not null default '{}',
   apply_procedure text not null,
   apply_link text not null,
+  keywords text[] not null default '{}',
+  poster_image text,
+  poster_path text,
+  is_archived boolean not null default false,
   is_featured boolean not null default false,
   created_at timestamptz not null default now()
 );
@@ -107,6 +115,45 @@ on public.jobs_public
 for insert
 to anon
 with check (true);
+
+create policy "public update jobs"
+on public.jobs_public
+for update
+to anon
+using (true)
+with check (true);
+
+create policy "public delete jobs"
+on public.jobs_public
+for delete
+to anon
+using (true);
+```
+
+Create a public storage bucket for job posters:
+
+```sql
+insert into storage.buckets (id, name, public)
+values ('job-posters', 'job-posters', true)
+on conflict (id) do nothing;
+
+create policy "public upload posters"
+on storage.objects
+for insert
+to anon
+with check (bucket_id = 'job-posters');
+
+create policy "public read posters"
+on storage.objects
+for select
+to anon
+using (bucket_id = 'job-posters');
+
+create policy "public delete posters"
+on storage.objects
+for delete
+to anon
+using (bucket_id = 'job-posters');
 ```
 
 Also create table `contact_messages` for Contact Us submissions:
@@ -192,13 +239,23 @@ using (true);
 VITE_SUPABASE_URL=...
 VITE_SUPABASE_ANON_KEY=...
 VITE_ADMIN_PASSCODE=...
+VITE_SUPABASE_POSTER_BUCKET=job-posters
 ```
 
 4. Restart dev server.
 
-Now `/admin` (hidden from navbar) is your admin posting page. It requires `VITE_ADMIN_PASSCODE` to unlock posting.
+Now `/admin` (hidden from navbar) is your admin page. It requires `VITE_ADMIN_PASSCODE` to unlock posting.
 Published jobs write to Supabase and all users can see new jobs.
 Contact messages and subscriber emails also write to Supabase. If Supabase is not configured, jobs, contact messages, and subscribers fall back to browser local storage on that device.
+
+Admin page capabilities now include:
+- post, edit, and delete jobs
+- archive and unarchive jobs
+- view, filter, update, export, and delete contact messages
+- view, filter, export, activate/deactivate, and delete subscribers
+- dashboard stats for jobs, unread messages, and active subscribers
+
+Poster images now use Supabase Storage when configured. In local mode they fall back to browser data URLs.
 
 ## Folder Structure
 

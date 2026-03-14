@@ -5,19 +5,19 @@ import Breadcrumbs from '../components/Breadcrumbs'
 import { useJobs } from '../context/JobsContext'
 
 function ArchivesPage() {
-  const { jobs } = useJobs()
+  const { archivedJobs } = useJobs()
   const [fromDate, setFromDate] = useState('')
   const [toDate, setToDate] = useState('')
 
   const rangedJobs = useMemo(() => {
-    return jobs.filter((job) => {
+    return archivedJobs.filter((job) => {
       const inDateRange =
         (!fromDate || job.postDate >= fromDate) &&
         (!toDate || job.postDate <= toDate)
 
       return inDateRange
     })
-  }, [fromDate, toDate])
+  }, [archivedJobs, fromDate, toDate])
 
   const archiveGroups = groupArchivesByMonth(rangedJobs)
 

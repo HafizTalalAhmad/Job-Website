@@ -47,7 +47,9 @@ function JobsProvider({ children }) {
     }
   }, [])
 
-  const jobs = useMemo(() => dedupeJobs([...seedJobs, ...publicJobs]), [publicJobs])
+  const allJobs = useMemo(() => dedupeJobs([...seedJobs, ...publicJobs]), [publicJobs])
+  const jobs = useMemo(() => allJobs.filter((job) => !job.isArchived), [allJobs])
+  const archivedJobs = useMemo(() => allJobs.filter((job) => job.isArchived), [allJobs])
 
   const addJob = async (jobInput) => {
     const created = await createPublicJob(jobInput)
@@ -70,6 +72,8 @@ function JobsProvider({ children }) {
     <JobsContext.Provider
       value={{
         jobs,
+        allJobs,
+        archivedJobs,
         publicJobs,
         addJob,
         editJob,

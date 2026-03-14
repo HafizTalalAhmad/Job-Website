@@ -1,5 +1,6 @@
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY
+const SUPABASE_POSTER_BUCKET = import.meta.env.VITE_SUPABASE_POSTER_BUCKET || 'job-posters'
 const LOCAL_JOBS_KEY = 'jobs_hub_local_public_jobs'
 const LOCAL_CONTACTS_KEY = 'jobs_hub_local_contact_messages'
 const LOCAL_SUBSCRIBERS_KEY = 'jobs_hub_local_subscribers'
@@ -82,7 +83,9 @@ function mapRowToJob(row) {
     applyProcedure: row.apply_procedure,
     applyLink: row.apply_link,
     keywords: normalizeKeywords(row.keywords),
-    posterImage: row.poster_image || '',
+    posterImage: row.poster_image || row.poster_url || '',
+    posterPath: row.poster_path || '',
+    isArchived: Boolean(row.is_archived),
     isFeatured: Boolean(row.is_featured)
   }
 }
@@ -142,8 +145,73 @@ function mapInputToLocalJob(jobInput) {
     applyLink: jobInput.applyLink,
     keywords: normalizeKeywords(jobInput.keywords),
     posterImage: jobInput.posterImage || '',
+    posterPath: jobInput.posterPath || '',
+    isArchived: Boolean(jobInput.isArchived),
     isFeatured: Boolean(jobInput.isFeatured)
   }
+}
+
+async function uploadPosterImage(file, existingPath = '') {
+  if (!file) return { posterImage: '', posterPath: existingPath || '' }
+
+  if (!hasSupabaseConfig) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => resolve({ posterImage: reader.result || '', posterPath: '' })
+      reader.onerror = () => reject(new Error('Unable to read poster image.'))
+      reader.readAsDataURL(file)
+    })
+  }
+
+  const extension = file.name.includes('.') ? file.name.split('.').pop() : 'jpg'
+  const path = `posters/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${extension}`
+  const uploadResponse = await fetch(
+    `${SUPABASE_URL}/storage/v1/object/${SUPABASE_POSTER_BUCKET}/${path}`,
+    {
+      method: 'POST',
+      headers: {
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': file.type || 'application/octet-stream',
+        'x-upsert': 'false'
+      },
+      body: file
+    }
+  )
+
+  if (!uploadResponse.ok) {
+    const message = await uploadResponse.text()
+    throw new Error(message || `Failed to upload poster image: ${uploadResponse.status}`)
+  }
+
+  if (existingPath) {
+    await deletePosterImage(existingPath).catch(() => {})
+  }
+
+  return {
+    posterImage: `${SUPABASE_URL}/storage/v1/object/public/${SUPABASE_POSTER_BUCKET}/${path}`,
+    posterPath: path
+  }
+}
+
+async function deletePosterImage(path) {
+  if (!path || !hasSupabaseConfig) return true
+
+  const response = await fetch(
+    `${SUPABASE_URL}/storage/v1/object/${SUPABASE_POSTER_BUCKET}`,
+    {
+      method: 'DELETE',
+      headers: headers(),
+      body: JSON.stringify([path])
+    }
+  )
+
+  if (!response.ok) {
+    const message = await response.text()
+    throw new Error(message || `Failed to delete poster image: ${response.status}`)
+  }
+
+  return true
 }
 
 async function fetchPublicJobs() {
@@ -172,6 +240,10 @@ async function createPublicJob(jobInput) {
 
   const requirements = normalizeRequirements(jobInput.requirements)
   const jobPositions = normalizeRequirements(jobInput.jobPositions || jobInput.requirements)
+  const poster =
+    jobInput.posterFile
+      ? await uploadPosterImage(jobInput.posterFile, '')
+      : { posterImage: jobInput.posterImage || '', posterPath: jobInput.posterPath || '' }
   const payload = {
     title: jobInput.title,
     organization: jobInput.organization,
@@ -193,7 +265,9 @@ async function createPublicJob(jobInput) {
     apply_procedure: jobInput.applyProcedure,
     apply_link: jobInput.applyLink,
     keywords: normalizeKeywords(jobInput.keywords),
-    poster_image: jobInput.posterImage || '',
+    poster_image: poster.posterImage,
+    poster_path: poster.posterPath,
+    is_archived: Boolean(jobInput.isArchived),
     is_featured: Boolean(jobInput.isFeatured)
   }
 
@@ -232,6 +306,10 @@ async function updatePublicJob(jobId, jobInput) {
 
   const requirements = normalizeRequirements(jobInput.requirements)
   const jobPositions = normalizeRequirements(jobInput.jobPositions || jobInput.requirements)
+  const poster =
+    jobInput.posterFile
+      ? await uploadPosterImage(jobInput.posterFile, jobInput.posterPath || '')
+      : { posterImage: jobInput.posterImage || '', posterPath: jobInput.posterPath || '' }
   const payload = {
     title: jobInput.title,
     organization: jobInput.organization,
@@ -253,7 +331,9 @@ async function updatePublicJob(jobId, jobInput) {
     apply_procedure: jobInput.applyProcedure,
     apply_link: jobInput.applyLink,
     keywords: normalizeKeywords(jobInput.keywords),
-    poster_image: jobInput.posterImage || '',
+    poster_image: poster.posterImage,
+    poster_path: poster.posterPath,
+    is_archived: Boolean(jobInput.isArchived),
     is_featured: Boolean(jobInput.isFeatured)
   }
 
@@ -327,6 +407,17 @@ async function createContactMessage(contactInput) {
     email: contactInput.email,
     subject: contactInput.subject,
     message: contactInput.message
+  }
+
+  const lookupResponse = await fetch(
+    `${SUPABASE_URL}/rest/v1/jobs_public?select=poster_path&id=eq.${encodeURIComponent(jobId)}&limit=1`,
+    { headers: headers() }
+  )
+  if (lookupResponse.ok) {
+    const rows = await lookupResponse.json()
+    if (rows[0]?.poster_path) {
+      await deletePosterImage(rows[0].poster_path).catch(() => {})
+    }
   }
 
   const response = await fetch(
@@ -423,6 +514,35 @@ async function updateContactMessage(messageId, patchInput) {
 
   const rows = await response.json()
   return mapContactRow(rows[0])
+}
+
+async function deleteContactMessage(messageId) {
+  if (!hasSupabaseConfig) {
+    const existing = readLocalCollection(LOCAL_CONTACTS_KEY)
+    writeLocalCollection(
+      LOCAL_CONTACTS_KEY,
+      existing.filter((row) => row.id !== messageId)
+    )
+    return true
+  }
+
+  const response = await fetch(
+    `${SUPABASE_URL}/rest/v1/contact_messages?id=eq.${encodeURIComponent(messageId)}`,
+    {
+      method: 'DELETE',
+      headers: {
+        ...headers(),
+        Prefer: 'return=minimal'
+      }
+    }
+  )
+
+  if (!response.ok) {
+    const message = await response.text()
+    throw new Error(message || `Failed to delete contact message: ${response.status}`)
+  }
+
+  return true
 }
 
 function mapSubscriberRow(row) {
@@ -611,9 +731,12 @@ export {
   createPublicJob,
   updatePublicJob,
   deletePublicJob,
+  uploadPosterImage,
+  deletePosterImage,
   createContactMessage,
   fetchContactMessages,
   updateContactMessage,
+  deleteContactMessage,
   fetchSubscribers,
   createSubscriber,
   updateSubscriber,

@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Breadcrumbs from '../components/Breadcrumbs'
 import { useJobs } from '../context/JobsContext'
-import { deleteSubscriber, fetchContactMessages, fetchSubscribers, updateContactMessage, updateSubscriber } from '../lib/jobsApi'
+import { deleteContactMessage, deleteSubscriber, fetchContactMessages, fetchSubscribers, updateContactMessage, updateSubscriber } from '../lib/jobsApi'
 
 const defaultCityRecords = [
   { name: 'Lahore', province: 'Punjab' },
@@ -40,7 +40,39 @@ const initialState = {
   applyProcedure: '',
   applyLink: '',
   posterImage: '',
+  posterPath: '',
+  isArchived: false,
   isFeatured: false
+}
+
+function downloadCsv(filename, rows) {
+  if (!rows.length) return
+  const keys = Array.from(
+    rows.reduce((set, row) => {
+      Object.keys(row).forEach((key) => set.add(key))
+      return set
+    }, new Set())
+  )
+
+  const escapeCell = (value) => {
+    const stringValue = Array.isArray(value) ? value.join(' | ') : String(value ?? '')
+    return `"${stringValue.replace(/"/g, '""')}"`
+  }
+
+  const csv = [
+    keys.map(escapeCell).join(','),
+    ...rows.map((row) => keys.map((key) => escapeCell(row[key])).join(','))
+  ].join('\n')
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = filename
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  URL.revokeObjectURL(url)
 }
 
 function PostJobPage() {
@@ -56,6 +88,7 @@ function PostJobPage() {
   const [newProvince, setNewProvince] = useState('')
   const [positionTitle, setPositionTitle] = useState('')
   const [positionCount, setPositionCount] = useState('')
+  const [posterFile, setPosterFile] = useState(null)
   const [passcode, setPasscode] = useState('')
   const [isAuthorized, setIsAuthorized] = useState(sessionStorage.getItem('admin_unlocked') === '1')
   const [done, setDone] = useState(false)
@@ -122,6 +155,16 @@ function PostJobPage() {
     })
   }, [subscribers, subscriberSearch, subscriberStatusFilter])
 
+  const dashboardStats = useMemo(
+    () => ({
+      totalLiveJobs: jobsCount(publicJobs),
+      totalMessages: messages.length,
+      unreadMessages: messages.filter((item) => !item.isRead).length,
+      activeSubscribers: subscribers.filter((item) => item.isActive).length
+    }),
+    [publicJobs, messages, subscribers]
+  )
+
   const isValidUrl = (value) => {
     try {
       const parsed = new URL(value)
@@ -175,7 +218,8 @@ function PostJobPage() {
       const isEditMode = Boolean(editJobId)
       const payload = {
         ...form,
-        requirements: form.jobPositions
+        requirements: form.jobPositions,
+        posterFile
       }
       const created = isEditMode ? await editJob(editJobId, payload) : await addJob(payload)
       setLastAction(isEditMode ? 'edit' : 'create')
@@ -184,6 +228,7 @@ function PostJobPage() {
       setEditJobId('')
       setPositionTitle('')
       setPositionCount('')
+      setPosterFile(null)
       setTimeout(() => navigate(`/job/${created.id}`), 500)
     } catch (submitError) {
       setError(submitError.message || 'Unable to post job.')
@@ -200,6 +245,7 @@ function PostJobPage() {
       onChange('posterImage', reader.result || '')
     }
     reader.readAsDataURL(file)
+    setPosterFile(file)
   }
 
   const onAddCity = () => {
@@ -285,8 +331,11 @@ function PostJobPage() {
       applyProcedure: job.applyProcedure || '',
       applyLink: job.applyLink || '',
       posterImage: job.posterImage || '',
+      posterPath: job.posterPath || '',
+      isArchived: Boolean(job.isArchived),
       isFeatured: Boolean(job.isFeatured)
     })
+    setPosterFile(null)
   }
 
   const onDeleteRow = async (job) => {
@@ -307,6 +356,20 @@ function PostJobPage() {
     setForm(initialState)
     setPositionTitle('')
     setPositionCount('')
+    setPosterFile(null)
+  }
+
+  const onToggleArchive = async (job) => {
+    try {
+      await editJob(job.id, {
+        ...job,
+        posterImage: job.posterImage || '',
+        posterPath: job.posterPath || '',
+        isArchived: !job.isArchived
+      })
+    } catch (archiveError) {
+      setError(archiveError.message || 'Unable to update archive status.')
+    }
   }
 
   const onUnlock = (event) => {
@@ -327,6 +390,10 @@ function PostJobPage() {
   const onLock = () => {
     setIsAuthorized(false)
     sessionStorage.removeItem('admin_unlocked')
+  }
+
+  function jobsCount(list) {
+    return Array.isArray(list) ? list.length : 0
   }
 
   const loadMessages = async () => {
@@ -370,6 +437,16 @@ function PostJobPage() {
       setMessages((prev) => prev.map((row) => (row.id === item.id ? updated : row)))
     } catch (updateError) {
       setMessagesError(updateError.message || 'Unable to update reply status.')
+    }
+  }
+
+  const onDeleteMessage = async (item) => {
+    if (!window.confirm(`Delete message from "${item.email}"?`)) return
+    try {
+      await deleteContactMessage(item.id)
+      setMessages((prev) => prev.filter((row) => row.id !== item.id))
+    } catch (deleteError) {
+      setMessagesError(deleteError.message || 'Unable to delete message.')
     }
   }
 
@@ -426,10 +503,39 @@ function PostJobPage() {
       <Breadcrumbs />
       <section className="panel">
         <div className="panel-head-row">
+          <h1 className="panel-title">Admin Dashboard</h1>
+          <button type="button" className="action-btn secondary" onClick={onLock}>Lock Admin</button>
+        </div>
+        <div className="admin-stats-grid">
+          <article className="admin-stat-card">
+            <strong>{dashboardStats.totalLiveJobs}</strong>
+            <span>Live Jobs</span>
+          </article>
+          <article className="admin-stat-card">
+            <strong>{dashboardStats.totalMessages}</strong>
+            <span>Total Messages</span>
+          </article>
+          <article className="admin-stat-card">
+            <strong>{dashboardStats.unreadMessages}</strong>
+            <span>Unread Messages</span>
+          </article>
+          <article className="admin-stat-card">
+            <strong>{dashboardStats.activeSubscribers}</strong>
+            <span>Active Subscribers</span>
+          </article>
+        </div>
+      </section>
+      <section className="panel">
+        <div className="panel-head-row">
           <h2 className="panel-title">Contact Messages</h2>
-          <button type="button" className="action-btn secondary" onClick={loadMessages}>
-            Refresh
-          </button>
+          <div className="admin-toolbar">
+            <button type="button" className="action-btn secondary" onClick={() => downloadCsv('contact-messages.csv', messages)}>
+              Export CSV
+            </button>
+            <button type="button" className="action-btn secondary" onClick={loadMessages}>
+              Refresh
+            </button>
+          </div>
         </div>
 
         <div className="admin-message-filters">
@@ -480,6 +586,9 @@ function PostJobPage() {
                   <option value="replied">Replied</option>
                   <option value="closed">Closed</option>
                 </select>
+                <button type="button" className="action-btn" onClick={() => onDeleteMessage(item)}>
+                  Delete
+                </button>
               </div>
             </article>
           ))}
@@ -488,9 +597,14 @@ function PostJobPage() {
       <section className="panel">
         <div className="panel-head-row">
           <h2 className="panel-title">Subscribers</h2>
-          <button type="button" className="action-btn secondary" onClick={loadSubscribers}>
-            Refresh
-          </button>
+          <div className="admin-toolbar">
+            <button type="button" className="action-btn secondary" onClick={() => downloadCsv('subscribers.csv', subscribers)}>
+              Export CSV
+            </button>
+            <button type="button" className="action-btn secondary" onClick={loadSubscribers}>
+              Refresh
+            </button>
+          </div>
         </div>
 
         <div className="admin-message-filters">
@@ -537,7 +651,7 @@ function PostJobPage() {
       <section className="panel">
         <div className="panel-head-row">
           <h1 className="panel-title">Admin: Post a Job</h1>
-          <button type="button" className="action-btn secondary" onClick={onLock}>Lock Admin</button>
+          <button type="button" className="action-btn secondary" onClick={() => downloadCsv('jobs.csv', publicJobs)}>Export CSV</button>
         </div>
         <p className="panel-intro">Fill the form to publish a new public job post.</p>
         {!hasSupabaseConfig && (
@@ -644,9 +758,27 @@ function PostJobPage() {
           {form.posterImage && (
             <div className="admin-poster-preview">
               <img src={form.posterImage} alt="Poster preview" />
-              <button type="button" className="action-btn secondary" onClick={() => onChange('posterImage', '')}>Remove Image</button>
+              <button
+                type="button"
+                className="action-btn secondary"
+                onClick={() => {
+                  onChange('posterImage', '')
+                  onChange('posterPath', '')
+                  setPosterFile(null)
+                }}
+              >
+                Remove Image
+              </button>
             </div>
           )}
+          <label className="checkbox-row">
+            <input
+              type="checkbox"
+              checked={form.isArchived}
+              onChange={(e) => onChange('isArchived', e.target.checked)}
+            />
+            Save as Archive
+          </label>
           <label className="checkbox-row">
             <input
               type="checkbox"
@@ -684,6 +816,9 @@ function PostJobPage() {
                 </div>
                 <div className="admin-job-actions">
                   <button type="button" className="action-btn secondary" onClick={() => onEditRow(job)}>Edit</button>
+                  <button type="button" className="action-btn secondary" onClick={() => onToggleArchive(job)}>
+                    {job.isArchived ? 'Unarchive' : 'Archive'}
+                  </button>
                   <button type="button" className="action-btn" onClick={() => onDeleteRow(job)}>Delete</button>
                 </div>
               </article>

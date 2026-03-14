@@ -16,6 +16,7 @@ export const jobs = [
     requirements: ['MBA or equivalent', '3+ years operations experience', 'Strong reporting skills'],
     applyProcedure: 'Apply through WAPDA careers portal and upload scanned documents.',
     applyLink: 'https://example.com/wapda-assistant-director',
+    isArchived: false,
     isFeatured: true
   },
   {
@@ -35,6 +36,7 @@ export const jobs = [
     requirements: ['Intermediate or above', 'Fast typing speed', 'Basic MS Office skills'],
     applyProcedure: 'Submit online form and appear for test/interview at designated center.',
     applyLink: 'https://example.com/nadra-data-entry',
+    isArchived: false,
     isFeatured: true
   },
   {
@@ -54,6 +56,7 @@ export const jobs = [
     requirements: ['BSCS/SE', 'Knowledge of React or Node.js', 'Problem solving mindset'],
     applyProcedure: 'Apply with CV and GitHub profile link.',
     applyLink: 'https://example.com/systems-jse',
+    isArchived: false,
     isFeatured: true
   },
   {
@@ -73,6 +76,7 @@ export const jobs = [
     requirements: ['BBA/BBIT preferred', '2+ years banking sales', 'Communication skills'],
     applyProcedure: 'Apply through HBL careers website.',
     applyLink: 'https://example.com/hbl-rm',
+    isArchived: false,
     isFeatured: false
   },
   {
@@ -92,6 +96,7 @@ export const jobs = [
     requirements: ['MS/MPhil in CS', 'HEC recognized degree', 'Teaching aptitude'],
     applyProcedure: 'Submit application through FPSC portal and pay challan fee.',
     applyLink: 'https://example.com/fpsc-lecturer-cs',
+    isArchived: false,
     isFeatured: false
   },
   {
@@ -111,6 +116,7 @@ export const jobs = [
     requirements: ['BE Civil', 'PEC registration', '2 years field exposure'],
     applyProcedure: 'Upload resume and project list on NESPAK recruitment page.',
     applyLink: 'https://example.com/nespak-civil',
+    isArchived: false,
     isFeatured: false
   },
   {
@@ -130,6 +136,7 @@ export const jobs = [
     requirements: ['Portfolio with Figma work', 'Basic UX principles', 'Team collaboration'],
     applyProcedure: 'Apply via LinkedIn Easy Apply with portfolio link.',
     applyLink: 'https://example.com/10pearls-uiux-intern',
+    isArchived: false,
     isFeatured: true
   },
   {
@@ -149,6 +156,7 @@ export const jobs = [
     requirements: ['B.Com/M.Com', '5 years accounting', 'ERP familiarity'],
     applyProcedure: 'Send documents by courier and email scanned copies.',
     applyLink: 'https://example.com/pcmml-accountant',
+    isArchived: true,
     isFeatured: false
   },
   {
@@ -168,6 +176,7 @@ export const jobs = [
     requirements: ['Excellent English writing', 'SEO basics', 'Portfolio samples'],
     applyProcedure: 'Email writing samples and resume.',
     applyLink: 'https://example.com/creative-soft-writer',
+    isArchived: true,
     isFeatured: true
   },
   {
@@ -187,6 +196,7 @@ export const jobs = [
     requirements: ['Graduation', 'Physical fitness', 'Domicile requirement'],
     applyProcedure: 'Download challan, submit online form, then physical test.',
     applyLink: 'https://example.com/punjab-police-si',
+    isArchived: true,
     isFeatured: false
   },
   {
@@ -206,6 +216,7 @@ export const jobs = [
     requirements: ['CCNA preferred', '2+ years experience', 'Troubleshooting skills'],
     applyProcedure: 'Apply online through PTCL careers section.',
     applyLink: 'https://example.com/ptcl-network-admin',
+    isArchived: true,
     isFeatured: false
   },
   {
@@ -225,6 +236,7 @@ export const jobs = [
     requirements: ['BBA/MBA HR', '2 years HR experience', 'Strong communication'],
     applyProcedure: 'Apply via company website with updated CV.',
     applyLink: 'https://example.com/engro-hr',
+    isArchived: true,
     isFeatured: false
   },
   {
@@ -244,6 +256,7 @@ export const jobs = [
     requirements: ['Intermediate minimum', 'Good Urdu/English communication', 'Basic computer skills'],
     applyProcedure: 'Walk-in interviews at regional office.',
     applyLink: 'https://example.com/ufone-agent',
+    isArchived: true,
     isFeatured: false
   },
   {
@@ -263,6 +276,7 @@ export const jobs = [
     requirements: ['MS in CS/AI', 'Research writing', 'Python skills'],
     applyProcedure: 'Email CV and statement of purpose.',
     applyLink: 'https://example.com/comsats-ra',
+    isArchived: true,
     isFeatured: true
   },
   {
@@ -282,6 +296,7 @@ export const jobs = [
     requirements: ['DAE Mechanical', 'Workshop experience', 'Safety compliance'],
     applyProcedure: 'Submit hard copy application to HR department.',
     applyLink: 'https://example.com/railways-technician',
+    isArchived: true,
     isFeatured: false
   },
   {
@@ -301,6 +316,7 @@ export const jobs = [
     requirements: ['Proficiency in Adobe Suite', 'Portfolio required', 'Motion graphics plus'],
     applyProcedure: 'Apply online and attach design portfolio.',
     applyLink: 'https://example.com/pakwheels-designer',
+    isArchived: true,
     isFeatured: false
   },
   {
@@ -320,6 +336,7 @@ export const jobs = [
     requirements: ['2 years QA experience', 'API testing knowledge', 'Attention to detail'],
     applyProcedure: 'Apply with CV and testing project highlights.',
     applyLink: 'https://example.com/tkxel-qa-remote',
+    isArchived: true,
     isFeatured: true
   },
   {
@@ -339,6 +356,7 @@ export const jobs = [
     requirements: ['Pharm-D', 'Valid registration', 'Strong ethics'],
     applyProcedure: 'Apply via hospital careers portal.',
     applyLink: 'https://example.com/skmh-pharmacy-intern',
+    isArchived: true,
     isFeatured: false
   }
 ]
