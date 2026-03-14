@@ -1,6 +1,8 @@
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY
 const LOCAL_JOBS_KEY = 'jobs_hub_local_public_jobs'
+const LOCAL_CONTACTS_KEY = 'jobs_hub_local_contact_messages'
+const LOCAL_SUBSCRIBERS_KEY = 'jobs_hub_local_subscribers'
 
 function isPlaceholder(value) {
   if (!value) return true
@@ -98,6 +100,21 @@ function readLocalJobs() {
 
 function writeLocalJobs(jobs) {
   localStorage.setItem(LOCAL_JOBS_KEY, JSON.stringify(jobs))
+}
+
+function readLocalCollection(key) {
+  try {
+    const raw = localStorage.getItem(key)
+    if (!raw) return []
+    const parsed = JSON.parse(raw)
+    return Array.isArray(parsed) ? parsed : []
+  } catch {
+    return []
+  }
+}
+
+function writeLocalCollection(key, value) {
+  localStorage.setItem(key, JSON.stringify(value))
 }
 
 function mapInputToLocalJob(jobInput) {
@@ -289,7 +306,20 @@ async function deletePublicJob(jobId) {
 
 async function createContactMessage(contactInput) {
   if (!hasSupabaseConfig) {
-    throw new Error('Supabase is not configured. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in .env')
+    const existing = readLocalCollection(LOCAL_CONTACTS_KEY)
+    const localRow = mapContactRow({
+      id: `contact-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      full_name: contactInput.fullName,
+      email: contactInput.email,
+      subject: contactInput.subject,
+      message: contactInput.message,
+      is_read: false,
+      reply_status: 'pending',
+      created_at: new Date().toISOString(),
+      updated_at: null
+    })
+    writeLocalCollection(LOCAL_CONTACTS_KEY, [localRow, ...existing])
+    return localRow
   }
 
   const payload = {
@@ -336,7 +366,7 @@ function mapContactRow(row) {
 
 async function fetchContactMessages() {
   if (!hasSupabaseConfig) {
-    throw new Error('Supabase is not configured. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in .env')
+    return readLocalCollection(LOCAL_CONTACTS_KEY)
   }
 
   const response = await fetch(
@@ -355,7 +385,18 @@ async function fetchContactMessages() {
 
 async function updateContactMessage(messageId, patchInput) {
   if (!hasSupabaseConfig) {
-    throw new Error('Supabase is not configured. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in .env')
+    const existing = readLocalCollection(LOCAL_CONTACTS_KEY)
+    const updatedRows = existing.map((row) => {
+      if (row.id !== messageId) return row
+      return {
+        ...row,
+        isRead: typeof patchInput.isRead === 'boolean' ? patchInput.isRead : row.isRead,
+        replyStatus: typeof patchInput.replyStatus === 'string' ? patchInput.replyStatus : row.replyStatus,
+        updatedAt: new Date().toISOString()
+      }
+    })
+    writeLocalCollection(LOCAL_CONTACTS_KEY, updatedRows)
+    return updatedRows.find((row) => row.id === messageId)
   }
 
   const payload = {}
@@ -384,6 +425,186 @@ async function updateContactMessage(messageId, patchInput) {
   return mapContactRow(rows[0])
 }
 
+function mapSubscriberRow(row) {
+  return {
+    id: String(row.id),
+    email: row.email,
+    isActive: row.is_active !== false,
+    source: row.source || 'website',
+    createdAt: row.created_at,
+    updatedAt: row.updated_at
+  }
+}
+
+async function fetchSubscribers() {
+  if (!hasSupabaseConfig) {
+    return readLocalCollection(LOCAL_SUBSCRIBERS_KEY)
+  }
+
+  const response = await fetch(
+    `${SUPABASE_URL}/rest/v1/subscribers?select=*&order=created_at.desc`,
+    { headers: headers() }
+  )
+
+  if (!response.ok) {
+    const message = await response.text()
+    throw new Error(message || `Failed to fetch subscribers: ${response.status}`)
+  }
+
+  const rows = await response.json()
+  return rows.map(mapSubscriberRow)
+}
+
+async function createSubscriber(subscriberInput) {
+  const normalizedEmail = String(subscriberInput.email || '').trim().toLowerCase()
+  if (!normalizedEmail) {
+    throw new Error('Email is required.')
+  }
+
+  if (!hasSupabaseConfig) {
+    const existing = readLocalCollection(LOCAL_SUBSCRIBERS_KEY)
+    const matched = existing.find((row) => row.email.toLowerCase() === normalizedEmail)
+    if (matched) {
+      const updated = {
+        ...matched,
+        isActive: true,
+        source: subscriberInput.source || matched.source || 'website',
+        updatedAt: new Date().toISOString()
+      }
+      const rows = existing.map((row) => (row.id === matched.id ? updated : row))
+      writeLocalCollection(LOCAL_SUBSCRIBERS_KEY, rows)
+      return updated
+    }
+
+    const localRow = {
+      id: `subscriber-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      email: normalizedEmail,
+      isActive: true,
+      source: subscriberInput.source || 'website',
+      createdAt: new Date().toISOString(),
+      updatedAt: null
+    }
+    writeLocalCollection(LOCAL_SUBSCRIBERS_KEY, [localRow, ...existing])
+    return localRow
+  }
+
+  const existingResponse = await fetch(
+    `${SUPABASE_URL}/rest/v1/subscribers?select=*&email=eq.${encodeURIComponent(normalizedEmail)}&limit=1`,
+    { headers: headers() }
+  )
+
+  if (!existingResponse.ok) {
+    const message = await existingResponse.text()
+    throw new Error(message || `Failed to check subscriber: ${existingResponse.status}`)
+  }
+
+  const existingRows = await existingResponse.json()
+  if (existingRows.length > 0) {
+    return updateSubscriber(existingRows[0].id, {
+      isActive: true,
+      source: subscriberInput.source || existingRows[0].source || 'website'
+    })
+  }
+
+  const payload = {
+    email: normalizedEmail,
+    is_active: true,
+    source: subscriberInput.source || 'website'
+  }
+
+  const response = await fetch(
+    `${SUPABASE_URL}/rest/v1/subscribers`,
+    {
+      method: 'POST',
+      headers: {
+        ...headers(),
+        Prefer: 'return=representation'
+      },
+      body: JSON.stringify(payload)
+    }
+  )
+
+  if (!response.ok) {
+    const message = await response.text()
+    throw new Error(message || `Failed to create subscriber: ${response.status}`)
+  }
+
+  const rows = await response.json()
+  return mapSubscriberRow(rows[0])
+}
+
+async function updateSubscriber(subscriberId, patchInput) {
+  if (!hasSupabaseConfig) {
+    const existing = readLocalCollection(LOCAL_SUBSCRIBERS_KEY)
+    const updatedRows = existing.map((row) => {
+      if (row.id !== subscriberId) return row
+      return {
+        ...row,
+        isActive: typeof patchInput.isActive === 'boolean' ? patchInput.isActive : row.isActive,
+        source: patchInput.source || row.source,
+        updatedAt: new Date().toISOString()
+      }
+    })
+    writeLocalCollection(LOCAL_SUBSCRIBERS_KEY, updatedRows)
+    return updatedRows.find((row) => row.id === subscriberId)
+  }
+
+  const payload = {
+    updated_at: new Date().toISOString()
+  }
+  if (typeof patchInput.isActive === 'boolean') payload.is_active = patchInput.isActive
+  if (typeof patchInput.source === 'string') payload.source = patchInput.source
+
+  const response = await fetch(
+    `${SUPABASE_URL}/rest/v1/subscribers?id=eq.${encodeURIComponent(subscriberId)}`,
+    {
+      method: 'PATCH',
+      headers: {
+        ...headers(),
+        Prefer: 'return=representation'
+      },
+      body: JSON.stringify(payload)
+    }
+  )
+
+  if (!response.ok) {
+    const message = await response.text()
+    throw new Error(message || `Failed to update subscriber: ${response.status}`)
+  }
+
+  const rows = await response.json()
+  return mapSubscriberRow(rows[0])
+}
+
+async function deleteSubscriber(subscriberId) {
+  if (!hasSupabaseConfig) {
+    const existing = readLocalCollection(LOCAL_SUBSCRIBERS_KEY)
+    writeLocalCollection(
+      LOCAL_SUBSCRIBERS_KEY,
+      existing.filter((row) => row.id !== subscriberId)
+    )
+    return true
+  }
+
+  const response = await fetch(
+    `${SUPABASE_URL}/rest/v1/subscribers?id=eq.${encodeURIComponent(subscriberId)}`,
+    {
+      method: 'DELETE',
+      headers: {
+        ...headers(),
+        Prefer: 'return=minimal'
+      }
+    }
+  )
+
+  if (!response.ok) {
+    const message = await response.text()
+    throw new Error(message || `Failed to delete subscriber: ${response.status}`)
+  }
+
+  return true
+}
+
 export {
   hasSupabaseConfig,
   fetchPublicJobs,
@@ -392,5 +613,9 @@ export {
   deletePublicJob,
   createContactMessage,
   fetchContactMessages,
-  updateContactMessage
+  updateContactMessage,
+  fetchSubscribers,
+  createSubscriber,
+  updateSubscriber,
+  deleteSubscriber
 }

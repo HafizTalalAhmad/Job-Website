@@ -146,6 +146,46 @@ using (true)
 with check (true);
 ```
 
+Also create table `subscribers` for email alerts:
+
+```sql
+create table if not exists public.subscribers (
+  id uuid primary key default gen_random_uuid(),
+  email text not null unique,
+  is_active boolean not null default true,
+  source text not null default 'website',
+  created_at timestamptz not null default now(),
+  updated_at timestamptz
+);
+
+alter table public.subscribers enable row level security;
+
+create policy "public insert subscribers"
+on public.subscribers
+for insert
+to anon
+with check (true);
+
+create policy "public read subscribers"
+on public.subscribers
+for select
+to anon
+using (true);
+
+create policy "public update subscribers"
+on public.subscribers
+for update
+to anon
+using (true)
+with check (true);
+
+create policy "public delete subscribers"
+on public.subscribers
+for delete
+to anon
+using (true);
+```
+
 3. Copy `.env.example` to `.env` and set values:
 
 ```bash
@@ -158,6 +198,7 @@ VITE_ADMIN_PASSCODE=...
 
 Now `/admin` (hidden from navbar) is your admin posting page. It requires `VITE_ADMIN_PASSCODE` to unlock posting.
 Published jobs write to Supabase and all users can see new jobs.
+Contact messages and subscriber emails also write to Supabase. If Supabase is not configured, jobs, contact messages, and subscribers fall back to browser local storage on that device.
 
 ## Folder Structure
 

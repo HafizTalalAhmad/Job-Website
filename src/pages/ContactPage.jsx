@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import Breadcrumbs from '../components/Breadcrumbs'
-import { createContactMessage, hasSupabaseConfig } from '../lib/jobsApi'
+import { createContactMessage, createSubscriber } from '../lib/jobsApi'
 
 function ContactPage() {
   const [form, setForm] = useState({
@@ -14,6 +14,8 @@ function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [email, setEmail] = useState('')
   const [subscribed, setSubscribed] = useState(false)
+  const [subscribeError, setSubscribeError] = useState('')
+  const [isSubscribing, setIsSubscribing] = useState(false)
 
   const onChange = (key, value) => setForm((prev) => ({ ...prev, [key]: value }))
 
@@ -21,11 +23,6 @@ function ContactPage() {
     event.preventDefault()
     setSubmitted(false)
     setSubmitError('')
-
-    if (!hasSupabaseConfig) {
-      setSubmitError('Contact form backend is not configured yet. Add Supabase URL/Key in .env.')
-      return
-    }
 
     setIsSubmitting(true)
     try {
@@ -39,11 +36,21 @@ function ContactPage() {
     }
   }
 
-  const handleSubscribe = (event) => {
+  const handleSubscribe = async (event) => {
     event.preventDefault()
+    setSubscribed(false)
+    setSubscribeError('')
     if (!email.trim()) return
-    setSubscribed(true)
-    setEmail('')
+    setIsSubscribing(true)
+    try {
+      await createSubscriber({ email, source: 'contact' })
+      setSubscribed(true)
+      setEmail('')
+    } catch (error) {
+      setSubscribeError(error.message || 'Unable to save subscription right now.')
+    } finally {
+      setIsSubscribing(false)
+    }
   }
 
   return (
@@ -114,9 +121,10 @@ function ContactPage() {
                 placeholder="Enter your email"
                 required
               />
-              <button type="submit">Subscribe</button>
+              <button type="submit" disabled={isSubscribing}>{isSubscribing ? 'Saving...' : 'Subscribe'}</button>
             </form>
             {subscribed && <p>Subscribed successfully.</p>}
+            {subscribeError && <p className="form-error">{subscribeError}</p>}
           </div>
         </aside>
       </section>

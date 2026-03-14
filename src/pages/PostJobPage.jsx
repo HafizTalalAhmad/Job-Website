@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Breadcrumbs from '../components/Breadcrumbs'
 import { useJobs } from '../context/JobsContext'
-import { fetchContactMessages, updateContactMessage } from '../lib/jobsApi'
+import { deleteSubscriber, fetchContactMessages, fetchSubscribers, updateContactMessage, updateSubscriber } from '../lib/jobsApi'
 
 const defaultCityRecords = [
   { name: 'Lahore', province: 'Punjab' },
@@ -68,6 +68,11 @@ function PostJobPage() {
   const [messageReadFilter, setMessageReadFilter] = useState('all')
   const [messageReplyFilter, setMessageReplyFilter] = useState('all')
   const [messageSearch, setMessageSearch] = useState('')
+  const [subscribers, setSubscribers] = useState([])
+  const [subscribersError, setSubscribersError] = useState('')
+  const [isLoadingSubscribers, setIsLoadingSubscribers] = useState(false)
+  const [subscriberStatusFilter, setSubscriberStatusFilter] = useState('all')
+  const [subscriberSearch, setSubscriberSearch] = useState('')
 
   const cityOptions = useMemo(
     () => [...new Set(cityRecords.map((row) => row.name))].sort((a, b) => a.localeCompare(b)),
@@ -99,6 +104,23 @@ function PostJobPage() {
       return readMatch && replyMatch && keywordMatch
     })
   }, [messages, messageReadFilter, messageReplyFilter, messageSearch])
+
+  const filteredSubscribers = useMemo(() => {
+    const keyword = subscriberSearch.trim().toLowerCase()
+    return subscribers.filter((item) => {
+      const statusMatch =
+        subscriberStatusFilter === 'all' ||
+        (subscriberStatusFilter === 'active' && item.isActive) ||
+        (subscriberStatusFilter === 'inactive' && !item.isActive)
+
+      const keywordMatch =
+        !keyword ||
+        item.email.toLowerCase().includes(keyword) ||
+        (item.source || '').toLowerCase().includes(keyword)
+
+      return statusMatch && keywordMatch
+    })
+  }, [subscribers, subscriberSearch, subscriberStatusFilter])
 
   const isValidUrl = (value) => {
     try {
@@ -309,11 +331,6 @@ function PostJobPage() {
 
   const loadMessages = async () => {
     setMessagesError('')
-    if (!hasSupabaseConfig) {
-      setMessagesError('Supabase is not configured for contact message storage.')
-      return
-    }
-
     setIsLoadingMessages(true)
     try {
       const rows = await fetchContactMessages()
@@ -322,6 +339,19 @@ function PostJobPage() {
       setMessagesError(loadError.message || 'Unable to load contact messages.')
     } finally {
       setIsLoadingMessages(false)
+    }
+  }
+
+  const loadSubscribers = async () => {
+    setSubscribersError('')
+    setIsLoadingSubscribers(true)
+    try {
+      const rows = await fetchSubscribers()
+      setSubscribers(rows)
+    } catch (loadError) {
+      setSubscribersError(loadError.message || 'Unable to load subscribers.')
+    } finally {
+      setIsLoadingSubscribers(false)
     }
   }
 
@@ -343,9 +373,29 @@ function PostJobPage() {
     }
   }
 
+  const onToggleSubscriber = async (item) => {
+    try {
+      const updated = await updateSubscriber(item.id, { isActive: !item.isActive })
+      setSubscribers((prev) => prev.map((row) => (row.id === item.id ? updated : row)))
+    } catch (updateError) {
+      setSubscribersError(updateError.message || 'Unable to update subscriber.')
+    }
+  }
+
+  const onDeleteSubscriber = async (item) => {
+    if (!window.confirm(`Delete subscriber "${item.email}"?`)) return
+    try {
+      await deleteSubscriber(item.id)
+      setSubscribers((prev) => prev.filter((row) => row.id !== item.id))
+    } catch (deleteError) {
+      setSubscribersError(deleteError.message || 'Unable to delete subscriber.')
+    }
+  }
+
   useEffect(() => {
     if (!isAuthorized) return
     loadMessages()
+    loadSubscribers()
   }, [isAuthorized])
 
   if (!isAuthorized) {
@@ -430,6 +480,55 @@ function PostJobPage() {
                   <option value="replied">Replied</option>
                   <option value="closed">Closed</option>
                 </select>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+      <section className="panel">
+        <div className="panel-head-row">
+          <h2 className="panel-title">Subscribers</h2>
+          <button type="button" className="action-btn secondary" onClick={loadSubscribers}>
+            Refresh
+          </button>
+        </div>
+
+        <div className="admin-message-filters">
+          <select value={subscriberStatusFilter} onChange={(e) => setSubscriberStatusFilter(e.target.value)}>
+            <option value="all">All Subscribers</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+          <input
+            value={subscriberSearch}
+            onChange={(e) => setSubscriberSearch(e.target.value)}
+            placeholder="Search by email or source..."
+          />
+        </div>
+
+        {isLoadingSubscribers && <p className="panel-intro">Loading subscribers...</p>}
+        {subscribersError && <p className="form-error">{subscribersError}</p>}
+        {!isLoadingSubscribers && !filteredSubscribers.length && <p className="panel-intro">No subscribers found.</p>}
+
+        <div className="admin-message-list">
+          {filteredSubscribers.map((item) => (
+            <article key={item.id} className="admin-message-item">
+              <div className="admin-message-head">
+                <h3>{item.email}</h3>
+                <span className={`msg-read-badge ${item.isActive ? 'is-read' : 'is-unread'}`}>
+                  {item.isActive ? 'Active' : 'Inactive'}
+                </span>
+              </div>
+              <p className="admin-message-meta">
+                Source: {item.source || 'website'} | Added: {new Date(item.createdAt).toLocaleString()}
+              </p>
+              <div className="admin-message-actions">
+                <button type="button" className="action-btn secondary" onClick={() => onToggleSubscriber(item)}>
+                  {item.isActive ? 'Deactivate' : 'Activate'}
+                </button>
+                <button type="button" className="action-btn" onClick={() => onDeleteSubscriber(item)}>
+                  Delete
+                </button>
               </div>
             </article>
           ))}
