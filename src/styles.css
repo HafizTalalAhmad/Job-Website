@@ -243,9 +243,14 @@ a:hover {
   width: 100%;
 }
 
-.with-side-ads {
+.page-shell {
   width: min(1090px, 96%);
   margin: 0 auto;
+  position: relative;
+}
+
+.with-side-ads {
+  width: 100%;
   position: relative;
 }
 
@@ -254,13 +259,6 @@ a:hover {
   min-width: 0;
   background: transparent;
   padding: 0;
-}
-
-.route-zone > .container,
-.route-zone > .site-footer > .container {
-  width: 100%;
-  margin-left: 0;
-  margin-right: 0;
 }
 
 .side-ad {
