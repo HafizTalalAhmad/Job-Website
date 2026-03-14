@@ -244,22 +244,19 @@ a:hover {
 }
 
 .with-side-ads {
-  width: min(1280px, 98%);
+  width: min(1090px, calc(98% - 180px));
   margin: 0 auto;
-  display: grid;
-  grid-template-columns: minmax(0, 1090px) 170px;
-  gap: 10px;
-  justify-content: center;
+  position: relative;
 }
 
 .route-zone {
+  width: 100%;
   min-width: 0;
   background: transparent;
   padding: 0;
 }
 
 .side-ad {
-  margin-top: 10px;
   border: 1px dashed #c7d2df;
   background: #fff;
   min-height: 520px;
@@ -267,6 +264,14 @@ a:hover {
   color: #607086;
   font-size: 12px;
   padding: 10px;
+}
+
+.side-ad.right {
+  position: absolute;
+  top: 0;
+  left: calc(100% + 10px);
+  width: 170px;
+  margin-top: 10px;
 }
 
 .ticker {
