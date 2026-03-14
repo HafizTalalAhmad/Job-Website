@@ -1,42 +1,62 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import fpscImage from '../../img/FPSC.jfif'
+import ghqImage from '../../img/GHQ.jfif'
+import isprImage from '../../img/ISPR.jfif'
+import ppscImage from '../../img/ppscofficial_cover.jfif'
 
 const slides = [
   {
     id: 'slide-1',
-    department: 'Pakistan Civil Aviation Authority',
-    code: 'PCAA',
-    eyebrow: 'Aviation Recruitment Window',
-    title: 'Airport operations, communication units, and technical support openings.',
-    blurb: 'Track aviation-focused recruitment with department-level visibility, fast deadline scanning, and direct access to detail pages.',
-    accents: ['Air Traffic', 'Operations', 'Technical'],
+    department: 'Federal Public Service Commission',
+    code: 'FPSC',
+    eyebrow: 'Federal Recruitment Bulletin',
+    title: 'Centralized public service hiring with fast date-wise tracking and direct detail access.',
+    blurb: 'Surface federal vacancies in one readable stream so users can review eligibility, deadlines, and source posters without switching between portals.',
+    accents: ['CSS Pathways', 'Lecturers', 'Inspectors'],
     cta: '/jobs/government',
     ctaLabel: 'View Government Jobs',
-    tone: 'aviation'
+    tone: 'federal',
+    image: fpscImage
   },
   {
     id: 'slide-2',
-    department: 'Federal Public Service Commission',
-    code: 'FPSC',
-    eyebrow: 'Federal Hiring Bulletin',
-    title: 'Public administration, education, and specialist vacancies grouped into one readable board.',
-    blurb: 'Daily listings stay organized by date, source, and department so users can scan opportunities without jumping across multiple portals.',
-    accents: ['Lecturers', 'Inspectors', 'Analysts'],
+    department: 'General Headquarters',
+    code: 'GHQ',
+    eyebrow: 'Defence Desk',
+    title: 'Operations, support, and specialist roles presented in a cleaner, searchable format.',
+    blurb: 'Use the portal to track public-sector openings by department, city, and deadline while keeping the original poster one click away.',
+    accents: ['Clerical', 'Technical', 'Admin'],
     cta: '/jobs/date',
     ctaLabel: 'Browse by Date',
-    tone: 'federal'
+    tone: 'defence',
+    image: ghqImage
   },
   {
     id: 'slide-3',
-    department: 'Pakistan Railways and Public Utilities',
-    code: 'PR',
-    eyebrow: 'National Service Hiring',
-    title: 'Technical, field, and operations posts presented in a practical newspaper-style layout.',
-    blurb: 'Use the public job board for daily tracking, then manage postings and contact messages through the admin workspace.',
-    accents: ['Workshops', 'Field Teams', 'Support Staff'],
+    department: 'Inter-Services Public Relations',
+    code: 'ISPR',
+    eyebrow: 'Public Notice Highlights',
+    title: 'Poster-based announcements converted into a practical board for daily scanning and follow-up.',
+    blurb: 'Dense listings stay readable through grouped dates, quick links, and structured detail pages built for fast public review.',
+    accents: ['Media Wing', 'Field Support', 'Coordination'],
     cta: '/admin',
     ctaLabel: 'Open Admin',
-    tone: 'railways'
+    tone: 'signals',
+    image: isprImage
+  },
+  {
+    id: 'slide-4',
+    department: 'Punjab Public Service Commission',
+    code: 'PPSC',
+    eyebrow: 'Provincial Hiring Window',
+    title: 'Provincial recruitment posters transformed into modern, mobile-friendly job listings.',
+    blurb: 'Highlight teaching, administration, and departmental vacancies with cleaner summaries, date grouping, and direct poster viewing.',
+    accents: ['Punjab Jobs', 'Teaching', 'Departments'],
+    cta: '/jobs/profession',
+    ctaLabel: 'Browse by Profession',
+    tone: 'provincial',
+    image: ppscImage
   }
 ]
 
@@ -74,15 +94,12 @@ function HeroSlider() {
           </div>
 
           <div className="hero-slide-poster" aria-hidden="true">
-            <div className="hero-slide-seal" />
+            <div className="hero-slide-image-frame">
+              <img src={activeSlide.image} alt={activeSlide.department} className="hero-slide-image" />
+            </div>
             <div className="hero-slide-dept">
               <strong>{activeSlide.code}</strong>
               <span>{activeSlide.department}</span>
-            </div>
-            <div className="hero-slide-lines">
-              <span />
-              <span />
-              <span />
             </div>
           </div>
         </div>
