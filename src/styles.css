@@ -261,6 +261,12 @@ a:hover {
   padding: 0;
 }
 
+.route-zone .container {
+  width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+}
+
 .side-ad {
   border: 1px dashed #c7d2df;
   background: #fff;
