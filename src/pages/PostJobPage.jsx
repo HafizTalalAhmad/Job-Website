@@ -160,14 +160,18 @@ function PostJobPage() {
     })
   }, [subscribers, subscriberSearch, subscriberStatusFilter])
 
+  const liveJobs = useMemo(() => publicJobs.filter((job) => !job.isArchived), [publicJobs])
+  const archivedJobs = useMemo(() => publicJobs.filter((job) => job.isArchived), [publicJobs])
+
   const dashboardStats = useMemo(
     () => ({
       totalLiveJobs: jobsCount(publicJobs),
+      totalArchivedJobs: jobsCount(archivedJobs),
       totalMessages: messages.length,
       unreadMessages: messages.filter((item) => !item.isRead).length,
       activeSubscribers: subscribers.filter((item) => item.isActive).length
     }),
-    [publicJobs, messages, subscribers]
+    [publicJobs, archivedJobs, messages, subscribers]
   )
 
   const isValidUrl = (value) => {
@@ -604,6 +608,10 @@ function PostJobPage() {
             <span>Live Jobs</span>
           </article>
           <article className="admin-stat-card">
+            <strong>{dashboardStats.totalArchivedJobs}</strong>
+            <span>Archived Jobs</span>
+          </article>
+          <article className="admin-stat-card">
             <strong>{dashboardStats.totalMessages}</strong>
             <span>Total Messages</span>
           </article>
@@ -898,24 +906,57 @@ function PostJobPage() {
       <section className="panel">
         <h2 className="panel-title">Manage Posted Jobs</h2>
         {!publicJobs.length && <p className="panel-intro">No admin-posted jobs yet.</p>}
-        {publicJobs.length > 0 && (
-          <div className="admin-job-list">
-            {publicJobs.map((job) => (
-              <article key={job.id} className="admin-job-item">
-                <div>
-                  <h3>{job.title}</h3>
-                  <p>{job.organization} | {job.city}, {job.province || '-'}, {job.country || 'In Pakistan'}</p>
-                </div>
-                <div className="admin-job-actions">
-                  <button type="button" className="action-btn secondary" onClick={() => onEditRow(job)}>Edit</button>
-                  <button type="button" className="action-btn secondary" onClick={() => onToggleArchive(job)}>
-                    {job.isArchived ? 'Unarchive' : 'Archive'}
-                  </button>
-                  <button type="button" className="action-btn" onClick={() => onDeleteRow(job)}>Delete</button>
-                </div>
-              </article>
-            ))}
-          </div>
+
+        {!!liveJobs.length && (
+          <>
+            <div className="panel-head-row">
+              <h3 className="panel-title admin-subtitle">Live Jobs</h3>
+              <span>{liveJobs.length} live</span>
+            </div>
+            <div className="admin-job-list">
+              {liveJobs.map((job) => (
+                <article key={job.id} className="admin-job-item">
+                  <div>
+                    <h3>{job.title}</h3>
+                    <p>{job.organization} | {job.city}, {job.province || '-'}, {job.country || 'In Pakistan'}</p>
+                  </div>
+                  <div className="admin-job-actions">
+                    <button type="button" className="action-btn secondary" onClick={() => onEditRow(job)}>Edit</button>
+                    <button type="button" className="action-btn secondary" onClick={() => onToggleArchive(job)}>
+                      Archive
+                    </button>
+                    <button type="button" className="action-btn" onClick={() => onDeleteRow(job)}>Delete</button>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </>
+        )}
+
+        {!!archivedJobs.length && (
+          <>
+            <div className="panel-head-row admin-section-gap">
+              <h3 className="panel-title admin-subtitle">Archived Jobs</h3>
+              <span>{archivedJobs.length} archived</span>
+            </div>
+            <div className="admin-job-list">
+              {archivedJobs.map((job) => (
+                <article key={job.id} className="admin-job-item admin-job-item-archived">
+                  <div>
+                    <h3>{job.title}</h3>
+                    <p>{job.organization} | {job.city}, {job.province || '-'}, {job.country || 'In Pakistan'}</p>
+                  </div>
+                  <div className="admin-job-actions">
+                    <button type="button" className="action-btn secondary" onClick={() => onEditRow(job)}>Edit</button>
+                    <button type="button" className="action-btn secondary" onClick={() => onToggleArchive(job)}>
+                      Unarchive
+                    </button>
+                    <button type="button" className="action-btn" onClick={() => onDeleteRow(job)}>Delete</button>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </>
         )}
       </section>
     </main>
