@@ -1,3 +1,5 @@
+import { getAdminAccessToken } from './supabaseAuth'
+
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY
 const SUPABASE_POSTER_BUCKET = import.meta.env.VITE_SUPABASE_POSTER_BUCKET || 'job-posters'
@@ -29,6 +31,19 @@ function headers() {
   return {
     apikey: SUPABASE_ANON_KEY,
     Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+    'Content-Type': 'application/json'
+  }
+}
+
+function protectedHeaders() {
+  const accessToken = getAdminAccessToken()
+  if (!accessToken) {
+    throw new Error('Admin login required. Sign in to continue.')
+  }
+
+  return {
+    apikey: SUPABASE_ANON_KEY,
+    Authorization: `Bearer ${accessToken}`,
     'Content-Type': 'application/json'
   }
 }
@@ -170,8 +185,7 @@ async function uploadPosterImage(file, existingPath = '') {
     {
       method: 'POST',
       headers: {
-        apikey: SUPABASE_ANON_KEY,
-        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        ...protectedHeaders(),
         'Content-Type': file.type || 'application/octet-stream',
         'x-upsert': 'false'
       },
@@ -201,7 +215,7 @@ async function deletePosterImage(path) {
     `${SUPABASE_URL}/storage/v1/object/${SUPABASE_POSTER_BUCKET}`,
     {
       method: 'DELETE',
-      headers: headers(),
+      headers: protectedHeaders(),
       body: JSON.stringify([path])
     }
   )
@@ -276,7 +290,7 @@ async function createPublicJob(jobInput) {
     {
       method: 'POST',
       headers: {
-        ...headers(),
+        ...protectedHeaders(),
         Prefer: 'return=representation'
       },
       body: JSON.stringify(payload)
@@ -342,7 +356,7 @@ async function updatePublicJob(jobId, jobInput) {
     {
       method: 'PATCH',
       headers: {
-        ...headers(),
+        ...protectedHeaders(),
         Prefer: 'return=representation'
       },
       body: JSON.stringify(payload)
@@ -363,6 +377,17 @@ async function deletePublicJob(jobId) {
     const existingJobs = readLocalJobs()
     writeLocalJobs(existingJobs.filter((job) => job.id !== jobId))
     return true
+  }
+
+  const lookupResponse = await fetch(
+    `${SUPABASE_URL}/rest/v1/jobs_public?select=poster_path&id=eq.${encodeURIComponent(jobId)}&limit=1`,
+    { headers: protectedHeaders() }
+  )
+  if (lookupResponse.ok) {
+    const rows = await lookupResponse.json()
+    if (rows[0]?.poster_path) {
+      await deletePosterImage(rows[0].poster_path).catch(() => {})
+    }
   }
 
   const response = await fetch(
@@ -409,23 +434,12 @@ async function createContactMessage(contactInput) {
     message: contactInput.message
   }
 
-  const lookupResponse = await fetch(
-    `${SUPABASE_URL}/rest/v1/jobs_public?select=poster_path&id=eq.${encodeURIComponent(jobId)}&limit=1`,
-    { headers: headers() }
-  )
-  if (lookupResponse.ok) {
-    const rows = await lookupResponse.json()
-    if (rows[0]?.poster_path) {
-      await deletePosterImage(rows[0].poster_path).catch(() => {})
-    }
-  }
-
   const response = await fetch(
     `${SUPABASE_URL}/rest/v1/contact_messages`,
     {
       method: 'POST',
       headers: {
-        ...headers(),
+        ...protectedHeaders(),
         Prefer: 'return=representation'
       },
       body: JSON.stringify(payload)
@@ -462,7 +476,7 @@ async function fetchContactMessages() {
 
   const response = await fetch(
     `${SUPABASE_URL}/rest/v1/contact_messages?select=*&order=created_at.desc`,
-    { headers: headers() }
+    { headers: protectedHeaders() }
   )
 
   if (!response.ok) {
@@ -500,7 +514,7 @@ async function updateContactMessage(messageId, patchInput) {
     {
       method: 'PATCH',
       headers: {
-        ...headers(),
+        ...protectedHeaders(),
         Prefer: 'return=representation'
       },
       body: JSON.stringify(payload)
@@ -531,7 +545,7 @@ async function deleteContactMessage(messageId) {
     {
       method: 'DELETE',
       headers: {
-        ...headers(),
+        ...protectedHeaders(),
         Prefer: 'return=minimal'
       }
     }
@@ -563,7 +577,7 @@ async function fetchSubscribers() {
 
   const response = await fetch(
     `${SUPABASE_URL}/rest/v1/subscribers?select=*&order=created_at.desc`,
-    { headers: headers() }
+    { headers: protectedHeaders() }
   )
 
   if (!response.ok) {
@@ -608,24 +622,6 @@ async function createSubscriber(subscriberInput) {
     return localRow
   }
 
-  const existingResponse = await fetch(
-    `${SUPABASE_URL}/rest/v1/subscribers?select=*&email=eq.${encodeURIComponent(normalizedEmail)}&limit=1`,
-    { headers: headers() }
-  )
-
-  if (!existingResponse.ok) {
-    const message = await existingResponse.text()
-    throw new Error(message || `Failed to check subscriber: ${existingResponse.status}`)
-  }
-
-  const existingRows = await existingResponse.json()
-  if (existingRows.length > 0) {
-    return updateSubscriber(existingRows[0].id, {
-      isActive: true,
-      source: subscriberInput.source || existingRows[0].source || 'website'
-    })
-  }
-
   const payload = {
     email: normalizedEmail,
     is_active: true,
@@ -646,6 +642,9 @@ async function createSubscriber(subscriberInput) {
 
   if (!response.ok) {
     const message = await response.text()
+    if (message.toLowerCase().includes('duplicate') || message.toLowerCase().includes('unique')) {
+      throw new Error('This email is already subscribed.')
+    }
     throw new Error(message || `Failed to create subscriber: ${response.status}`)
   }
 
@@ -680,7 +679,7 @@ async function updateSubscriber(subscriberId, patchInput) {
     {
       method: 'PATCH',
       headers: {
-        ...headers(),
+        ...protectedHeaders(),
         Prefer: 'return=representation'
       },
       body: JSON.stringify(payload)
@@ -711,7 +710,7 @@ async function deleteSubscriber(subscriberId) {
     {
       method: 'DELETE',
       headers: {
-        ...headers(),
+        ...protectedHeaders(),
         Prefer: 'return=minimal'
       }
     }
@@ -720,6 +719,29 @@ async function deleteSubscriber(subscriberId) {
   if (!response.ok) {
     const message = await response.text()
     throw new Error(message || `Failed to delete subscriber: ${response.status}`)
+  }
+
+  return true
+}
+
+async function triggerJobAlert(job) {
+  if (!hasSupabaseConfig) return false
+  const accessToken = getAdminAccessToken()
+  if (!accessToken) return false
+
+  const response = await fetch(`${SUPABASE_URL}/functions/v1/send-job-alert`, {
+    method: 'POST',
+    headers: {
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${accessToken}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ job })
+  })
+
+  if (!response.ok) {
+    const message = await response.text()
+    throw new Error(message || `Failed to trigger job alert: ${response.status}`)
   }
 
   return true
@@ -740,5 +762,6 @@ export {
   fetchSubscribers,
   createSubscriber,
   updateSubscriber,
-  deleteSubscriber
+  deleteSubscriber,
+  triggerJobAlert
 }

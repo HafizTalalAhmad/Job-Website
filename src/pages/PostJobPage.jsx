@@ -2,7 +2,8 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Breadcrumbs from '../components/Breadcrumbs'
 import { useJobs } from '../context/JobsContext'
-import { deleteContactMessage, deleteSubscriber, fetchContactMessages, fetchSubscribers, updateContactMessage, updateSubscriber } from '../lib/jobsApi'
+import { deleteContactMessage, deleteSubscriber, fetchContactMessages, fetchSubscribers, triggerJobAlert, updateContactMessage, updateSubscriber } from '../lib/jobsApi'
+import { fetchCurrentAdmin, hasSupabaseAuthConfig, loginAdmin, logoutAdmin } from '../lib/supabaseAuth'
 
 const defaultCityRecords = [
   { name: 'Lahore', province: 'Punjab' },
@@ -89,8 +90,12 @@ function PostJobPage() {
   const [positionTitle, setPositionTitle] = useState('')
   const [positionCount, setPositionCount] = useState('')
   const [posterFile, setPosterFile] = useState(null)
+  const [adminEmail, setAdminEmail] = useState('')
+  const [adminPassword, setAdminPassword] = useState('')
   const [passcode, setPasscode] = useState('')
-  const [isAuthorized, setIsAuthorized] = useState(sessionStorage.getItem('admin_unlocked') === '1')
+  const [isAuthorized, setIsAuthorized] = useState(!hasSupabaseAuthConfig && sessionStorage.getItem('admin_unlocked') === '1')
+  const [isCheckingAuth, setIsCheckingAuth] = useState(hasSupabaseAuthConfig)
+  const [currentAdmin, setCurrentAdmin] = useState(null)
   const [done, setDone] = useState(false)
   const [lastAction, setLastAction] = useState('create')
   const [error, setError] = useState('')
@@ -222,6 +227,9 @@ function PostJobPage() {
         posterFile
       }
       const created = isEditMode ? await editJob(editJobId, payload) : await addJob(payload)
+      if (!isEditMode) {
+        triggerJobAlert(created).catch(() => {})
+      }
       setLastAction(isEditMode ? 'edit' : 'create')
       setDone(true)
       setForm(initialState)
@@ -372,8 +380,22 @@ function PostJobPage() {
     }
   }
 
-  const onUnlock = (event) => {
+  const onUnlock = async (event) => {
     event.preventDefault()
+    setError('')
+
+    if (hasSupabaseAuthConfig) {
+      try {
+        const session = await loginAdmin(adminEmail, adminPassword)
+        setCurrentAdmin(session.user || null)
+        setIsAuthorized(true)
+        setAdminPassword('')
+      } catch (loginError) {
+        setError(loginError.message || 'Invalid admin credentials.')
+      }
+      return
+    }
+
     if (!ADMIN_PASSCODE) {
       setError('Set VITE_ADMIN_PASSCODE in your .env file first.')
       return
@@ -389,7 +411,13 @@ function PostJobPage() {
 
   const onLock = () => {
     setIsAuthorized(false)
-    sessionStorage.removeItem('admin_unlocked')
+    setCurrentAdmin(null)
+    setAdminPassword('')
+    if (hasSupabaseAuthConfig) {
+      logoutAdmin()
+    } else {
+      sessionStorage.removeItem('admin_unlocked')
+    }
   }
 
   function jobsCount(list) {
@@ -470,10 +498,45 @@ function PostJobPage() {
   }
 
   useEffect(() => {
+    let mounted = true
+    if (!hasSupabaseAuthConfig) {
+      setIsCheckingAuth(false)
+      return undefined
+    }
+
+    fetchCurrentAdmin()
+      .then((user) => {
+        if (!mounted) return
+        setCurrentAdmin(user)
+        setIsAuthorized(Boolean(user))
+      })
+      .finally(() => {
+        if (!mounted) return
+        setIsCheckingAuth(false)
+      })
+
+    return () => {
+      mounted = false
+    }
+  }, [])
+
+  useEffect(() => {
     if (!isAuthorized) return
     loadMessages()
     loadSubscribers()
   }, [isAuthorized])
+
+  if (isCheckingAuth) {
+    return (
+      <main className="container page-block">
+        <Breadcrumbs />
+        <section className="panel">
+          <h1 className="panel-title">Admin Login</h1>
+          <p className="panel-intro">Checking admin session...</p>
+        </section>
+      </main>
+    )
+  }
 
   if (!isAuthorized) {
     return (
@@ -481,16 +544,42 @@ function PostJobPage() {
         <Breadcrumbs />
         <section className="panel">
           <h1 className="panel-title">Admin Login</h1>
-          <p className="panel-intro">Enter admin passcode to access job posting form.</p>
+          <p className="panel-intro">
+            {hasSupabaseAuthConfig
+              ? 'Sign in with your Supabase admin account to manage jobs, messages, and subscribers.'
+              : 'Enter admin passcode to access job posting form.'}
+          </p>
           <form className="contact-form" onSubmit={onUnlock}>
-            <input
-              type="password"
-              value={passcode}
-              onChange={(e) => setPasscode(e.target.value)}
-              placeholder="Admin Passcode"
-              required
-            />
-            <button type="submit" className="load-more-btn">Unlock Admin</button>
+            {hasSupabaseAuthConfig ? (
+              <>
+                <input
+                  type="email"
+                  value={adminEmail}
+                  onChange={(e) => setAdminEmail(e.target.value)}
+                  placeholder="Admin Email"
+                  required
+                />
+                <input
+                  type="password"
+                  value={adminPassword}
+                  onChange={(e) => setAdminPassword(e.target.value)}
+                  placeholder="Admin Password"
+                  required
+                />
+                <button type="submit" className="load-more-btn">Sign In</button>
+              </>
+            ) : (
+              <>
+                <input
+                  type="password"
+                  value={passcode}
+                  onChange={(e) => setPasscode(e.target.value)}
+                  placeholder="Admin Passcode"
+                  required
+                />
+                <button type="submit" className="load-more-btn">Unlock Admin</button>
+              </>
+            )}
           </form>
           {error && <p className="form-error">{error}</p>}
         </section>
@@ -504,7 +593,10 @@ function PostJobPage() {
       <section className="panel">
         <div className="panel-head-row">
           <h1 className="panel-title">Admin Dashboard</h1>
-          <button type="button" className="action-btn secondary" onClick={onLock}>Lock Admin</button>
+          <div className="admin-toolbar">
+            {currentAdmin?.email && <span className="panel-intro">Signed in as {currentAdmin.email}</span>}
+            <button type="button" className="action-btn secondary" onClick={onLock}>Lock Admin</button>
+          </div>
         </div>
         <div className="admin-stats-grid">
           <article className="admin-stat-card">

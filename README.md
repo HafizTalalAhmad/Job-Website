@@ -257,6 +257,175 @@ Admin page capabilities now include:
 
 Poster images now use Supabase Storage when configured. In local mode they fall back to browser data URLs.
 
+## Production-Safe Supabase Setup
+
+For production, do not keep admin protected by frontend passcode only. Use Supabase Auth plus RLS tied to an admin table.
+
+### 1. Create an admin user in Supabase Auth
+
+- Go to `Authentication -> Users`
+- Create a user manually, or sign up once and then keep that account as admin
+
+### 2. Create admin mapping table
+
+Run this SQL and replace the inserted UUID with the real Supabase Auth user id of your admin:
+
+```sql
+create table if not exists public.admin_users (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  created_at timestamptz not null default now()
+);
+
+alter table public.admin_users enable row level security;
+
+drop policy if exists "admins can read admin_users" on public.admin_users;
+
+create policy "admins can read admin_users"
+on public.admin_users
+for select
+to authenticated
+using (auth.uid() = user_id);
+
+-- Example only: replace with your actual auth user id
+-- insert into public.admin_users (user_id) values ('YOUR-AUTH-USER-ID');
+```
+
+### 3. Production-safe table/storage policies
+
+Use this policy model:
+
+```sql
+drop policy if exists "public insert jobs" on public.jobs_public;
+drop policy if exists "public update jobs" on public.jobs_public;
+drop policy if exists "public delete jobs" on public.jobs_public;
+drop policy if exists "public read contact messages" on public.contact_messages;
+drop policy if exists "public update contact messages" on public.contact_messages;
+drop policy if exists "public delete contact messages" on public.contact_messages;
+drop policy if exists "public read subscribers" on public.subscribers;
+drop policy if exists "public update subscribers" on public.subscribers;
+drop policy if exists "public delete subscribers" on public.subscribers;
+
+create policy "admins manage jobs"
+on public.jobs_public
+for all
+to authenticated
+using (exists (select 1 from public.admin_users where user_id = auth.uid()))
+with check (exists (select 1 from public.admin_users where user_id = auth.uid()));
+
+create policy "public read jobs"
+on public.jobs_public
+for select
+to anon, authenticated
+using (true);
+
+create policy "public insert contact messages"
+on public.contact_messages
+for insert
+to anon, authenticated
+with check (true);
+
+create policy "admins read contact messages"
+on public.contact_messages
+for select
+to authenticated
+using (exists (select 1 from public.admin_users where user_id = auth.uid()));
+
+create policy "admins update contact messages"
+on public.contact_messages
+for update
+to authenticated
+using (exists (select 1 from public.admin_users where user_id = auth.uid()))
+with check (exists (select 1 from public.admin_users where user_id = auth.uid()));
+
+create policy "admins delete contact messages"
+on public.contact_messages
+for delete
+to authenticated
+using (exists (select 1 from public.admin_users where user_id = auth.uid()));
+
+create policy "public insert subscribers"
+on public.subscribers
+for insert
+to anon, authenticated
+with check (true);
+
+create policy "admins read subscribers"
+on public.subscribers
+for select
+to authenticated
+using (exists (select 1 from public.admin_users where user_id = auth.uid()));
+
+create policy "admins update subscribers"
+on public.subscribers
+for update
+to authenticated
+using (exists (select 1 from public.admin_users where user_id = auth.uid()))
+with check (exists (select 1 from public.admin_users where user_id = auth.uid()));
+
+create policy "admins delete subscribers"
+on public.subscribers
+for delete
+to authenticated
+using (exists (select 1 from public.admin_users where user_id = auth.uid()));
+
+drop policy if exists "public upload posters" on storage.objects;
+drop policy if exists "public delete posters" on storage.objects;
+
+create policy "admins upload posters"
+on storage.objects
+for insert
+to authenticated
+with check (
+  bucket_id = 'job-posters' and
+  exists (select 1 from public.admin_users where user_id = auth.uid())
+);
+
+create policy "public read posters"
+on storage.objects
+for select
+to anon, authenticated
+using (bucket_id = 'job-posters');
+
+create policy "admins delete posters"
+on storage.objects
+for delete
+to authenticated
+using (
+  bucket_id = 'job-posters' and
+  exists (select 1 from public.admin_users where user_id = auth.uid())
+);
+```
+
+### 4. Admin login behavior
+
+When `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are configured, `/admin` now uses Supabase Auth email/password login.
+The old passcode is only used as a local fallback when Supabase Auth is not configured.
+
+### 5. Deploy the Edge Function for subscriber email alerts
+
+Function source:
+
+- `supabase/functions/send-job-alert/index.ts`
+
+Required function secrets:
+
+```bash
+SUPABASE_URL=...
+SUPABASE_SERVICE_ROLE_KEY=...
+RESEND_API_KEY=...
+RESEND_FROM_EMAIL=alerts@yourdomain.com
+```
+
+Deploy commands:
+
+```bash
+supabase functions deploy send-job-alert
+supabase secrets set SUPABASE_URL=...
+supabase secrets set SUPABASE_SERVICE_ROLE_KEY=...
+supabase secrets set RESEND_API_KEY=...
+supabase secrets set RESEND_FROM_EMAIL=...
+```
+
 ## Folder Structure
 
 ```text
