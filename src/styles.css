@@ -301,6 +301,7 @@ a:hover {
 }
 
 .home-guide-hero,
+.home-beginner-start,
 .home-quick-start,
 .home-helper-strip {
   margin-top: 10px;
@@ -318,6 +319,56 @@ a:hover {
   gap: 10px;
   flex-wrap: wrap;
   justify-content: flex-end;
+}
+
+.home-beginner-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.home-beginner-card {
+  display: block;
+  border: 1px solid #bcd0eb;
+  background: linear-gradient(180deg, #f9fcff 0%, #eef5ff 100%);
+  border-radius: 6px;
+  padding: 18px;
+  text-decoration: none;
+  box-shadow: 0 10px 20px rgba(31, 79, 151, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.home-beginner-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 24px rgba(31, 79, 151, 0.1);
+  border-color: #88aee3;
+}
+
+.home-beginner-card h3 {
+  margin: 0 0 10px;
+  color: #173f7d;
+  font-size: 24px;
+  line-height: 1.2;
+}
+
+.home-beginner-card p {
+  margin: 0 0 14px;
+  color: #4f6681;
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.home-beginner-card span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #0f6a31;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.home-beginner-card span::after {
+  content: '>';
 }
 
 .home-start-grid {
@@ -1811,6 +1862,7 @@ a:hover {
 :root[data-theme='dark'] .helper-step-card,
 :root[data-theme='dark'] .department-card,
 :root[data-theme='dark'] .department-pill,
+:root[data-theme='dark'] .home-beginner-card,
 :root[data-theme='dark'] .home-start-card,
 :root[data-theme='dark'] .home-highlight-card {
   background: #1a2738;
@@ -1820,6 +1872,7 @@ a:hover {
 :root[data-theme='dark'] .hero-stat-box strong,
 :root[data-theme='dark'] .department-card-head h3,
 :root[data-theme='dark'] .department-pill,
+:root[data-theme='dark'] .home-beginner-card h3,
 :root[data-theme='dark'] .home-start-card h3,
 :root[data-theme='dark'] .home-highlight-card strong,
 :root[data-theme='dark'] .panel-link {
@@ -1835,12 +1888,18 @@ a:hover {
 
 :root[data-theme='dark'] .helper-step-card p,
 :root[data-theme='dark'] .listing-helper-line,
+:root[data-theme='dark'] .home-beginner-card p,
 :root[data-theme='dark'] .home-start-card p {
   color: #b7c7d9;
 }
 
+:root[data-theme='dark'] .home-beginner-card span {
+  color: #9ae6b4;
+}
+
 :root[data-theme='dark'] .department-card:hover,
 :root[data-theme='dark'] .department-pill:hover,
+:root[data-theme='dark'] .home-beginner-card:hover,
 :root[data-theme='dark'] .home-start-card:hover {
   background: #223349;
 }
@@ -1950,6 +2009,7 @@ a:hover {
 @media (max-width: 980px) {
   .page-hero-panel,
   .home-guide-hero,
+  .home-beginner-grid,
   .helper-steps-grid,
   .home-start-grid,
   .home-explore-grid,

@@ -26,29 +26,46 @@ function HomePage() {
   const grouped = useMemo(() => groupJobs(pagedJobs, 'postDate'), [pagedJobs])
   const quickStartCards = [
     {
-      title: 'Jobs by Departments',
-      description: 'Start with the department you know, such as WAPDA, NADRA, FPSC, Railways, or Army.',
+      title: 'Departments',
+      description: 'Choose a department like WAPDA, NADRA, FPSC, Railways, or Army.',
       to: '/jobs/organization'
     },
     {
-      title: 'Jobs by Location',
-      description: 'Open jobs city-wise if you want Lahore, Karachi, Islamabad, Peshawar, or another city.',
+      title: 'Locations',
+      description: 'Find jobs city-wise if you want Lahore, Karachi, Islamabad, Peshawar, or another city.',
       to: '/jobs/location'
     },
     {
-      title: 'Jobs by Date',
-      description: 'Check jobs date-wise when you want the newest posts first.',
+      title: 'Latest by Date',
+      description: 'See jobs date-wise when you want the newest posts first.',
       to: '/jobs/date'
     },
     {
-      title: 'Jobs by Profession',
-      description: 'Choose a profession like teaching, banking, engineering, data entry, or administration.',
+      title: 'Profession',
+      description: 'Choose a field like teaching, banking, engineering, data entry, or administration.',
       to: '/jobs/profession'
     },
     {
-      title: 'Jobs by Newspaper',
+      title: 'Newspaper',
       description: 'Browse jobs published in Jang, Dawn, Express, The News, and other sources.',
       to: '/jobs/newspaper'
+    }
+  ]
+  const beginnerCards = [
+    {
+      title: 'I Know the Department',
+      description: 'Use this if you know the department name such as WAPDA, NADRA, Railways, Police, or Army.',
+      to: '/jobs/organization'
+    },
+    {
+      title: 'I Want Jobs in My City',
+      description: 'Use this if you want jobs in Lahore, Karachi, Islamabad, Rawalpindi, Peshawar, or another city.',
+      to: '/jobs/location'
+    },
+    {
+      title: 'Show Me Latest Jobs',
+      description: 'Use this if you simply want to see the newest jobs first without choosing a category.',
+      to: '/jobs/date'
     }
   ]
 
@@ -65,18 +82,12 @@ function HomePage() {
   return (
     <>
       <div className="container">
-        <section className="about-strip top-align-block">
-          <p>
-            <strong>About Us:</strong> Pakistan Jobs Hub is a public service style job portal that organizes newspaper and organization
-            job ads in a fast, readable format for job seekers across Pakistan.
-          </p>
-        </section>
         <section className="home-guide-hero panel">
           <div className="home-guide-copy">
             <span className="section-kicker">Start Here</span>
-            <h1 className="panel-title">Find Government Jobs in Pakistan</h1>
+            <h1 className="panel-title">Find Jobs in Pakistan in a Simple Way</h1>
             <p className="panel-intro">
-              If job websites feel confusing, start from what you already know: a department, city, date, profession, or newspaper.
+              If websites feel confusing, do not worry. Start from one simple choice below and we will guide you to the relevant jobs.
             </p>
           </div>
           <div className="home-guide-actions">
@@ -86,12 +97,27 @@ function HomePage() {
         </section>
         <LatestTicker jobs={jobs} />
         <HeroSlider />
+        <section className="home-beginner-start panel">
+          <div className="panel-head-row">
+            <h2 className="panel-title">Choose the Easiest Way to Start</h2>
+            <span>Best for first-time visitors</span>
+          </div>
+          <div className="home-beginner-grid">
+            {beginnerCards.map((card) => (
+              <Link key={card.title} to={card.to} className="home-beginner-card">
+                <h3>{card.title}</h3>
+                <p>{card.description}</p>
+                <span>Open</span>
+              </Link>
+            ))}
+          </div>
+        </section>
         <section className="home-helper-strip panel">
           <div className="helper-steps-grid">
             <article className="helper-step-card">
               <span>1</span>
-              <h3>Choose a Section</h3>
-              <p>Select departments, city, date, profession, or newspaper to keep things simple.</p>
+              <h3>Choose One Option</h3>
+              <p>Select department, city, date, profession, or newspaper to keep things simple.</p>
             </article>
             <article className="helper-step-card">
               <span>2</span>
@@ -100,15 +126,15 @@ function HomePage() {
             </article>
             <article className="helper-step-card">
               <span>3</span>
-              <h3>Click Blue Headline</h3>
+              <h3>Click the Blue Heading</h3>
               <p>Open the full job page to see poster, deadline, application method, and details.</p>
             </article>
           </div>
         </section>
         <section className="home-quick-start panel">
           <div className="panel-head-row">
-            <h2 className="panel-title">Quick Start</h2>
-            <span>Choose one simple way to begin</span>
+            <h2 className="panel-title">Other Ways to Browse</h2>
+            <span>More options</span>
           </div>
           <div className="home-start-grid">
             {quickStartCards.map((card) => (
@@ -118,6 +144,12 @@ function HomePage() {
               </Link>
             ))}
           </div>
+        </section>
+        <section className="about-strip top-align-block">
+          <p>
+            <strong>About Us:</strong> Pakistan Jobs Hub is a public service style job portal that organizes newspaper and organization
+            job ads in a fast, readable format for job seekers across Pakistan.
+          </p>
         </section>
         <section className="home-explore-grid">
           <section className="panel">
