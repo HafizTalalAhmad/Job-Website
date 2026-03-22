@@ -69,6 +69,9 @@ function ListingPage({ mode, title, description }) {
         <section className="panel">
           <h1 className="panel-title">{title}</h1>
           <p className="panel-intro">{description}</p>
+          <p className="panel-intro listing-helper-line">
+            Tip: use the filters below if needed, then click any blue job headline to open full details.
+          </p>
         </section>
 
         {mode !== 'government' && (
