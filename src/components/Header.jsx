@@ -40,8 +40,8 @@ function Header({ theme, onToggleTheme }) {
               aria-label={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
             >
               <span className="theme-toggle-track">
-                <span className={`theme-toggle-chip${theme === 'light' ? ' active' : ''}`}>White</span>
-                <span className={`theme-toggle-chip${theme === 'dark' ? ' active' : ''}`}>Black</span>
+                <span className={`theme-toggle-chip${theme === 'light' ? ' active' : ''}`}>Light</span>
+                <span className={`theme-toggle-chip${theme === 'dark' ? ' active' : ''}`}>Dark</span>
               </span>
             </button>
           </div>

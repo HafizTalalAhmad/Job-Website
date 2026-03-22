@@ -17,6 +17,7 @@ import NotFoundPage from './pages/NotFoundPage'
 function AppContent() {
   const location = useLocation()
   const isJobDetailPage = location.pathname.startsWith('/job/')
+  const isContactPage = location.pathname === '/contact'
   const [theme, setTheme] = useState(() => localStorage.getItem('jobs_theme') || 'light')
   const [showThemePrompt, setShowThemePrompt] = useState(
     () => localStorage.getItem('jobs_theme_prompt_seen') !== '1'
@@ -99,7 +100,7 @@ function AppContent() {
             </section>
             <Footer />
           </div>
-          <aside className="side-ad right">Google Ad Space (Right)</aside>
+          {!isContactPage && <aside className="side-ad right">Google Ad Space (Right)</aside>}
         </div>
       </div>
     </>
