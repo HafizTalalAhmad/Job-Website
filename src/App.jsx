@@ -16,6 +16,7 @@ import NotFoundPage from './pages/NotFoundPage'
 
 function AppContent() {
   const location = useLocation()
+  const isHomePage = location.pathname === '/'
   const isJobDetailPage = location.pathname.startsWith('/job/')
   const [theme, setTheme] = useState(() => localStorage.getItem('jobs_theme') || 'light')
   const [showThemePrompt, setShowThemePrompt] = useState(
@@ -51,7 +52,7 @@ function AppContent() {
                 </div>
               </section>
             )}
-            {!isJobDetailPage && (
+            {isHomePage && !isJobDetailPage && (
               <>
                 <section className="about-strip top-align-block">
                   <p>
