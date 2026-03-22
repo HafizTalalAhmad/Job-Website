@@ -13,6 +13,8 @@ import ContactPage from './pages/ContactPage'
 import BlogPage from './pages/BlogPage'
 import PostJobPage from './pages/PostJobPage'
 import NotFoundPage from './pages/NotFoundPage'
+import DepartmentsPage from './pages/DepartmentsPage'
+import DepartmentJobsPage from './pages/DepartmentJobsPage'
 
 function AppContent() {
   const [theme, setTheme] = useState(() => localStorage.getItem('jobs_theme') || 'light')
@@ -55,10 +57,8 @@ function AppContent() {
                 path="/jobs/industry"
                 element={<ListingPage mode="industry" title="Jobs by Industry" description="Find opportunities sector by sector." />}
               />
-              <Route
-                path="/jobs/organization"
-                element={<ListingPage mode="organization" title="Jobs by Organization" description="Track hiring by department and company." />}
-              />
+              <Route path="/jobs/organization" element={<DepartmentsPage />} />
+              <Route path="/jobs/departments/:slug" element={<DepartmentJobsPage />} />
               <Route
                 path="/jobs/newspaper"
                 element={<ListingPage mode="newspaper" title="Jobs by Newspaper" description="Browse jobs from Jang, Dawn, Express and other newspapers." />}

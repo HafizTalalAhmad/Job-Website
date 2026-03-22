@@ -387,6 +387,87 @@ a:hover {
   padding: 0;
 }
 
+.department-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.department-card {
+  display: block;
+  border: 1px solid #c9d6e6;
+  background: #f7fbff;
+  border-radius: 4px;
+  padding: 14px;
+  text-decoration: none;
+  transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+}
+
+.department-card:hover {
+  border-color: #8db1e3;
+  background: #f0f7ff;
+  transform: translateY(-1px);
+}
+
+.department-card-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.department-card-head h3 {
+  margin: 0;
+  color: #1f4f97;
+  font-size: 18px;
+}
+
+.department-card-head span {
+  background: #eef6e7;
+  color: #0f6a31;
+  border: 1px solid #cfe4b6;
+  border-radius: 999px;
+  padding: 4px 9px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.department-card p {
+  margin: 0;
+  color: #486078;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.department-directory-panel {
+  margin-top: 10px;
+}
+
+.department-inline-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.department-pill {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #c9d6e6;
+  background: #f7fbff;
+  border-radius: 999px;
+  padding: 8px 12px;
+  color: #1f4f97;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.department-pill:hover {
+  background: #edf5ff;
+}
+
 .panel,
 .widget,
 .job-detail,
@@ -1476,6 +1557,26 @@ a:hover {
   color: #111827;
 }
 
+:root[data-theme='dark'] .department-card,
+:root[data-theme='dark'] .department-pill {
+  background: #1a2738;
+  border-color: #334a63;
+}
+
+:root[data-theme='dark'] .department-card-head h3,
+:root[data-theme='dark'] .department-pill {
+  color: #9ec5ff;
+}
+
+:root[data-theme='dark'] .department-card p {
+  color: #cbd5e1;
+}
+
+:root[data-theme='dark'] .department-card:hover,
+:root[data-theme='dark'] .department-pill:hover {
+  background: #223349;
+}
+
 :root[data-theme='dark'] .contact-right h3 {
   color: #93c5fd;
 }
@@ -1558,6 +1659,10 @@ a:hover {
   .layout,
   .hero-inner,
   .detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .department-grid {
     grid-template-columns: 1fr;
   }
 
