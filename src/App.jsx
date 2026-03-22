@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { HashRouter, Route, Routes } from 'react-router-dom'
+import { HashRouter, Route, Routes, useLocation } from 'react-router-dom'
 import Header from './components/Header'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
@@ -20,11 +20,16 @@ import TaxonomyJobsPage from './pages/TaxonomyJobsPage'
 
 function AppContent() {
   const [theme, setTheme] = useState(() => localStorage.getItem('jobs_theme') || 'light')
+  const location = useLocation()
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
     localStorage.setItem('jobs_theme', theme)
   }, [theme])
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [location.pathname, location.search])
 
   const onToggleTheme = () => {
     setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))
