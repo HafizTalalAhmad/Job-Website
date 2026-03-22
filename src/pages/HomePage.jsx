@@ -41,49 +41,46 @@ function HomePage() {
         <HeroSlider />
       </div>
 
-      <main className="container home-content-with-ad">
-        <div className="layout">
-          <section className="content">
-            <section className="panel">
-              <div className="panel-head-row">
-                <h2 className="panel-title">Latest Job Bulletin</h2>
-                <span>{filtered.length} jobs found</span>
+      <main className="container layout">
+        <section className="content">
+          <section className="panel">
+            <div className="panel-head-row">
+              <h2 className="panel-title">Latest Job Bulletin</h2>
+              <span>{filtered.length} jobs found</span>
+            </div>
+            <JobGroupByDate grouped={grouped} />
+            <div className="pagination-wrap">
+              <div className="pagination">
+                <button
+                  className="page-btn arrow-btn"
+                  onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+                  disabled={currentPage === 1}
+                >
+                  {'<<'}
+                </button>
+                {Array.from({ length: totalPages }, (_, index) => {
+                  const page = index + 1
+                  return (
+                    <button
+                      key={page}
+                      className={`page-btn${currentPage === page ? ' active' : ''}`}
+                      onClick={() => setCurrentPage(page)}
+                    >
+                      {page}
+                    </button>
+                  )
+                })}
+                <button
+                  className="page-btn arrow-btn"
+                  onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+                  disabled={currentPage === totalPages}
+                >
+                  {'>>'}
+                </button>
               </div>
-              <JobGroupByDate grouped={grouped} />
-              <div className="pagination-wrap">
-                <div className="pagination">
-                  <button
-                    className="page-btn arrow-btn"
-                    onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
-                    disabled={currentPage === 1}
-                  >
-                    {'<<'}
-                  </button>
-                  {Array.from({ length: totalPages }, (_, index) => {
-                    const page = index + 1
-                    return (
-                      <button
-                        key={page}
-                        className={`page-btn${currentPage === page ? ' active' : ''}`}
-                        onClick={() => setCurrentPage(page)}
-                      >
-                        {page}
-                      </button>
-                    )
-                  })}
-                  <button
-                    className="page-btn arrow-btn"
-                    onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
-                    disabled={currentPage === totalPages}
-                  >
-                    {'>>'}
-                  </button>
-                </div>
-              </div>
-            </section>
+            </div>
           </section>
-        </div>
-        <aside className="side-ad home-side-ad">Google Ad Space (Right)</aside>
+        </section>
       </main>
     </>
   )
