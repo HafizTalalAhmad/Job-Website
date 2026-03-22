@@ -124,11 +124,6 @@ function JobDetailPage() {
         </p>
       </section>
 
-      <section className="panel bottom-ad-panel">
-        <h3>Advertisements</h3>
-        <div className="bottom-ad-box">Advertisement Area</div>
-      </section>
-
       <section className="panel related-panel">
         <h2 className="panel-title">Related Jobs</h2>
         <ul className="related-list">

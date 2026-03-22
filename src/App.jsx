@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { HashRouter, Route, Routes, useLocation } from 'react-router-dom'
+import { HashRouter, Route, Routes } from 'react-router-dom'
 import Header from './components/Header'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
@@ -15,14 +15,7 @@ import PostJobPage from './pages/PostJobPage'
 import NotFoundPage from './pages/NotFoundPage'
 
 function AppContent() {
-  const location = useLocation()
-  const isHomePage = location.pathname === '/'
-  const isJobDetailPage = location.pathname.startsWith('/job/')
-  const isContactPage = location.pathname === '/contact'
   const [theme, setTheme] = useState(() => localStorage.getItem('jobs_theme') || 'light')
-  const [showThemePrompt, setShowThemePrompt] = useState(
-    () => localStorage.getItem('jobs_theme_prompt_seen') !== '1'
-  )
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
@@ -33,26 +26,13 @@ function AppContent() {
     setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))
   }
 
-  const onDismissThemePrompt = () => {
-    setShowThemePrompt(false)
-    localStorage.setItem('jobs_theme_prompt_seen', '1')
-  }
-
   return (
     <>
       <Header theme={theme} onToggleTheme={onToggleTheme} />
       <Navbar />
       <div className="page-shell">
-        <div className={`with-side-ads${isHomePage ? ' home-ad-offset' : ''}`}>
+        <div className="with-side-ads">
           <div className="route-zone">
-            {showThemePrompt && (
-              <section className="theme-prompt top-align-block">
-                <p>Tip: Use the moon button next to the Search bar in the header to turn on Dark Mode.</p>
-                <div className="theme-prompt-actions">
-                  <button type="button" className="action-btn secondary" onClick={onDismissThemePrompt}>Got It</button>
-                </div>
-              </section>
-            )}
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route
@@ -101,7 +81,6 @@ function AppContent() {
             </section>
             <Footer />
           </div>
-          {!isContactPage && <aside className="side-ad right">Google Ad Space (Right)</aside>}
         </div>
       </div>
     </>
