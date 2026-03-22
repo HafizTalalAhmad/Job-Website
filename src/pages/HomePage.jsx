@@ -86,20 +86,6 @@ function HomePage() {
         </section>
         <LatestTicker jobs={jobs} />
         <HeroSlider />
-        <section className="home-quick-start panel">
-          <div className="panel-head-row">
-            <h2 className="panel-title">Quick Start</h2>
-            <span>Choose one simple way to begin</span>
-          </div>
-          <div className="home-start-grid">
-            {quickStartCards.map((card) => (
-              <Link key={card.title} to={card.to} className="home-start-card">
-                <h3>{card.title}</h3>
-                <p>{card.description}</p>
-              </Link>
-            ))}
-          </div>
-        </section>
         <section className="home-helper-strip panel">
           <div className="helper-steps-grid">
             <article className="helper-step-card">
@@ -117,6 +103,20 @@ function HomePage() {
               <h3>Click Blue Headline</h3>
               <p>Open the full job page to see poster, deadline, application method, and details.</p>
             </article>
+          </div>
+        </section>
+        <section className="home-quick-start panel">
+          <div className="panel-head-row">
+            <h2 className="panel-title">Quick Start</h2>
+            <span>Choose one simple way to begin</span>
+          </div>
+          <div className="home-start-grid">
+            {quickStartCards.map((card) => (
+              <Link key={card.title} to={card.to} className="home-start-card">
+                <h3>{card.title}</h3>
+                <p>{card.description}</p>
+              </Link>
+            ))}
           </div>
         </section>
         <section className="home-explore-grid">
