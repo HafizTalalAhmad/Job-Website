@@ -16,6 +16,7 @@ import NotFoundPage from './pages/NotFoundPage'
 
 function AppContent() {
   const location = useLocation()
+  const isHomePage = location.pathname === '/'
   const isJobDetailPage = location.pathname.startsWith('/job/')
   const isContactPage = location.pathname === '/contact'
   const [theme, setTheme] = useState(() => localStorage.getItem('jobs_theme') || 'light')
@@ -42,7 +43,7 @@ function AppContent() {
       <Header theme={theme} onToggleTheme={onToggleTheme} />
       <Navbar />
       <div className="page-shell">
-        <div className="with-side-ads">
+        <div className={`with-side-ads${isHomePage ? ' home-ad-offset' : ''}`}>
           <div className="route-zone">
             {showThemePrompt && (
               <section className="theme-prompt top-align-block">

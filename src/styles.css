@@ -285,6 +285,11 @@ a:hover {
   margin-top: 10px;
 }
 
+.with-side-ads.home-ad-offset .side-ad.right {
+  top: 405px;
+  margin-top: 0;
+}
+
 .ticker {
   margin-top: 10px;
   background: #fff8db;
