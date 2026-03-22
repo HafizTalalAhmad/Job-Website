@@ -364,11 +364,11 @@ export const jobs = [
 export const navItems = [
   { to: '/', label: 'Home' },
   { to: '/jobs/government', label: 'Government Jobs' },
+  { to: '/jobs/organization', label: 'Jobs by Departments' },
   { to: '/jobs/date', label: 'Jobs by Date' },
   { to: '/jobs/location', label: 'Jobs by Location' },
   { to: '/jobs/profession', label: 'Jobs by Profession' },
   { to: '/jobs/industry', label: 'Jobs by Industry' },
-  { to: '/jobs/organization', label: 'Jobs by Organization' },
   { to: '/jobs/newspaper', label: 'Jobs by Newspaper' },
   { to: '/archives', label: 'Archives' },
   { to: '/blog', label: 'Blog' },
