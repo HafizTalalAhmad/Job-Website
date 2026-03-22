@@ -108,7 +108,12 @@ function DepartmentsPage() {
             {departments.map((department) => (
               <Link key={department.slug} to={`/jobs/departments/${department.slug}`} className="department-card">
                 <div className="department-card-head">
-                  <h3>{department.name}</h3>
+                  <div className="department-card-title-wrap">
+                    <h3>{department.name}</h3>
+                    <span className={`department-scope-badge scope-${department.scope.toLowerCase().replace(/\s+/g, '-')}`}>
+                      {department.scope}
+                    </span>
+                  </div>
                   <span>{department.jobsCount} job{department.jobsCount === 1 ? '' : 's'}</span>
                 </div>
                 <p>{department.description}</p>

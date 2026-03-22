@@ -5,6 +5,55 @@ const slugify = (value) =>
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
 
+const inferDepartmentScope = (department) => {
+  const haystack = `${department.name} ${(department.aliases || []).join(' ')}`.toLowerCase()
+
+  if (
+    haystack.includes('army') ||
+    haystack.includes('ghq') ||
+    haystack.includes('ispr') ||
+    haystack.includes('paf') ||
+    haystack.includes('air force') ||
+    haystack.includes('navy') ||
+    haystack.includes('fwo') ||
+    haystack.includes('nlc') ||
+    haystack.includes('pof') ||
+    haystack.includes('hit') ||
+    haystack.includes('pac') ||
+    haystack.includes('aps') ||
+    haystack.includes('defence housing authority')
+  ) {
+    return 'Defence'
+  }
+
+  if (
+    haystack.includes('punjab') ||
+    haystack.includes('sindh') ||
+    haystack.includes('khyber pakhtunkhwa') ||
+    haystack.includes('balochistan')
+  ) {
+    return 'Provincial'
+  }
+
+  if (
+    haystack.includes('bank') ||
+    haystack.includes('wapda') ||
+    haystack.includes('railways') ||
+    haystack.includes('pso') ||
+    haystack.includes('ogdcl') ||
+    haystack.includes('sngpl') ||
+    haystack.includes('ssgc') ||
+    haystack.includes('ntdc') ||
+    haystack.includes('tourism development corporation') ||
+    haystack.includes('civil aviation') ||
+    haystack.includes('airport authority')
+  ) {
+    return 'Public Sector'
+  }
+
+  return 'Federal'
+}
+
 const departmentSeed = [
   {
     name: 'WAPDA',
@@ -463,7 +512,8 @@ export const departmentDirectory = [...new Map(
     department.name,
     {
       ...department,
-      slug: slugify(department.name)
+      slug: slugify(department.name),
+      scope: inferDepartmentScope(department)
     }
   ])
 ).values()]
