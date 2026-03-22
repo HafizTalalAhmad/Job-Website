@@ -43,7 +43,7 @@ function AppContent() {
       <Header theme={theme} onToggleTheme={onToggleTheme} />
       <Navbar />
       <div className="page-shell">
-        <div className={`with-side-ads${isHomePage ? ' home-ad-offset' : ''}`}>
+        <div className="with-side-ads">
           <div className="route-zone">
             {showThemePrompt && (
               <section className="theme-prompt top-align-block">
@@ -101,7 +101,7 @@ function AppContent() {
             </section>
             <Footer />
           </div>
-          {!isContactPage && <aside className="side-ad right">Google Ad Space (Right)</aside>}
+          {!isContactPage && !isHomePage && <aside className="side-ad right">Google Ad Space (Right)</aside>}
         </div>
       </div>
     </>
