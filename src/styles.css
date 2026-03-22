@@ -1516,6 +1516,39 @@ a:hover {
   color: #111827;
 }
 
+:root[data-theme='dark'] .contact-right h3 {
+  color: #93c5fd;
+}
+
+:root[data-theme='dark'] .contact-right h4 {
+  color: #e2e8f0;
+}
+
+:root[data-theme='dark'] .contact-right p {
+  color: #c7d3e3;
+}
+
+:root[data-theme='dark'] .contact-subscribe {
+  border-top-color: #4b5d75;
+}
+
+:root[data-theme='dark'] .contact-subscribe input {
+  border-color: #46607c;
+  background: #122033;
+  color: #f8fafc;
+}
+
+:root[data-theme='dark'] .contact-subscribe input::placeholder {
+  color: #8fa4bf;
+}
+
+:root[data-theme='dark'] .contact-subscribe .load-more-btn,
+:root[data-theme='dark'] .contact-subscribe button {
+  background: #1f8a4d;
+  border-color: #1f8a4d;
+  color: #ffffff;
+}
+
 :root[data-theme='dark'] .legacy-bullets li,
 :root[data-theme='dark'] .legacy-bullets ul {
   color: #e5edf8;
