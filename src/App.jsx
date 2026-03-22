@@ -15,6 +15,8 @@ import PostJobPage from './pages/PostJobPage'
 import NotFoundPage from './pages/NotFoundPage'
 import DepartmentsPage from './pages/DepartmentsPage'
 import DepartmentJobsPage from './pages/DepartmentJobsPage'
+import TaxonomyDirectoryPage from './pages/TaxonomyDirectoryPage'
+import TaxonomyJobsPage from './pages/TaxonomyJobsPage'
 
 function AppContent() {
   const [theme, setTheme] = useState(() => localStorage.getItem('jobs_theme') || 'light')
@@ -41,28 +43,18 @@ function AppContent() {
                 path="/jobs/government"
                 element={<ListingPage mode="government" title="Government Jobs" description="Latest government jobs across Pakistan." />}
               />
-              <Route
-                path="/jobs/date"
-                element={<ListingPage mode="date" title="Jobs by Date" description="Browse job posts organized by posting date." />}
-              />
-              <Route
-                path="/jobs/location"
-                element={<ListingPage mode="location" title="Jobs by Location" description="Explore jobs city-wise and region-wise." />}
-              />
-              <Route
-                path="/jobs/profession"
-                element={<ListingPage mode="profession" title="Jobs by Profession" description="Scan roles grouped by profession/category." />}
-              />
-              <Route
-                path="/jobs/industry"
-                element={<ListingPage mode="industry" title="Jobs by Industry" description="Find opportunities sector by sector." />}
-              />
+              <Route path="/jobs/date" element={<TaxonomyDirectoryPage mode="date" />} />
+              <Route path="/jobs/date/:value" element={<TaxonomyJobsPage mode="date" />} />
+              <Route path="/jobs/location" element={<TaxonomyDirectoryPage mode="location" />} />
+              <Route path="/jobs/location/:value" element={<TaxonomyJobsPage mode="location" />} />
+              <Route path="/jobs/profession" element={<TaxonomyDirectoryPage mode="profession" />} />
+              <Route path="/jobs/profession/:value" element={<TaxonomyJobsPage mode="profession" />} />
+              <Route path="/jobs/industry" element={<TaxonomyDirectoryPage mode="industry" />} />
+              <Route path="/jobs/industry/:value" element={<TaxonomyJobsPage mode="industry" />} />
               <Route path="/jobs/organization" element={<DepartmentsPage />} />
               <Route path="/jobs/departments/:slug" element={<DepartmentJobsPage />} />
-              <Route
-                path="/jobs/newspaper"
-                element={<ListingPage mode="newspaper" title="Jobs by Newspaper" description="Browse jobs from Jang, Dawn, Express and other newspapers." />}
-              />
+              <Route path="/jobs/newspaper" element={<TaxonomyDirectoryPage mode="newspaper" />} />
+              <Route path="/jobs/newspaper/:value" element={<TaxonomyJobsPage mode="newspaper" />} />
               <Route path="/job/:id" element={<JobDetailPage />} />
               <Route path="/admin" element={<PostJobPage />} />
               <Route path="/archives" element={<ArchivesPage />} />
