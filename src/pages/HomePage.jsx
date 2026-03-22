@@ -31,6 +31,12 @@ function HomePage() {
   return (
     <>
       <div className="container">
+        <section className="about-strip top-align-block">
+          <p>
+            <strong>About Us:</strong> Pakistan Jobs Hub is a public service style job portal that organizes newspaper and organization
+            job ads in a fast, readable format for job seekers across Pakistan.
+          </p>
+        </section>
         <LatestTicker jobs={jobs} />
         <HeroSlider />
       </div>

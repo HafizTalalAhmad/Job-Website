@@ -16,7 +16,6 @@ import NotFoundPage from './pages/NotFoundPage'
 
 function AppContent() {
   const location = useLocation()
-  const isHomePage = location.pathname === '/'
   const isJobDetailPage = location.pathname.startsWith('/job/')
   const [theme, setTheme] = useState(() => localStorage.getItem('jobs_theme') || 'light')
   const [showThemePrompt, setShowThemePrompt] = useState(
@@ -51,16 +50,6 @@ function AppContent() {
                   <button type="button" className="action-btn secondary" onClick={onDismissThemePrompt}>Got It</button>
                 </div>
               </section>
-            )}
-            {isHomePage && !isJobDetailPage && (
-              <>
-                <section className="about-strip top-align-block">
-                  <p>
-                    <strong>About Us:</strong> Pakistan Jobs Hub is a public service style job portal that organizes newspaper and organization
-                    job ads in a fast, readable format for job seekers across Pakistan.
-                  </p>
-                </section>
-              </>
             )}
             <Routes>
               <Route path="/" element={<HomePage />} />
