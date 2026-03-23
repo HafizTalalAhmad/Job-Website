@@ -2024,9 +2024,10 @@ a:hover {
     radial-gradient(circle at top left, rgba(39, 86, 140, 0.18), transparent 28%),
     linear-gradient(180deg, #0d1d31 0%, #101b2c 100%);
   margin-top: 14px;
-  width: 100vw;
+  width: auto;
   margin-left: calc(50% - 50vw);
   margin-right: calc(50% - 50vw);
+  overflow-x: clip;
 }
 
 .disclaimer-strip {
@@ -2034,9 +2035,10 @@ a:hover {
   border: 1px solid #b9b9b9;
   background: #e9e9e9;
   padding: 10px 12px;
-  width: 100vw;
+  width: auto;
   margin-left: calc(50% - 50vw);
   margin-right: calc(50% - 50vw);
+  overflow-x: clip;
 }
 
 .disclaimer-strip p {
