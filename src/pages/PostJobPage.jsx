@@ -1572,23 +1572,22 @@ function PostJobPage() {
           Type, and Type of Job. These fields power the pages for Departments, Location, Profession, Industry,
           Newspaper, and Date.
         </p>
-        <p className="admin-form-note">
-          For government jobs, choose a department from the list below. If a department is missing, add it once and it
-          will remain available in this admin form for future job posts.
-        </p>
         {!hasSupabaseConfig && (
           <p className="panel-intro">
             Local mode is active. Jobs will be saved in this browser only. Add Supabase env values for shared/public database storage.
           </p>
         )}
 
-        <section className="admin-management-block">
-          <div className="panel-head-row">
-            <h2 className="panel-title admin-subtitle">Manage Lists</h2>
+        <section className="admin-management-block admin-management-card">
+          <div className="admin-management-head">
+            <div>
+              <h2 className="panel-title admin-subtitle">Manage Lists</h2>
+              <p className="admin-management-copy">
+                Keep departments, companies, categories, industries, sources, cities, and provinces organized in one place.
+                If a list item is already used in posted jobs, it can be renamed but not deleted.
+              </p>
+            </div>
           </div>
-          <p className="admin-form-note">
-            Open one popup to manage departments, companies, categories, industries, sources, cities, and provinces. Used items can be renamed but not deleted.
-          </p>
           <div className="admin-management-actions">
             <button type="button" className="action-btn secondary" onClick={() => openManagementModal('department')}>
               Departments
@@ -1610,24 +1609,6 @@ function PostJobPage() {
             </button>
             <button type="button" className="action-btn secondary" onClick={() => openManagementModal('province')}>
               Provinces
-            </button>
-          </div>
-        </section>
-
-        <section className="admin-management-block">
-          <div className="panel-head-row">
-            <h2 className="panel-title admin-subtitle">Manage Locations</h2>
-          </div>
-          <p className="admin-form-note">
-            Open a popup to add, rename, or remove cities and provinces. If a city or province is already used in posted jobs,
-            it can be renamed but not deleted.
-          </p>
-          <div className="admin-management-actions">
-            <button type="button" className="action-btn secondary" onClick={() => openManagementModal('city')}>
-              Manage Cities
-            </button>
-            <button type="button" className="action-btn secondary" onClick={() => openManagementModal('province')}>
-              Manage Provinces
             </button>
           </div>
         </section>
