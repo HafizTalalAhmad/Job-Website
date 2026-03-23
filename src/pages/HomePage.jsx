@@ -27,19 +27,19 @@ function HomePage() {
 
   const starterCards = [
     {
+      title: 'All Jobs',
+      description: 'See all jobs in one place.',
+      to: '/jobs/all'
+    },
+    {
       title: 'Latest Government Jobs',
       description: 'Open the newest government jobs first.',
       to: '/jobs/government'
     },
     {
-      title: 'Browse Departments',
-      description: 'Choose this if you know the department name.',
-      to: '/jobs/organization'
-    },
-    {
-      title: 'Jobs in My City',
-      description: 'Choose this if you want jobs in your city.',
-      to: '/jobs/location'
+      title: 'Private Jobs',
+      description: 'Open the newest private jobs first.',
+      to: '/jobs/private'
     }
   ]
 

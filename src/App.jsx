@@ -49,6 +49,14 @@ function AppContent() {
                 path="/jobs/government"
                 element={<ListingPage mode="government" title="Government Jobs" description="Latest government jobs across Pakistan." />}
               />
+              <Route
+                path="/jobs/private"
+                element={<ListingPage mode="private" title="Private Jobs" description="Latest private jobs across Pakistan." />}
+              />
+              <Route
+                path="/jobs/all"
+                element={<ListingPage mode="all" title="All Jobs" description="All latest jobs across Pakistan in one place." />}
+              />
               <Route path="/jobs/date" element={<TaxonomyDirectoryPage mode="date" />} />
               <Route path="/jobs/date/:value" element={<TaxonomyJobsPage mode="date" />} />
               <Route path="/jobs/location" element={<TaxonomyDirectoryPage mode="location" />} />

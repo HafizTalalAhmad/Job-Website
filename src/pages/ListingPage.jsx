@@ -38,7 +38,12 @@ function ListingPage({ mode, title, description }) {
   )
 
   const filtered = useMemo(() => {
-    const filteredBase = mode === 'government' ? jobs.filter((job) => job.type === 'government') : jobs
+    const filteredBase =
+      mode === 'government'
+        ? jobs.filter((job) => job.type === 'government')
+        : mode === 'private'
+          ? jobs.filter((job) => job.type === 'private')
+          : jobs
     const baseFiltersWithQuery = { ...filters, keyword: query || filters.keyword }
     const base = sortJobs(applyFilters(filteredBase, baseFiltersWithQuery), sortBy)
 
@@ -74,7 +79,7 @@ function ListingPage({ mode, title, description }) {
           </p>
         </section>
 
-        {mode !== 'government' && (
+        {mode !== 'government' && mode !== 'private' && (
           <FilterPanel
             mode={mode}
             filters={filters}
