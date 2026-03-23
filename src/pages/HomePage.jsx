@@ -43,34 +43,6 @@ function HomePage() {
     }
   ]
 
-  const quickStartCards = [
-    {
-      title: 'Departments',
-      description: 'Search department-wise.',
-      to: '/jobs/organization'
-    },
-    {
-      title: 'Locations',
-      description: 'Search city-wise.',
-      to: '/jobs/location'
-    },
-    {
-      title: 'Latest by Date',
-      description: 'See the newest posts first.',
-      to: '/jobs/date'
-    },
-    {
-      title: 'Profession',
-      description: 'Search by field or role.',
-      to: '/jobs/profession'
-    },
-    {
-      title: 'Newspaper',
-      description: 'Search by newspaper source.',
-      to: '/jobs/newspaper'
-    }
-  ]
-
   const popularDepartments = departmentDirectory.slice(0, 10)
   const popularCities = [...new Set(jobs.map((job) => job.city).filter(Boolean))].slice(0, 8)
   const popularProfessions = [...new Set(jobs.map((job) => job.category).filter(Boolean))].slice(0, 8)
@@ -104,24 +76,6 @@ function HomePage() {
         </section>
 
         <HeroSlider jobs={jobs} />
-
-        <section className="home-browse-guide panel">
-          <div className="panel-head-row">
-            <h2 className="panel-title">Browse Jobs Your Way</h2>
-            <span>Simple options</span>
-          </div>
-          <p className="home-browse-lead">
-            Choose one option below, then click the blue job title on the next page to open full details.
-          </p>
-          <div className="home-start-grid">
-            {quickStartCards.map((card) => (
-              <Link key={card.title} to={card.to} className="home-start-card">
-                <h3>{card.title}</h3>
-                <p>{card.description}</p>
-              </Link>
-            ))}
-          </div>
-        </section>
       </div>
 
       <main className="container layout">
