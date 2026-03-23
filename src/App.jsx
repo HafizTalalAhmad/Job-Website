@@ -121,15 +121,17 @@ function AppContent() {
               onConfirm={onConfirmBookmark}
               isBookmarked={isPageBookmarked}
             />
-            {location.pathname !== '/contact' && <FeedbackPrompt />}
-            <section className="disclaimer-strip">
-              <p>
-                The newspaper ads provided by Pakistan Jobs Hub are collected from Pakistan&apos;s leading newspapers like Daily
-                Jang, Express, Nawai-i-Waqt, The News, Dawn and The Nation. Our aim is to facilitate job seekers from various
-                cities of Pakistan by providing all job advertisements on a single website. This is done as a public service in
-                good faith and we are not responsible for any incorrect, misrepresented or misleading advertisement.
-              </p>
-            </section>
+            {location.pathname !== '/contact' && location.pathname !== '/admin' && <FeedbackPrompt />}
+            {location.pathname !== '/admin' && (
+              <section className="disclaimer-strip">
+                <p>
+                  The newspaper ads provided by Pakistan Jobs Hub are collected from Pakistan&apos;s leading newspapers like Daily
+                  Jang, Express, Nawai-i-Waqt, The News, Dawn and The Nation. Our aim is to facilitate job seekers from various
+                  cities of Pakistan by providing all job advertisements on a single website. This is done as a public service in
+                  good faith and we are not responsible for any incorrect, misrepresented or misleading advertisement.
+                </p>
+              </section>
+            )}
             <Footer />
           </div>
         </div>

@@ -24,6 +24,7 @@ const DEPARTMENTS_STORAGE_KEY = 'jobs_hub_custom_departments'
 const COMPANIES_STORAGE_KEY = 'jobs_hub_custom_companies'
 const CATEGORIES_STORAGE_KEY = 'jobs_hub_custom_categories'
 const INDUSTRIES_STORAGE_KEY = 'jobs_hub_custom_industries'
+const SOURCES_STORAGE_KEY = 'jobs_hub_custom_sources'
 const defaultDepartmentOptions = [...new Set(departmentDirectory.map((department) => department.name))].sort((a, b) =>
   a.localeCompare(b)
 )
@@ -76,6 +77,18 @@ const defaultIndustryOptions = [
   'Public Sector',
   'Telecom',
   'Transport'
+].sort((a, b) => a.localeCompare(b))
+const defaultSourceOptions = [
+  'Dawn',
+  'Daily Jang',
+  'Express',
+  'LinkedIn',
+  'Mustakbil',
+  'Nawaiwaqt',
+  'Rozee',
+  'The Nation',
+  'The News',
+  'Website'
 ].sort((a, b) => a.localeCompare(b))
 
 const initialState = {
@@ -194,6 +207,19 @@ function PostJobPage() {
   const [newIndustry, setNewIndustry] = useState('')
   const [selectedIndustryOption, setSelectedIndustryOption] = useState('')
   const [editedIndustryName, setEditedIndustryName] = useState('')
+  const [sourceOptions, setSourceOptions] = useState(() => {
+    try {
+      const raw = localStorage.getItem(SOURCES_STORAGE_KEY)
+      const parsed = raw ? JSON.parse(raw) : []
+      const custom = Array.isArray(parsed) ? parsed.filter(Boolean) : []
+      return [...new Set([...defaultSourceOptions, ...custom])].sort((a, b) => a.localeCompare(b))
+    } catch {
+      return defaultSourceOptions
+    }
+  })
+  const [newSource, setNewSource] = useState('')
+  const [selectedSourceOption, setSelectedSourceOption] = useState('')
+  const [editedSourceName, setEditedSourceName] = useState('')
   const [newCity, setNewCity] = useState('')
   const [newCityProvince, setNewCityProvince] = useState('')
   const [newProvince, setNewProvince] = useState('')
@@ -246,6 +272,11 @@ function PostJobPage() {
     const customIndustries = industryOptions.filter((name) => !defaultIndustryOptions.includes(name))
     localStorage.setItem(INDUSTRIES_STORAGE_KEY, JSON.stringify(customIndustries))
   }, [industryOptions])
+
+  useEffect(() => {
+    const customSources = sourceOptions.filter((name) => !defaultSourceOptions.includes(name))
+    localStorage.setItem(SOURCES_STORAGE_KEY, JSON.stringify(customSources))
+  }, [sourceOptions])
 
   const onChange = (key, value) => setForm((prev) => ({ ...prev, [key]: value }))
 
@@ -487,6 +518,22 @@ function PostJobPage() {
     setError('')
   }
 
+  const onAddSource = () => {
+    const cleanSource = newSource.trim()
+    if (!cleanSource) return
+
+    const existing = sourceOptions.find((item) => item.toLowerCase() === cleanSource.toLowerCase())
+    const finalSource = existing || cleanSource
+
+    if (!existing) {
+      setSourceOptions((prev) => [...prev, cleanSource].sort((a, b) => a.localeCompare(b)))
+    }
+
+    setForm((prev) => ({ ...prev, source: finalSource }))
+    setNewSource('')
+    setError('')
+  }
+
   const onSelectDepartmentOption = (value) => {
     setSelectedDepartmentOption(value)
     setEditedDepartmentName(value)
@@ -723,6 +770,65 @@ function PostJobPage() {
     setEditedIndustryName('')
     if (form.industry === currentName) {
       setForm((prev) => ({ ...prev, industry: '' }))
+    }
+    setError('')
+  }
+
+  const onSelectSourceOption = (value) => {
+    setSelectedSourceOption(value)
+    setEditedSourceName(value)
+  }
+
+  const onRenameSource = async () => {
+    const currentName = selectedSourceOption.trim()
+    const nextName = editedSourceName.trim()
+    if (!currentName || !nextName) return
+
+    const duplicate = sourceOptions.some(
+      (item) => item.toLowerCase() === nextName.toLowerCase() && item.toLowerCase() !== currentName.toLowerCase()
+    )
+    if (duplicate) {
+      setError('A source/newspaper with this name already exists.')
+      return
+    }
+
+    setError('')
+    setSourceOptions((prev) => prev.map((item) => (item === currentName ? nextName : item)).sort((a, b) => a.localeCompare(b)))
+    setSelectedSourceOption(nextName)
+    setEditedSourceName(nextName)
+
+    const matchingJobs = publicJobs.filter((job) => job.source === currentName)
+    for (const job of matchingJobs) {
+      await editJob(job.id, {
+        ...job,
+        source: nextName,
+        posterImage: job.posterImage || '',
+        posterPath: job.posterPath || ''
+      })
+    }
+
+    if (form.source === currentName) {
+      setForm((prev) => ({ ...prev, source: nextName }))
+    }
+  }
+
+  const onDeleteSourceOption = () => {
+    const currentName = selectedSourceOption.trim()
+    if (!currentName) return
+    const linkedJobs = publicJobs.filter((job) => job.source === currentName)
+    if (linkedJobs.length) {
+      setError('This source/newspaper is used in posted jobs, so it can be renamed but not deleted.')
+      return
+    }
+    if (defaultSourceOptions.includes(currentName)) {
+      setError('Built-in source/newspaper names can be renamed, but they cannot be deleted.')
+      return
+    }
+    setSourceOptions((prev) => prev.filter((item) => item !== currentName))
+    setSelectedSourceOption('')
+    setEditedSourceName('')
+    if (form.source === currentName) {
+      setForm((prev) => ({ ...prev, source: '' }))
     }
     setError('')
   }
@@ -1214,8 +1320,6 @@ function PostJobPage() {
             <option value="">Select Category Type</option>
             <option value="government">Government</option>
             <option value="private">Private</option>
-            <option value="internship">Internship</option>
-            <option value="remote">Remote</option>
           </select>
           {form.type === 'government' ? (
             <>
@@ -1419,7 +1523,43 @@ function PostJobPage() {
               <option key={option} value={option}>{option}</option>
             ))}
           </select>
-          <input value={form.source} onChange={(e) => onChange('source', e.target.value)} placeholder="Source / Newspaper (e.g., Jang, Dawn, Website)" required />
+          <div className="admin-lov-row admin-department-row">
+            <select value={form.source} onChange={(e) => onChange('source', e.target.value)} required>
+              <option value="">Select Source / Newspaper</option>
+              {sourceOptions.map((item) => (
+                <option key={item} value={item}>{item}</option>
+              ))}
+            </select>
+            <input
+              value={newSource}
+              onChange={(e) => setNewSource(e.target.value)}
+              placeholder="Add New Source / Newspaper"
+            />
+            <button type="button" className="action-btn secondary" onClick={onAddSource}>
+              Add
+            </button>
+          </div>
+          <div className="admin-lov-row admin-department-row">
+            <select value={selectedSourceOption} onChange={(e) => onSelectSourceOption(e.target.value)}>
+              <option value="">Select Source to Edit</option>
+              {sourceOptions.map((item) => (
+                <option key={item} value={item}>{item}</option>
+              ))}
+            </select>
+            <input
+              value={editedSourceName}
+              onChange={(e) => setEditedSourceName(e.target.value)}
+              placeholder="Rename Selected Source"
+            />
+            <div className="admin-inline-actions">
+              <button type="button" className="action-btn secondary" onClick={onRenameSource}>
+                Rename
+              </button>
+              <button type="button" className="action-btn" onClick={onDeleteSourceOption}>
+                Delete
+              </button>
+            </div>
+          </div>
           <label>
             Post Date
             <input type="date" value={form.postDate} onChange={(e) => onChange('postDate', e.target.value)} required />
