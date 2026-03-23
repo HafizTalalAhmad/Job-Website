@@ -1862,6 +1862,12 @@ a:hover {
   align-items: center;
 }
 
+.admin-inline-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .admin-position-row {
   display: grid;
   grid-template-columns: 180px 1fr auto;

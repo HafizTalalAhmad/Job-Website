@@ -100,6 +100,8 @@ function PostJobPage() {
     }
   })
   const [newDepartment, setNewDepartment] = useState('')
+  const [selectedDepartmentOption, setSelectedDepartmentOption] = useState('')
+  const [editedDepartmentName, setEditedDepartmentName] = useState('')
   const [newCity, setNewCity] = useState('')
   const [newCityProvince, setNewCityProvince] = useState('')
   const [newProvince, setNewProvince] = useState('')
@@ -131,6 +133,11 @@ function PostJobPage() {
   const cityOptions = useMemo(
     () => [...new Set(cityRecords.map((row) => row.name))].sort((a, b) => a.localeCompare(b)),
     [cityRecords]
+  )
+
+  const customDepartmentOptions = useMemo(
+    () => departmentOptions.filter((name) => !defaultDepartmentOptions.includes(name)),
+    [departmentOptions]
   )
 
   useEffect(() => {
@@ -327,6 +334,70 @@ function PostJobPage() {
 
     setForm((prev) => ({ ...prev, organization: finalDepartment }))
     setNewDepartment('')
+    setError('')
+  }
+
+  const onSelectDepartmentOption = (value) => {
+    setSelectedDepartmentOption(value)
+    setEditedDepartmentName(value)
+  }
+
+  const onRenameDepartment = async () => {
+    const currentName = selectedDepartmentOption.trim()
+    const nextName = editedDepartmentName.trim()
+
+    if (!currentName || !nextName) return
+    if (defaultDepartmentOptions.includes(currentName)) {
+      setError('Built-in departments cannot be renamed from admin. Add a custom department if needed.')
+      return
+    }
+    const duplicate = departmentOptions.some(
+      (item) => item.toLowerCase() === nextName.toLowerCase() && item.toLowerCase() !== currentName.toLowerCase()
+    )
+    if (duplicate) {
+      setError('A department with this name already exists.')
+      return
+    }
+
+    setError('')
+    setDepartmentOptions((prev) => prev.map((item) => (item === currentName ? nextName : item)).sort((a, b) => a.localeCompare(b)))
+    setSelectedDepartmentOption(nextName)
+    setEditedDepartmentName(nextName)
+
+    const matchingJobs = publicJobs.filter((job) => job.organization === currentName)
+    for (const job of matchingJobs) {
+      await editJob(job.id, {
+        ...job,
+        organization: nextName,
+        posterImage: job.posterImage || '',
+        posterPath: job.posterPath || ''
+      })
+    }
+
+    if (form.organization === currentName) {
+      setForm((prev) => ({ ...prev, organization: nextName }))
+    }
+  }
+
+  const onDeleteDepartmentOption = async () => {
+    const currentName = selectedDepartmentOption.trim()
+    if (!currentName) return
+    if (defaultDepartmentOptions.includes(currentName)) {
+      setError('Built-in departments cannot be deleted from admin.')
+      return
+    }
+    const linkedJobs = publicJobs.filter((job) => job.organization === currentName)
+    if (linkedJobs.length) {
+      setError('This department is currently used in posted jobs. Rename it first or update those jobs.')
+      return
+    }
+
+    setDepartmentOptions((prev) => prev.filter((item) => item !== currentName))
+    setSelectedDepartmentOption('')
+    setEditedDepartmentName('')
+    if (form.organization === currentName) {
+      setForm((prev) => ({ ...prev, organization: '' }))
+    }
     setError('')
   }
 
@@ -821,22 +892,46 @@ function PostJobPage() {
             <option value="remote">Remote</option>
           </select>
           {form.type === 'government' ? (
-            <div className="admin-lov-row admin-department-row">
-              <select value={form.organization} onChange={(e) => onChange('organization', e.target.value)} required>
-                <option value="">Select Government Department</option>
-                {departmentOptions.map((department) => (
-                  <option key={department} value={department}>{department}</option>
-                ))}
-              </select>
-              <input
-                value={newDepartment}
-                onChange={(e) => setNewDepartment(e.target.value)}
-                placeholder="Add New Department"
-              />
-              <button type="button" className="action-btn secondary" onClick={onAddDepartment}>
-                Add Department
-              </button>
-            </div>
+            <>
+              <div className="admin-lov-row admin-department-row">
+                <select value={form.organization} onChange={(e) => onChange('organization', e.target.value)} required>
+                  <option value="">Select Government Department</option>
+                  {departmentOptions.map((department) => (
+                    <option key={department} value={department}>{department}</option>
+                  ))}
+                </select>
+                <input
+                  value={newDepartment}
+                  onChange={(e) => setNewDepartment(e.target.value)}
+                  placeholder="Add New Department"
+                />
+                <button type="button" className="action-btn secondary" onClick={onAddDepartment}>
+                  Add Department
+                </button>
+              </div>
+
+              <div className="admin-lov-row admin-department-row">
+                <select value={selectedDepartmentOption} onChange={(e) => onSelectDepartmentOption(e.target.value)}>
+                  <option value="">Select Custom Department to Edit</option>
+                  {customDepartmentOptions.map((department) => (
+                    <option key={department} value={department}>{department}</option>
+                  ))}
+                </select>
+                <input
+                  value={editedDepartmentName}
+                  onChange={(e) => setEditedDepartmentName(e.target.value)}
+                  placeholder="Rename Selected Department"
+                />
+                <div className="admin-inline-actions">
+                  <button type="button" className="action-btn secondary" onClick={onRenameDepartment}>
+                    Rename
+                  </button>
+                  <button type="button" className="action-btn" onClick={onDeleteDepartmentOption}>
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </>
           ) : (
             <input
               value={form.organization}
