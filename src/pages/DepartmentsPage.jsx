@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { departmentDirectory, getDepartmentJobs } from '../data/departments'
 import { useJobs } from '../context/JobsContext'
+import DepartmentLogoBadge from '../components/DepartmentLogoBadge'
 
 function DepartmentsPage() {
   const { jobs } = useJobs()
@@ -109,15 +110,7 @@ function DepartmentsPage() {
               <Link key={department.slug} to={`/jobs/departments/${department.slug}`} className="department-card">
                 <div className="department-card-head">
                   <div className="department-card-title-wrap">
-                    {department.logo ? (
-                      <img
-                        src={department.logo}
-                        alt={`${department.name} logo`}
-                        className="department-logo-image"
-                      />
-                    ) : (
-                      <span className="department-logo-badge">{department.logoText}</span>
-                    )}
+                    <DepartmentLogoBadge department={department} />
                     <h3>{department.name}</h3>
                     <span className={`department-scope-badge scope-${department.scope.toLowerCase().replace(/\s+/g, '-')}`}>
                       {department.scope}

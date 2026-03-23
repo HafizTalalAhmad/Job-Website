@@ -100,7 +100,7 @@ const departmentSeed = [
     name: 'Punjab Police',
     description: 'Police department jobs for field operations, investigation, and administration.',
     aliases: ['Punjab Police'],
-    logo: logoPunjabPolice
+    logo: officialLogo('https://www.punjabpolice.gov.pk/favicon.ico')
   },
   {
     name: 'Pakistan Railways',
@@ -171,7 +171,8 @@ const departmentSeed = [
   {
     name: 'NTS',
     description: 'National Testing Service jobs and testing administration opportunities.',
-    aliases: ['NTS', 'National Testing Service']
+    aliases: ['NTS', 'National Testing Service'],
+    logo: officialLogo('https://www.nts.org.pk/favicon.ico')
   },
   {
     name: 'Pakistan Engineering Council',
@@ -181,7 +182,8 @@ const departmentSeed = [
   {
     name: 'Election Commission of Pakistan',
     description: 'Election administration and public-sector support roles.',
-    aliases: ['Election Commission of Pakistan', 'ECP']
+    aliases: ['Election Commission of Pakistan', 'ECP'],
+    logo: officialLogo('https://www.ecp.gov.pk/favicon.ico')
   },
   {
     name: 'State Bank of Pakistan',
@@ -372,22 +374,26 @@ const departmentSeed = [
   {
     name: 'National Highway and Motorway Police',
     description: 'Motorway policing and traffic management careers.',
-    aliases: ['National Highway and Motorway Police', 'NHMP', 'Motorway Police']
+    aliases: ['National Highway and Motorway Police', 'NHMP', 'Motorway Police'],
+    logo: officialLogo('https://nhmp.gov.pk/favicon.ico')
   },
   {
     name: 'FIA',
     description: 'Federal Investigation Agency jobs in investigation, cybercrime, and administration.',
-    aliases: ['Federal Investigation Agency', 'FIA']
+    aliases: ['Federal Investigation Agency', 'FIA'],
+    logo: officialLogo('https://www.fia.gov.pk/favicon.ico')
   },
   {
     name: 'ASF',
     description: 'Airport Security Force jobs in operations, inspection, and airport security.',
-    aliases: ['Airport Security Force', 'ASF']
+    aliases: ['Airport Security Force', 'ASF'],
+    logo: officialLogo('https://www.asf.gov.pk/favicon.ico')
   },
   {
     name: 'ANF',
     description: 'Anti Narcotics Force jobs in enforcement, intelligence, and support services.',
-    aliases: ['Anti Narcotics Force', 'ANF']
+    aliases: ['Anti Narcotics Force', 'ANF'],
+    logo: officialLogo('https://www.anf.gov.pk/favicon.ico')
   },
   {
     name: 'Pakistan Railways',
@@ -402,7 +408,8 @@ const departmentSeed = [
   {
     name: 'National Highway Authority',
     description: 'Road infrastructure, engineering, and transport project opportunities.',
-    aliases: ['National Highway Authority', 'NHA']
+    aliases: ['National Highway Authority', 'NHA'],
+    logo: officialLogo('https://nha.gov.pk/favicon.ico')
   },
   {
     name: 'OGDCL',
@@ -432,7 +439,8 @@ const departmentSeed = [
   {
     name: 'Pakistan Atomic Energy Commission',
     description: 'Scientific, technical, healthcare, and administrative roles in atomic energy.',
-    aliases: ['Pakistan Atomic Energy Commission', 'PAEC']
+    aliases: ['Pakistan Atomic Energy Commission', 'PAEC'],
+    logo: officialLogo('https://www.paec.gov.pk/favicon.ico')
   },
   {
     name: 'Pakistan Engineering Council',
@@ -452,12 +460,14 @@ const departmentSeed = [
   {
     name: 'Allama Iqbal Open University',
     description: 'Distance learning, teaching, examinations, and administration opportunities.',
-    aliases: ['Allama Iqbal Open University', 'AIOU']
+    aliases: ['Allama Iqbal Open University', 'AIOU'],
+    logo: officialLogo('https://www.aiou.edu.pk/favicon.ico')
   },
   {
     name: 'Virtual University',
     description: 'Digital education, academic support, administration, and IT roles.',
-    aliases: ['Virtual University', 'VU']
+    aliases: ['Virtual University', 'VU'],
+    logo: officialLogo('https://www.vu.edu.pk/favicon.ico')
   },
   {
     name: 'COMSATS University',
@@ -467,7 +477,8 @@ const departmentSeed = [
   {
     name: 'NUST',
     description: 'Public university jobs in teaching, research, engineering, and administration.',
-    aliases: ['National University of Sciences and Technology', 'NUST']
+    aliases: ['National University of Sciences and Technology', 'NUST'],
+    logo: officialLogo('https://nust.edu.pk/favicon.ico')
   },
   {
     name: 'Punjab University',
@@ -502,12 +513,14 @@ const departmentSeed = [
   {
     name: 'Pakistan Bait-ul-Mal',
     description: 'Social welfare, outreach, administration, and support opportunities.',
-    aliases: ['Pakistan Bait-ul-Mal', 'PBM']
+    aliases: ['Pakistan Bait-ul-Mal', 'PBM'],
+    logo: officialLogo('https://www.pbm.gov.pk/favicon.ico')
   },
   {
     name: 'BISP',
     description: 'Social protection, field support, payments, and administration jobs.',
-    aliases: ['Benazir Income Support Programme', 'BISP']
+    aliases: ['Benazir Income Support Programme', 'BISP'],
+    logo: officialLogo('https://www.bisp.gov.pk/favicon.ico')
   },
   {
     name: 'Pakistan Tourism Development Corporation',
@@ -517,12 +530,14 @@ const departmentSeed = [
   {
     name: 'Pakistan Civil Aviation Authority',
     description: 'Civil aviation, airport operations, technical, and regulatory positions.',
-    aliases: ['Pakistan Civil Aviation Authority', 'PCAA', 'CAA']
+    aliases: ['Pakistan Civil Aviation Authority', 'PCAA', 'CAA'],
+    logo: officialLogo('https://pcaa.gov.pk/favicon.ico')
   },
   {
     name: 'Pakistan Airport Authority',
     description: 'Airport management, aviation services, and public aviation support jobs.',
-    aliases: ['Pakistan Airport Authority', 'PAA']
+    aliases: ['Pakistan Airport Authority', 'PAA'],
+    logo: officialLogo('https://www.paa.gov.pk/favicon.ico')
   },
   {
     name: 'Election Commission of Pakistan',
