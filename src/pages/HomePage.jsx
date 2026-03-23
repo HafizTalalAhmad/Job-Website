@@ -28,17 +28,17 @@ function HomePage() {
   const starterCards = [
     {
       title: 'Latest Government Jobs',
-      description: 'Open the newest government jobs first if you want the quickest starting point.',
+      description: 'Open the newest government jobs first.',
       to: '/jobs/government'
     },
     {
       title: 'Browse Departments',
-      description: 'Choose this if you know the department name like WAPDA, NADRA, Railways, Police, or Army.',
+      description: 'Choose this if you know the department name.',
       to: '/jobs/organization'
     },
     {
       title: 'Jobs in My City',
-      description: 'Choose this if you want jobs in Lahore, Karachi, Islamabad, Rawalpindi, Peshawar, or another city.',
+      description: 'Choose this if you want jobs in your city.',
       to: '/jobs/location'
     }
   ]
@@ -46,27 +46,27 @@ function HomePage() {
   const quickStartCards = [
     {
       title: 'Departments',
-      description: 'Choose a department like WAPDA, NADRA, FPSC, Railways, or Army.',
+      description: 'Search department-wise.',
       to: '/jobs/organization'
     },
     {
       title: 'Locations',
-      description: 'Find jobs city-wise if you want Lahore, Karachi, Islamabad, Peshawar, or another city.',
+      description: 'Search city-wise.',
       to: '/jobs/location'
     },
     {
       title: 'Latest by Date',
-      description: 'See jobs date-wise when you want the newest posts first.',
+      description: 'See the newest posts first.',
       to: '/jobs/date'
     },
     {
       title: 'Profession',
-      description: 'Choose a field like teaching, banking, engineering, data entry, or administration.',
+      description: 'Search by field or role.',
       to: '/jobs/profession'
     },
     {
       title: 'Newspaper',
-      description: 'Browse jobs published in Jang, Dawn, Express, The News, and other sources.',
+      description: 'Search by newspaper source.',
       to: '/jobs/newspaper'
     }
   ]
@@ -89,7 +89,7 @@ function HomePage() {
             <span className="section-kicker">Start Here</span>
             <h1 className="panel-title">Find Jobs in Pakistan in a Simple Way</h1>
             <p className="panel-intro">
-              If websites feel confusing, do not worry. Start with one option below and we will guide you to the right jobs.
+              Start with one option below and we will guide you to the right jobs.
             </p>
             <div className="home-hero-entry-grid">
               {starterCards.map((card) => (
@@ -111,7 +111,7 @@ function HomePage() {
             <span>Simple options</span>
           </div>
           <p className="home-browse-lead">
-            If you already know how you want to search, choose one option below. Then click the blue job title on the next page to open full details.
+            Choose one option below, then click the blue job title on the next page to open full details.
           </p>
           <div className="home-start-grid">
             {quickStartCards.map((card) => (
