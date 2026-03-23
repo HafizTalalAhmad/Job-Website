@@ -116,7 +116,7 @@ function DepartmentsPage() {
                       {department.scope}
                     </span>
                   </div>
-                  <span>{department.jobsCount} job{department.jobsCount === 1 ? '' : 's'}</span>
+                  <span className="department-count-badge">{department.jobsCount} job{department.jobsCount === 1 ? '' : 's'}</span>
                 </div>
                 <p>{department.description}</p>
               </Link>
