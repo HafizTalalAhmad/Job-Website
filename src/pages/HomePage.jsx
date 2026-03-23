@@ -1,7 +1,6 @@
 ﻿import React, { useEffect, useMemo, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { applyFilters, groupJobs, sortJobs } from '../utils/jobs'
-import JobGroupByDate from '../components/JobGroupByDate'
 import HeroSlider from '../components/HeroSlider'
 import FeaturedJobs from '../components/FeaturedJobs'
 import { useJobs } from '../context/JobsContext'
@@ -10,20 +9,12 @@ import { departmentDirectory } from '../data/departments'
 function HomePage() {
   const { jobs } = useJobs()
   const location = useLocation()
-  const pageSize = 50
-  const [currentPage, setCurrentPage] = useState(1)
   const query = new URLSearchParams(location.search).get('q') || ''
 
   const filtered = useMemo(
     () => sortJobs(applyFilters(jobs, { keyword: query, location: '', category: '', industry: '', organization: '', type: '', postDate: '' }), 'latest'),
     [jobs, query]
   )
-
-  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize))
-  const start = (currentPage - 1) * pageSize
-  const end = start + pageSize
-  const pagedJobs = filtered.slice(start, end)
-  const grouped = useMemo(() => groupJobs(pagedJobs, 'postDate'), [pagedJobs])
 
   const starterCards = [
     {
@@ -48,10 +39,6 @@ function HomePage() {
   const popularProfessions = [...new Set(jobs.map((job) => job.category).filter(Boolean))].slice(0, 8)
   const popularSources = [...new Set(jobs.map((job) => job.source).filter(Boolean))].slice(0, 6)
   const newsUpdates = sortJobs(jobs, 'latest').slice(0, 4)
-
-  useEffect(() => {
-    setCurrentPage(1)
-  }, [jobs, query])
 
   return (
     <>
@@ -98,44 +85,6 @@ function HomePage() {
                 </div>
               </div>
             </section>
-          </section>
-
-          <section className="panel">
-            <div className="panel-head-row">
-              <h2 className="panel-title">Latest Job Bulletin</h2>
-              <span>{filtered.length} jobs found</span>
-            </div>
-            <JobGroupByDate grouped={grouped} />
-            <div className="pagination-wrap">
-              <div className="pagination">
-                <button
-                  className="page-btn arrow-btn"
-                  onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
-                  disabled={currentPage === 1}
-                >
-                  {'<<'}
-                </button>
-                {Array.from({ length: totalPages }, (_, index) => {
-                  const page = index + 1
-                  return (
-                    <button
-                      key={page}
-                      className={`page-btn${currentPage === page ? ' active' : ''}`}
-                      onClick={() => setCurrentPage(page)}
-                    >
-                      {page}
-                    </button>
-                  )
-                })}
-                <button
-                  className="page-btn arrow-btn"
-                  onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
-                  disabled={currentPage === totalPages}
-                >
-                  {'>>'}
-                </button>
-              </div>
-            </div>
           </section>
 
           <section className="home-explore-grid">
