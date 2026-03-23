@@ -24,6 +24,25 @@ function HomePage() {
   const end = start + pageSize
   const pagedJobs = filtered.slice(start, end)
   const grouped = useMemo(() => groupJobs(pagedJobs, 'postDate'), [pagedJobs])
+
+  const starterCards = [
+    {
+      title: 'Latest Government Jobs',
+      description: 'Open the newest government jobs first if you want the quickest starting point.',
+      to: '/jobs/government'
+    },
+    {
+      title: 'Browse Departments',
+      description: 'Choose this if you know the department name like WAPDA, NADRA, Railways, Police, or Army.',
+      to: '/jobs/organization'
+    },
+    {
+      title: 'Jobs in My City',
+      description: 'Choose this if you want jobs in Lahore, Karachi, Islamabad, Rawalpindi, Peshawar, or another city.',
+      to: '/jobs/location'
+    }
+  ]
+
   const quickStartCards = [
     {
       title: 'Departments',
@@ -51,23 +70,6 @@ function HomePage() {
       to: '/jobs/newspaper'
     }
   ]
-  const beginnerCards = [
-    {
-      title: 'I Know the Department',
-      description: 'Use this if you know the department name such as WAPDA, NADRA, Railways, Police, or Army.',
-      to: '/jobs/organization'
-    },
-    {
-      title: 'I Want Jobs in My City',
-      description: 'Use this if you want jobs in Lahore, Karachi, Islamabad, Rawalpindi, Peshawar, or another city.',
-      to: '/jobs/location'
-    },
-    {
-      title: 'Show Me Latest Jobs',
-      description: 'Use this if you simply want to see the newest jobs first without choosing a category.',
-      to: '/jobs/date'
-    }
-  ]
 
   const popularDepartments = departmentDirectory.slice(0, 10)
   const popularCities = [...new Set(jobs.map((job) => job.city).filter(Boolean))].slice(0, 8)
@@ -87,57 +89,30 @@ function HomePage() {
             <span className="section-kicker">Start Here</span>
             <h1 className="panel-title">Find Jobs in Pakistan in a Simple Way</h1>
             <p className="panel-intro">
-              If websites feel confusing, do not worry. Start from one simple choice below and we will guide you to the relevant jobs.
+              If websites feel confusing, do not worry. Start with one option below and we will guide you to the right jobs.
             </p>
-            <p className="home-guide-note">Click below to see the latest government jobs or browse by department.</p>
-          </div>
-          <div className="home-guide-actions">
-            <Link to="/jobs/government" className="action-btn">Open Latest Government Jobs</Link>
-            <Link to="/jobs/organization" className="action-btn secondary">Browse Departments</Link>
-            <Link to="/jobs/date" className="action-btn secondary">Open Latest Jobs by Date</Link>
+            <div className="home-hero-entry-grid">
+              {starterCards.map((card) => (
+                <Link key={card.title} to={card.to} className="home-hero-entry-card">
+                  <h3>{card.title}</h3>
+                  <p>{card.description}</p>
+                  <span>Open</span>
+                </Link>
+              ))}
+            </div>
           </div>
         </section>
+
         <HeroSlider jobs={jobs} />
-        <section className="home-beginner-start panel">
-          <div className="panel-head-row">
-            <h2 className="panel-title">Choose the Easiest Way to Start</h2>
-            <span>Best for first-time visitors</span>
-          </div>
-          <div className="home-beginner-grid">
-            {beginnerCards.map((card) => (
-              <Link key={card.title} to={card.to} className="home-beginner-card">
-                <h3>{card.title}</h3>
-                <p>{card.description}</p>
-                <span>Open</span>
-              </Link>
-            ))}
-          </div>
-        </section>
+
         <section className="home-browse-guide panel">
           <div className="panel-head-row">
-            <h2 className="panel-title">How to Browse Jobs</h2>
-            <span>More options</span>
+            <h2 className="panel-title">Browse Jobs Your Way</h2>
+            <span>Simple options</span>
           </div>
-          <div className="helper-steps-grid">
-            <article className="helper-step-card">
-              <span>1</span>
-              <h3>Choose One Option</h3>
-              <p>Select department, city, date, profession, or newspaper to keep things simple.</p>
-            </article>
-            <article className="helper-step-card">
-              <span>2</span>
-              <h3>Open Relevant Jobs</h3>
-              <p>The next page will show only the jobs related to what you selected.</p>
-            </article>
-            <article className="helper-step-card">
-              <span>3</span>
-              <h3>Click the Blue Heading</h3>
-              <p>Open the full job page to see poster, deadline, application method, and details.</p>
-            </article>
-          </div>
-          <div className="panel-head-row home-browse-guide-subhead">
-            <h3 className="home-browse-guide-title">Other Ways to Browse</h3>
-          </div>
+          <p className="home-browse-lead">
+            If you already know how you want to search, choose one option below. Then click the blue job title on the next page to open full details.
+          </p>
           <div className="home-start-grid">
             {quickStartCards.map((card) => (
               <Link key={card.title} to={card.to} className="home-start-card">
@@ -146,12 +121,6 @@ function HomePage() {
               </Link>
             ))}
           </div>
-        </section>
-        <section className="about-strip top-align-block">
-          <p>
-            <strong>About Us:</strong> Pakistan Jobs Hub is a public service style job portal that organizes newspaper and organization
-            job ads in a fast, readable format for job seekers across Pakistan.
-          </p>
         </section>
       </div>
 
@@ -176,6 +145,7 @@ function HomePage() {
               </div>
             </section>
           </section>
+
           <section className="panel">
             <div className="panel-head-row">
               <h2 className="panel-title">Latest Job Bulletin</h2>
@@ -213,6 +183,7 @@ function HomePage() {
               </div>
             </div>
           </section>
+
           <section className="home-explore-grid">
             <section className="panel">
               <h2 className="panel-title">Popular Departments</h2>
@@ -255,6 +226,13 @@ function HomePage() {
               </div>
             </section>
           </section>
+
+          <section className="about-strip top-align-block">
+            <p>
+              <strong>About Us:</strong> Pakistan Jobs Hub is a public service style job portal that organizes newspaper and organization
+              job ads in a fast, readable format for job seekers across Pakistan.
+            </p>
+          </section>
         </section>
       </main>
     </>
@@ -262,4 +240,3 @@ function HomePage() {
 }
 
 export default HomePage
-
