@@ -11,6 +11,7 @@ import ArchivesPage from './pages/ArchivesPage'
 import AboutPage from './pages/AboutPage'
 import ContactPage from './pages/ContactPage'
 import BlogPage from './pages/BlogPage'
+import BlogPostPage from './pages/BlogPostPage'
 import PostJobPage from './pages/PostJobPage'
 import NotFoundPage from './pages/NotFoundPage'
 import DepartmentsPage from './pages/DepartmentsPage'
@@ -73,6 +74,7 @@ function AppContent() {
               <Route path="/admin" element={<PostJobPage />} />
               <Route path="/archives" element={<ArchivesPage />} />
               <Route path="/blog" element={<BlogPage />} />
+              <Route path="/blog/:id" element={<BlogPostPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="*" element={<NotFoundPage />} />

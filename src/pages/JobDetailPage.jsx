@@ -27,6 +27,11 @@ function JobDetailPage() {
   const posterImage = job.posterImage || `https://placehold.co/800x1100/eef5ee/1a3f24?text=${encodeURIComponent(
     `${job.organization} Job Poster`
   )}`
+  const currentPageUrl = typeof window !== 'undefined' ? window.location.href : ''
+  const shareText = `${job.title} - ${job.organization}`
+  const facebookShare = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentPageUrl)}`
+  const xShare = `https://x.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(currentPageUrl)}`
+  const emailShare = `mailto:?subject=${encodeURIComponent(shareText)}&body=${encodeURIComponent(currentPageUrl)}`
   const keywordItems = [
     'Recent / Upcoming / Fresh / Current / New / Latest',
     `${job.title} ${new Date(job.postDate).getFullYear()} March Apply Online ${job.organization}`,
@@ -97,9 +102,9 @@ function JobDetailPage() {
           <div className="poster-share-box">
             <h3>Share This Ad With Your Friends</h3>
             <div className="poster-share-links">
-              <a href="#" aria-label="Share on Facebook">f</a>
-              <a href="#" aria-label="Share on Twitter">t</a>
-              <a href="#" aria-label="Share by Email">@</a>
+              <a href={facebookShare} target="_blank" rel="noreferrer" aria-label="Share on Facebook">f</a>
+              <a href={xShare} target="_blank" rel="noreferrer" aria-label="Share on X">X</a>
+              <a href={emailShare} aria-label="Share by Email">@</a>
             </div>
           </div>
         </div>

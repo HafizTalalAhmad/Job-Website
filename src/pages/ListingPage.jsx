@@ -57,6 +57,7 @@ function ListingPage({ mode, title, description }) {
       return afterFrom && beforeTo
     })
   }, [filters, sortBy, mode, fromDate, toDate, query])
+  const showsFilters = mode !== 'government' && mode !== 'private' && mode !== 'all'
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize))
   const start = (currentPage - 1) * pageSize
@@ -75,11 +76,13 @@ function ListingPage({ mode, title, description }) {
           <h1 className="panel-title">{title}</h1>
           <p className="panel-intro">{description}</p>
           <p className="panel-intro listing-helper-line">
-            Tip: use the filters below if needed, then click any blue job headline to open full details.
+            {showsFilters
+              ? 'Tip: use the filters below if needed, then click any blue job headline to open full details.'
+              : 'Tip: click any blue job headline below to open full details.'}
           </p>
         </section>
 
-        {mode !== 'government' && mode !== 'private' && (
+        {showsFilters && (
           <FilterPanel
             mode={mode}
             filters={filters}

@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { createSubscriber } from '../lib/jobsApi'
+import { socialLinks } from '../data/siteLinks'
 
 function Footer() {
   const [email, setEmail] = useState('')
@@ -31,23 +33,23 @@ function Footer() {
           <h3>Pakistan Jobs Hub</h3>
           <p>Daily jobs from newspapers, organizations, and public/private sectors in Pakistan.</p>
           <div className="footer-social-buttons">
-            <a href="#" aria-label="Facebook" className="social-btn social-facebook">f</a>
-            <a href="#" aria-label="YouTube" className="social-btn social-youtube">▶</a>
-            <a href="#" aria-label="X" className="social-btn social-x">X</a>
-            <a href="#" aria-label="LinkedIn" className="social-btn social-linkedin">in</a>
+            <a href={socialLinks.facebook} target="_blank" rel="noreferrer" aria-label="Facebook" className="social-btn social-facebook">f</a>
+            <a href={socialLinks.youtube} target="_blank" rel="noreferrer" aria-label="YouTube" className="social-btn social-youtube">YT</a>
+            <a href={socialLinks.x} target="_blank" rel="noreferrer" aria-label="X" className="social-btn social-x">X</a>
+            <a href={socialLinks.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn" className="social-btn social-linkedin">in</a>
           </div>
         </section>
 
         <section className="footer-links">
           <h4>Quick Links</h4>
           <ul>
-            <li><a href="#">Jobs by Date</a></li>
-            <li><a href="#">Government Jobs</a></li>
-            <li><a href="#">Jobs by Location</a></li>
-            <li><a href="#">Jobs by Profession</a></li>
-            <li><a href="#">Jobs by Newspaper</a></li>
-            <li><a href="#">Archives</a></li>
-            <li><a href="#">Contact Us</a></li>
+            <li><Link to="/jobs/date">Jobs by Date</Link></li>
+            <li><Link to="/jobs/government">Government Jobs</Link></li>
+            <li><Link to="/jobs/location">Jobs by Location</Link></li>
+            <li><Link to="/jobs/profession">Jobs by Profession</Link></li>
+            <li><Link to="/jobs/newspaper">Jobs by Newspaper</Link></li>
+            <li><Link to="/archives">Archives</Link></li>
+            <li><Link to="/contact">Contact Us</Link></li>
           </ul>
         </section>
 
@@ -72,9 +74,9 @@ function Footer() {
       <div className="container footer-row">
         <p>Copyright 2025-2026 Pakistan Jobs Hub. All Rights Reserved.</p>
         <div className="footer-mini-links">
-          <a href="#">Privacy</a>
-          <a href="#">Terms</a>
-          <a href="#">Support</a>
+          <Link to="/blog">Blog</Link>
+          <Link to="/archives">Archives</Link>
+          <Link to="/contact">Support</Link>
         </div>
       </div>
     </footer>
@@ -82,3 +84,5 @@ function Footer() {
 }
 
 export default Footer
+
+

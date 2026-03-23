@@ -67,7 +67,7 @@ export const taxonomyConfig = {
     ],
     searchPlaceholder: 'Search a city...',
     itemTitle: (item) => item.label,
-    itemDescription: (item) => `${item.province ? `${item.province}, ` : ''}${item.country || 'Pakistan'} • ${item.count} job${item.count === 1 ? '' : 's'}`,
+    itemDescription: (item) => `${item.province ? `${item.province}, ` : ''}${item.country || 'Pakistan' } | ${item.count } job${item.count === 1 ? '' : 's'}`,
     jobsTitle: (item) => `Jobs in ${item.label}`,
     jobsDescription: (item) => `These are the currently listed jobs for ${item.label}${item.province ? `, ${item.province}` : ''}.`,
     itemCountLabel: 'jobs',
@@ -218,3 +218,4 @@ export const taxonomyConfig = {
 
 export const getTaxonomyConfig = (mode) => taxonomyConfig[mode]
 export const encodeTaxonomyValue = encodeValue
+

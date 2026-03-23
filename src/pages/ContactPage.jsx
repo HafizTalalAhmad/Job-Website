@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import Breadcrumbs from '../components/Breadcrumbs'
 import { createContactMessage, createSubscriber } from '../lib/jobsApi'
+import { socialLinks } from '../data/siteLinks'
 
 function ContactPage() {
   const [form, setForm] = useState({
@@ -105,10 +106,10 @@ function ContactPage() {
 
           <h4>Follow Us</h4>
           <div className="contact-socials">
-            <a href="#" className="social-btn social-facebook" aria-label="Facebook">f</a>
-            <a href="#" className="social-btn social-youtube" aria-label="YouTube">▶</a>
-            <a href="#" className="social-btn social-x" aria-label="X">X</a>
-            <a href="#" className="social-btn social-linkedin" aria-label="LinkedIn">in</a>
+            <a href={socialLinks.facebook} target="_blank" rel="noreferrer" className="social-btn social-facebook" aria-label="Facebook">f</a>
+            <a href={socialLinks.youtube} target="_blank" rel="noreferrer" className="social-btn social-youtube" aria-label="YouTube">YT</a>
+            <a href={socialLinks.x} target="_blank" rel="noreferrer" className="social-btn social-x" aria-label="X">X</a>
+            <a href={socialLinks.linkedin} target="_blank" rel="noreferrer" className="social-btn social-linkedin" aria-label="LinkedIn">in</a>
           </div>
 
           <div className="contact-subscribe">
@@ -133,3 +134,5 @@ function ContactPage() {
 }
 
 export default ContactPage
+
+
