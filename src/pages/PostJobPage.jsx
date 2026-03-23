@@ -1588,28 +1588,52 @@ function PostJobPage() {
               </p>
             </div>
           </div>
-          <div className="admin-management-actions">
-            <button type="button" className="action-btn secondary" onClick={() => openManagementModal('department')}>
-              Departments
-            </button>
-            <button type="button" className="action-btn secondary" onClick={() => openManagementModal('company')}>
-              Companies
-            </button>
-            <button type="button" className="action-btn secondary" onClick={() => openManagementModal('category')}>
-              Categories
-            </button>
-            <button type="button" className="action-btn secondary" onClick={() => openManagementModal('industry')}>
-              Industries
-            </button>
-            <button type="button" className="action-btn secondary" onClick={() => openManagementModal('source')}>
-              Sources
-            </button>
-            <button type="button" className="action-btn secondary" onClick={() => openManagementModal('city')}>
-              Cities
-            </button>
-            <button type="button" className="action-btn secondary" onClick={() => openManagementModal('province')}>
-              Provinces
-            </button>
+          <div className="admin-management-groups">
+            <section className="admin-management-group">
+              <div className="admin-management-group-head">
+                <span className="admin-management-group-kicker">Main Browse Lists</span>
+                <h3>Control what appears across tabs</h3>
+              </div>
+              <div className="admin-management-actions admin-management-actions-rich">
+                <button type="button" className="admin-management-tile" onClick={() => openManagementModal('department')}>
+                  <strong>Departments</strong>
+                  <span>Government department names used in department pages and job filters.</span>
+                </button>
+                <button type="button" className="admin-management-tile" onClick={() => openManagementModal('company')}>
+                  <strong>Companies</strong>
+                  <span>Private company names for private job postings and company selection.</span>
+                </button>
+                <button type="button" className="admin-management-tile" onClick={() => openManagementModal('category')}>
+                  <strong>Categories</strong>
+                  <span>Profession and category values shown in jobs and browse pages.</span>
+                </button>
+                <button type="button" className="admin-management-tile" onClick={() => openManagementModal('industry')}>
+                  <strong>Industries</strong>
+                  <span>Industry labels for sorting jobs into the right public sections.</span>
+                </button>
+                <button type="button" className="admin-management-tile" onClick={() => openManagementModal('source')}>
+                  <strong>Sources</strong>
+                  <span>Newspapers and sources used for publication tracking and source pages.</span>
+                </button>
+              </div>
+            </section>
+
+            <section className="admin-management-group admin-management-group-location">
+              <div className="admin-management-group-head">
+                <span className="admin-management-group-kicker">Location Data</span>
+                <h3>Keep cities and provinces clean</h3>
+              </div>
+              <div className="admin-management-actions admin-management-actions-rich admin-management-actions-compact">
+                <button type="button" className="admin-management-tile" onClick={() => openManagementModal('city')}>
+                  <strong>Cities</strong>
+                  <span>Add, rename, and organize city options used in job posts.</span>
+                </button>
+                <button type="button" className="admin-management-tile" onClick={() => openManagementModal('province')}>
+                  <strong>Provinces</strong>
+                  <span>Manage province names linked with jobs and city records.</span>
+                </button>
+              </div>
+            </section>
           </div>
         </section>
 
@@ -1853,21 +1877,27 @@ function PostJobPage() {
       {managementModal && (
         <div className="bookmark-toast-shell admin-popup-shell">
           <div className="bookmark-modal admin-management-modal">
-            <div className="panel-head-row">
-              <h2>{modalTitleMap[managementModal]}</h2>
-              <button type="button" className="action-btn secondary" onClick={closeManagementModal}>
+            <div className="admin-modal-kicker">Admin List Manager</div>
+            <div className="panel-head-row admin-modal-head">
+              <div className="admin-modal-copy">
+                <h2>{modalTitleMap[managementModal]}</h2>
+                <p>Use this window to add new values, rename existing ones, and safely remove items that are not in use.</p>
+              </div>
+              <button type="button" className="action-btn secondary admin-modal-close" onClick={closeManagementModal}>
                 Close
               </button>
             </div>
-            <input
-              value={managementSearch}
-              onChange={(e) => setManagementSearch(e.target.value)}
-              placeholder="Search this list..."
-            />
+            <div className="admin-modal-search-row">
+              <input
+                value={managementSearch}
+                onChange={(e) => setManagementSearch(e.target.value)}
+                placeholder="Search this list..."
+              />
+            </div>
 
             {managementModal === 'department' && (
-              <>
-                <p>Add a new department or rename an existing one. Used departments cannot be deleted.</p>
+              <section className="admin-modal-section">
+                <p className="admin-modal-section-note">Add a new department or rename an existing one. Used departments cannot be deleted.</p>
                 <div className="admin-lov-row admin-department-row">
                   <input
                     value={newDepartment}
@@ -1907,12 +1937,12 @@ function PostJobPage() {
                     </button>
                   ))}
                 </div>
-              </>
+              </section>
             )}
 
             {managementModal === 'company' && (
-              <>
-                <p>Add a new company or rename an existing one. Used companies cannot be deleted.</p>
+              <section className="admin-modal-section">
+                <p className="admin-modal-section-note">Add a new company or rename an existing one. Used companies cannot be deleted.</p>
                 <div className="admin-lov-row admin-department-row">
                   <input
                     value={newCompany}
@@ -1952,12 +1982,12 @@ function PostJobPage() {
                     </button>
                   ))}
                 </div>
-              </>
+              </section>
             )}
 
             {managementModal === 'category' && (
-              <>
-                <p>Add a new profession/category or rename an existing one. Used values cannot be deleted.</p>
+              <section className="admin-modal-section">
+                <p className="admin-modal-section-note">Add a new profession/category or rename an existing one. Used values cannot be deleted.</p>
                 <div className="admin-lov-row admin-department-row">
                   <input
                     value={newCategory}
@@ -1997,12 +2027,12 @@ function PostJobPage() {
                     </button>
                   ))}
                 </div>
-              </>
+              </section>
             )}
 
             {managementModal === 'industry' && (
-              <>
-                <p>Add a new industry or rename an existing one. Used values cannot be deleted.</p>
+              <section className="admin-modal-section">
+                <p className="admin-modal-section-note">Add a new industry or rename an existing one. Used values cannot be deleted.</p>
                 <div className="admin-lov-row admin-department-row">
                   <input
                     value={newIndustry}
@@ -2042,12 +2072,12 @@ function PostJobPage() {
                     </button>
                   ))}
                 </div>
-              </>
+              </section>
             )}
 
             {managementModal === 'source' && (
-              <>
-                <p>Add a new source/newspaper or rename an existing one. Used values cannot be deleted.</p>
+              <section className="admin-modal-section">
+                <p className="admin-modal-section-note">Add a new source/newspaper or rename an existing one. Used values cannot be deleted.</p>
                 <div className="admin-lov-row admin-department-row">
                   <input
                     value={newSource}
@@ -2087,12 +2117,12 @@ function PostJobPage() {
                     </button>
                   ))}
                 </div>
-              </>
+              </section>
             )}
 
             {managementModal === 'city' && (
-              <>
-                <p>Add a new city or rename an existing one. Used cities cannot be deleted.</p>
+              <section className="admin-modal-section">
+                <p className="admin-modal-section-note">Add a new city or rename an existing one. Used cities cannot be deleted.</p>
                 <div className="admin-lov-row admin-department-row">
                   <input value={newCity} onChange={(e) => setNewCity(e.target.value)} placeholder="Add New City" />
                   <select value={newCityProvince} onChange={(e) => setNewCityProvince(e.target.value)}>
@@ -2138,12 +2168,12 @@ function PostJobPage() {
                     </button>
                   ))}
                 </div>
-              </>
+              </section>
             )}
 
             {managementModal === 'province' && (
-              <>
-                <p>Add a new province or rename an existing one. Provinces linked to cities or jobs cannot be deleted.</p>
+              <section className="admin-modal-section">
+                <p className="admin-modal-section-note">Add a new province or rename an existing one. Provinces linked to cities or jobs cannot be deleted.</p>
                 <div className="admin-lov-row admin-department-row">
                   <input value={newProvince} onChange={(e) => setNewProvince(e.target.value)} placeholder="Add New Province" />
                   <button type="button" className="action-btn secondary" onClick={onAddProvince}>Add Province</button>
@@ -2177,7 +2207,7 @@ function PostJobPage() {
                     </button>
                   ))}
                 </div>
-              </>
+              </section>
             )}
 
             {error && <p className="form-error">{error}</p>}
