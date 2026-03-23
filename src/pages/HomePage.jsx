@@ -98,7 +98,7 @@ function HomePage() {
           </div>
         </section>
         <LatestTicker jobs={jobs} />
-        <HeroSlider />
+        <HeroSlider jobs={jobs} />
         <section className="home-beginner-start panel">
           <div className="panel-head-row">
             <h2 className="panel-title">Choose the Easiest Way to Start</h2>

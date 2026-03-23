@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import fpscImage from '../../img/FPSC.jfif'
 import ghqImage from '../../img/GHQ.jfif'
@@ -36,8 +36,16 @@ const slides = [
   }
 ]
 
-function HeroSlider() {
+function HeroSlider({ jobs = [] }) {
   const [activeIndex, setActiveIndex] = useState(0)
+
+  const latestNews = useMemo(
+    () =>
+      [...jobs]
+        .sort((a, b) => (a.postDate < b.postDate ? 1 : -1))
+        .slice(0, 8),
+    [jobs]
+  )
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -54,6 +62,20 @@ function HeroSlider() {
       <Link to={activeSlide.cta} className={`hero-slide hero-slide-${activeSlide.tone}`} aria-label={activeSlide.department}>
         <img src={activeSlide.image} alt={activeSlide.department} className="hero-slide-full-image" />
       </Link>
+      {!!latestNews.length && (
+        <div className="hero-news-banner" aria-label="Latest news updates">
+          <span className="hero-news-label">Latest News</span>
+          <div className="hero-news-marquee">
+            <div className="hero-news-track">
+              {[...latestNews, ...latestNews].map((job, index) => (
+                <Link key={`${job.id}-${index}`} to={`/job/${job.id}`} className="hero-news-item">
+                  {job.title}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="hero-slide-dots">
         {slides.map((slide, index) => (
