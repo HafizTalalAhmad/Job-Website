@@ -1,16 +1,3 @@
-import logoWapda from '../assets/department-logos/wapda.svg'
-import logoNadra from '../assets/department-logos/nadra.svg'
-import logoFpsc from '../assets/department-logos/fpsc.svg'
-import logoPpsc from '../assets/department-logos/ppsc.svg'
-import logoPunjabPolice from '../assets/department-logos/punjab-police.svg'
-import logoRailways from '../assets/department-logos/pakistan-railways.svg'
-import logoPakArmy from '../assets/department-logos/pakistan-army.svg'
-import logoPaf from '../assets/department-logos/pakistan-air-force.svg'
-import logoPakNavy from '../assets/department-logos/pakistan-navy.svg'
-import logoInterior from '../assets/department-logos/ministry-of-interior.svg'
-import logoHec from '../assets/department-logos/hec.svg'
-import logoSbp from '../assets/department-logos/state-bank.svg'
-
 const slugify = (value) =>
   value
     .toLowerCase()
@@ -82,30 +69,32 @@ const makeDepartmentLogoText = (name) => {
   return parts.slice(0, 2).map((part) => part[0]).join('').toUpperCase()
 }
 
+const officialLogo = (href) => href
+
 const departmentSeed = [
   {
     name: 'WAPDA',
     description: 'Water and power sector opportunities across operations, engineering, and administration.',
     aliases: ['WAPDA'],
-    logo: logoWapda
+    logo: officialLogo('https://wapda.gov.pk/favicon.ico')
   },
   {
     name: 'NADRA',
     description: 'Identity, registration, and public service delivery jobs across Pakistan.',
     aliases: ['NADRA'],
-    logo: logoNadra
+    logo: officialLogo('https://www.nadra.gov.pk/favicon.ico')
   },
   {
     name: 'FPSC',
     description: 'Federal Public Service Commission jobs and federal recruitment opportunities.',
     aliases: ['FPSC', 'Federal Public Service Commission'],
-    logo: logoFpsc
+    logo: officialLogo('https://www.fpsc.gov.pk/favicon.ico')
   },
   {
     name: 'PPSC',
     description: 'Punjab Public Service Commission vacancies and provincial department recruitment.',
     aliases: ['PPSC', 'Punjab Public Service Commission'],
-    logo: logoPpsc
+    logo: officialLogo('https://www.ppsc.gop.pk/favicon.ico')
   },
   {
     name: 'Punjab Police',
@@ -117,31 +106,31 @@ const departmentSeed = [
     name: 'Pakistan Railways',
     description: 'Rail transport, workshop, technical, and administrative government jobs.',
     aliases: ['Pakistan Railways'],
-    logo: logoRailways
+    logo: officialLogo('https://www.pakrail.gov.pk/favicon.ico')
   },
   {
     name: 'Pakistan Army',
     description: 'Military and civilian support roles under Pakistan Army formations and branches.',
     aliases: ['Pakistan Army', 'GHQ', 'ISPR'],
-    logo: logoPakArmy
+    logo: officialLogo('https://www.joinpakarmy.gov.pk/favicon.ico')
   },
   {
     name: 'Pakistan Air Force',
     description: 'Air force recruitment, technical, aviation, and support staff opportunities.',
     aliases: ['Pakistan Air Force', 'PAF'],
-    logo: logoPaf
+    logo: officialLogo('https://joinpaf.gov.pk/favicon.ico')
   },
   {
     name: 'Pakistan Navy',
     description: 'Naval and maritime service careers including technical and support posts.',
     aliases: ['Pakistan Navy'],
-    logo: logoPakNavy
+    logo: officialLogo('https://www.paknavy.gov.pk/favicon.ico')
   },
   {
     name: 'Ministry of Interior',
     description: 'Federal interior ministry and attached department opportunities.',
     aliases: ['Ministry of Interior'],
-    logo: logoInterior
+    logo: officialLogo('https://www.interior.gov.pk/favicon.ico')
   },
   {
     name: 'Ministry of Defence',
@@ -162,7 +151,7 @@ const departmentSeed = [
     name: 'HEC',
     description: 'Higher education policy, scholarship, and university administration jobs.',
     aliases: ['HEC', 'Higher Education Commission'],
-    logo: logoHec
+    logo: officialLogo('https://www.hec.gov.pk/favicon.ico')
   },
   {
     name: 'COMSATS University',
@@ -198,7 +187,7 @@ const departmentSeed = [
     name: 'State Bank of Pakistan',
     description: 'Central banking, finance, regulation, compliance, and policy careers.',
     aliases: ['State Bank of Pakistan', 'SBP'],
-    logo: logoSbp
+    logo: officialLogo('https://www.sbp.org.pk/favicon.ico')
   },
   {
     name: 'National Bank of Pakistan',

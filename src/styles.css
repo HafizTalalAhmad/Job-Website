@@ -1026,12 +1026,13 @@ a:hover {
 .department-logo-image {
   width: 34px;
   height: 34px;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 999px;
   border: 1px solid #cfd9b1;
   background: #ffffff;
   flex-shrink: 0;
   box-shadow: 0 3px 8px rgba(21, 47, 80, 0.08);
+  padding: 4px;
 }
 
 .department-logo-badge.large {
