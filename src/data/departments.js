@@ -1,3 +1,11 @@
+import logoWapda from '../assets/department-logos-official/wapda.ico'
+import logoFpsc from '../assets/department-logos-official/fpsc.ico'
+import logoPpsc from '../assets/department-logos-official/ppsc.ico'
+import logoPakArmy from '../assets/department-logos-official/pak-army.ico'
+import logoPaf from '../assets/department-logos-official/paf.ico'
+import logoPakNavy from '../assets/department-logos-official/pak-navy.ico'
+import logoHec from '../assets/department-logos-official/hec.ico'
+
 const slugify = (value) =>
   value
     .toLowerCase()
@@ -73,7 +81,8 @@ const departmentSeed = [
   {
     name: 'WAPDA',
     description: 'Water and power sector opportunities across operations, engineering, and administration.',
-    aliases: ['WAPDA']
+    aliases: ['WAPDA'],
+    logo: logoWapda
   },
   {
     name: 'NADRA',
@@ -83,12 +92,14 @@ const departmentSeed = [
   {
     name: 'FPSC',
     description: 'Federal Public Service Commission jobs and federal recruitment opportunities.',
-    aliases: ['FPSC', 'Federal Public Service Commission']
+    aliases: ['FPSC', 'Federal Public Service Commission'],
+    logo: logoFpsc
   },
   {
     name: 'PPSC',
     description: 'Punjab Public Service Commission vacancies and provincial department recruitment.',
-    aliases: ['PPSC', 'Punjab Public Service Commission']
+    aliases: ['PPSC', 'Punjab Public Service Commission'],
+    logo: logoPpsc
   },
   {
     name: 'Punjab Police',
@@ -103,17 +114,20 @@ const departmentSeed = [
   {
     name: 'Pakistan Army',
     description: 'Military and civilian support roles under Pakistan Army formations and branches.',
-    aliases: ['Pakistan Army', 'GHQ', 'ISPR']
+    aliases: ['Pakistan Army', 'GHQ', 'ISPR'],
+    logo: logoPakArmy
   },
   {
     name: 'Pakistan Air Force',
     description: 'Air force recruitment, technical, aviation, and support staff opportunities.',
-    aliases: ['Pakistan Air Force', 'PAF']
+    aliases: ['Pakistan Air Force', 'PAF'],
+    logo: logoPaf
   },
   {
     name: 'Pakistan Navy',
     description: 'Naval and maritime service careers including technical and support posts.',
-    aliases: ['Pakistan Navy']
+    aliases: ['Pakistan Navy'],
+    logo: logoPakNavy
   },
   {
     name: 'Ministry of Interior',
@@ -138,7 +152,8 @@ const departmentSeed = [
   {
     name: 'HEC',
     description: 'Higher education policy, scholarship, and university administration jobs.',
-    aliases: ['HEC', 'Higher Education Commission']
+    aliases: ['HEC', 'Higher Education Commission'],
+    logo: logoHec
   },
   {
     name: 'COMSATS University',
