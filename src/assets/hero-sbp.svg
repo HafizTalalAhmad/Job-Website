@@ -1,0 +1,21 @@
+<svg width="1600" height="720" viewBox="0 0 1600 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="720" fill="url(#bg)"/>
+  <circle cx="1320" cy="120" r="180" fill="#9CF0E5" opacity="0.14"/>
+  <circle cx="250" cy="565" r="220" fill="#0B4F48" opacity="0.35"/>
+  <rect x="94" y="106" width="322" height="52" rx="26" fill="#B7F0DC"/>
+  <text x="132" y="140" fill="#0D4F43" font-family="Tahoma, Arial, sans-serif" font-size="28" font-weight="700">STATE BANK OF PAKISTAN</text>
+  <text x="94" y="250" fill="white" font-family="Tahoma, Arial, sans-serif" font-size="68" font-weight="700">State Bank Jobs</text>
+  <text x="94" y="324" fill="#D3FFF5" font-family="Tahoma, Arial, sans-serif" font-size="32">Finance, regulation, audit, economics,</text>
+  <text x="94" y="372" fill="#D3FFF5" font-family="Tahoma, Arial, sans-serif" font-size="32">banking operations, and administration</text>
+  <rect x="1048" y="186" width="380" height="284" rx="26" fill="#0D4F43" stroke="#58C7B2" stroke-width="5"/>
+  <rect x="1092" y="232" width="96" height="178" rx="18" fill="#58C7B2"/>
+  <rect x="1210" y="286" width="96" height="124" rx="18" fill="#86E4D1"/>
+  <rect x="1328" y="254" width="56" height="156" rx="18" fill="#D3FFF5"/>
+  <path d="M1084 426C1130 378 1176 338 1221 322C1270 304 1314 301 1373 317" stroke="#D3FFF5" stroke-width="10" stroke-linecap="round"/>
+  <defs>
+    <linearGradient id="bg" x1="1600" y1="0" x2="0" y2="720" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#117A71"/>
+      <stop offset="1" stop-color="#0B3D3A"/>
+    </linearGradient>
+  </defs>
+</svg>

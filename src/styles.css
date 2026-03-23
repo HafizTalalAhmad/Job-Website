@@ -169,8 +169,8 @@ a:hover {
 }
 
 .social-btn {
-  width: 46px;
-  height: 46px;
+  width: 36px;
+  height: 36px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -214,23 +214,23 @@ a:hover {
 }
 
 .social-glyph-facebook {
-  font-size: 30px;
+  font-size: 23px;
   font-family: Arial, sans-serif;
   transform: translateY(2px);
 }
 
 .social-glyph-youtube {
-  font-size: 20px;
+  font-size: 15px;
   transform: translateX(2px);
 }
 
 .social-glyph-x {
-  font-size: 24px;
+  font-size: 18px;
   font-family: Arial, sans-serif;
 }
 
 .social-glyph-linkedin {
-  font-size: 20px;
+  font-size: 15px;
   font-family: Arial, sans-serif;
 }
 
@@ -1978,8 +1978,10 @@ a:hover {
 }
 
 .site-footer {
-  border-top: 1px solid #2b3b52;
-  background: linear-gradient(180deg, #0f2238 0%, #101e31 100%);
+  border-top: 1px solid #1d2d44;
+  background:
+    radial-gradient(circle at top left, rgba(39, 86, 140, 0.18), transparent 28%),
+    linear-gradient(180deg, #0d1d31 0%, #101b2c 100%);
   margin-top: 14px;
 }
 
@@ -2000,17 +2002,33 @@ a:hover {
 .footer-modern {
   display: grid;
   grid-template-columns: 1.35fr 0.95fr 1.05fr 1.15fr;
-  gap: 16px;
-  padding: 20px 0;
+  gap: 14px;
+  padding: 22px 0 18px;
 }
 
 .footer-brand,
 .footer-links,
 .footer-subscribe {
   background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  padding: 14px;
-  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 16px;
+  border-radius: 10px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.footer-kicker {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgba(226, 240, 255, 0.14);
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 999px;
+  color: #aac7ea;
+  padding: 4px 10px;
+  margin-bottom: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .footer-brand h3 {
@@ -2038,10 +2056,23 @@ a:hover {
   list-style: none;
   margin: 0;
   padding: 0;
+  display: grid;
+  gap: 7px;
 }
 
-.footer-links li { margin: 0 0 6px; }
-.footer-links a { color: #d3e2f8; font-size: 13px; }
+.footer-links li { margin: 0; }
+.footer-links a {
+  color: #d3e2f8;
+  font-size: 13px;
+  line-height: 1.35;
+  display: inline-block;
+}
+
+.footer-links a:hover {
+  color: #ffffff;
+  text-decoration: none;
+  transform: translateX(2px);
+}
 
 .footer-subscribe form {
   display: flex;
@@ -2076,7 +2107,7 @@ a:hover {
 
 .footer-social-buttons {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
@@ -2087,7 +2118,7 @@ a:hover {
 
 .footer-row {
   border-top: 1px solid rgba(255, 255, 255, 0.12);
-  padding: 10px 0 14px;
+  padding: 12px 0 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -2098,7 +2129,7 @@ a:hover {
 
 .footer-mini-links {
   display: flex;
-  gap: 10px;
+  gap: 12px;
 }
 
 .footer-mini-links a {
@@ -2113,23 +2144,20 @@ a:hover {
   font-size: 14px;
 }
 
-.bookmark-overlay {
+.bookmark-toast-shell {
   position: fixed;
-  inset: 0;
-  background: rgba(10, 18, 31, 0.58);
-  display: grid;
-  place-items: center;
+  top: 88px;
+  right: 18px;
   z-index: 60;
-  padding: 20px;
 }
 
 .bookmark-modal {
-  width: min(480px, 100%);
+  width: min(360px, calc(100vw - 32px));
   border: 1px solid #cfd9e6;
   background: #ffffff;
-  border-radius: 10px;
+  border-radius: 12px;
   box-shadow: 0 24px 48px rgba(15, 23, 42, 0.24);
-  padding: 20px 20px 18px;
+  padding: 16px 16px 14px;
 }
 
 .bookmark-kicker {
@@ -2147,29 +2175,37 @@ a:hover {
 
 .bookmark-modal h2 {
   margin: 0 0 10px;
-  font-size: 26px;
+  font-size: 22px;
   color: #1c4f96;
 }
 
 .bookmark-modal p {
   margin: 0 0 12px;
   color: #445a74;
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-.bookmark-steps {
-  margin: 0;
-  padding-left: 18px;
-  color: #445a74;
-  font-size: 14px;
-  line-height: 1.65;
+  font-size: 13px;
+  line-height: 1.55;
 }
 
 .bookmark-actions {
-  margin-top: 16px;
+  margin-top: 12px;
   display: flex;
   justify-content: flex-end;
+  gap: 8px;
+}
+
+.page-bookmark-badge {
+  position: sticky;
+  top: 10px;
+  z-index: 15;
+  margin: 6px 0 0 auto;
+  width: fit-content;
+  border: 1px solid #8fd0a4;
+  background: #edf9f1;
+  color: #0f6a31;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .empty-state {
@@ -2616,6 +2652,11 @@ a:hover {
     padding: 10px 14px;
     font-size: 13px;
   }
+  .bookmark-toast-shell {
+    top: auto;
+    right: 12px;
+    bottom: 12px;
+  }
   .admin-stats-grid {
     grid-template-columns: 1fr;
   }
@@ -2688,13 +2729,18 @@ a:hover {
 :root[data-theme='dark'] .blog-detail-content p,
 :root[data-theme='dark'] .blog-meta-row,
 :root[data-theme='dark'] .legal-panel p,
-:root[data-theme='dark'] .bookmark-modal p,
-:root[data-theme='dark'] .bookmark-steps {
+:root[data-theme='dark'] .bookmark-modal p {
   color: #c7d4e5;
 }
 
 :root[data-theme='dark'] .bookmark-modal h2 {
   color: #dbeafe;
+}
+
+:root[data-theme='dark'] .page-bookmark-badge {
+  background: #173225;
+  border-color: #2b6a47;
+  color: #9ae6b4;
 }
 
 

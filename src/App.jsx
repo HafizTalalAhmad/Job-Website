@@ -26,6 +26,7 @@ import FeedbackPrompt from './components/FeedbackPrompt'
 function AppContent() {
   const [theme, setTheme] = useState(() => localStorage.getItem('jobs_theme') || 'light')
   const [showBookmarkPrompt, setShowBookmarkPrompt] = useState(false)
+  const [isPageBookmarked, setIsPageBookmarked] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -39,11 +40,31 @@ function AppContent() {
   }, [location.pathname, location.search])
 
   useEffect(() => {
+    const savedPages = JSON.parse(localStorage.getItem('jobs_bookmarked_pages') || '[]')
+    setIsPageBookmarked(savedPages.includes(location.pathname))
+  }, [location.pathname])
+
+  useEffect(() => {
     if (location.state?.bookmarkPrompt) {
-      setShowBookmarkPrompt(true)
+      setShowBookmarkPrompt(false)
+      const timer = window.setTimeout(() => {
+        setShowBookmarkPrompt(true)
+      }, 3000)
       navigate(`${location.pathname}${location.search}`, { replace: true })
+      return () => window.clearTimeout(timer)
     }
   }, [location.pathname, location.search, location.state, navigate])
+
+  const onConfirmBookmark = () => {
+    const savedPages = JSON.parse(localStorage.getItem('jobs_bookmarked_pages') || '[]')
+
+    if (!savedPages.includes(location.pathname)) {
+      localStorage.setItem('jobs_bookmarked_pages', JSON.stringify([...savedPages, location.pathname]))
+    }
+
+    setIsPageBookmarked(true)
+    setShowBookmarkPrompt(true)
+  }
 
   const onToggleTheme = () => {
     setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))
@@ -93,8 +114,14 @@ function AppContent() {
               <Route path="/privacy" element={<PrivacyPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
-            <BookmarkPrompt open={showBookmarkPrompt} onClose={() => setShowBookmarkPrompt(false)} />
-            <FeedbackPrompt />
+            {isPageBookmarked && <div className="page-bookmark-badge">Bookmarked</div>}
+            <BookmarkPrompt
+              open={showBookmarkPrompt}
+              onClose={() => setShowBookmarkPrompt(false)}
+              onConfirm={onConfirmBookmark}
+              isBookmarked={isPageBookmarked}
+            />
+            {location.pathname !== '/contact' && <FeedbackPrompt />}
             <section className="disclaimer-strip">
               <p>
                 The newspaper ads provided by Pakistan Jobs Hub are collected from Pakistan&apos;s leading newspapers like Daily

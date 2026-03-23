@@ -1,0 +1,23 @@
+<svg width="1600" height="720" viewBox="0 0 1600 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="720" fill="#173222"/>
+  <rect x="0" y="0" width="1600" height="720" fill="url(#bg)"/>
+  <circle cx="1380" cy="120" r="210" fill="#274C34" opacity="0.6"/>
+  <circle cx="116" cy="586" r="240" fill="#355D3F" opacity="0.35"/>
+  <path d="M0 615C161 541 306 507 457 507C667 507 819 621 1030 621C1200 621 1367 548 1600 522V720H0V615Z" fill="#0D2116"/>
+  <rect x="90" y="108" width="286" height="52" rx="26" fill="#E4C261"/>
+  <text x="130" y="142" fill="#263117" font-family="Tahoma, Arial, sans-serif" font-size="28" font-weight="700">PAK ARMY</text>
+  <text x="90" y="255" fill="white" font-family="Tahoma, Arial, sans-serif" font-size="74" font-weight="700">Pakistan Army</text>
+  <text x="90" y="330" fill="#D6E6D8" font-family="Tahoma, Arial, sans-serif" font-size="32">Defence and public service opportunities</text>
+  <text x="90" y="378" fill="#D6E6D8" font-family="Tahoma, Arial, sans-serif" font-size="32">for graduates, technical staff, and support roles</text>
+  <rect x="1112" y="176" width="296" height="296" rx="32" fill="#22412D" stroke="#5E8B63" stroke-width="6"/>
+  <circle cx="1260" cy="284" r="66" fill="#E4C261"/>
+  <path d="M1260 236L1272 270H1308L1278 291L1289 326L1260 305L1231 326L1242 291L1212 270H1248L1260 236Z" fill="#173222"/>
+  <rect x="1178" y="380" width="164" height="22" rx="11" fill="#E4C261"/>
+  <rect x="1148" y="424" width="224" height="18" rx="9" fill="#5E8B63"/>
+  <defs>
+    <linearGradient id="bg" x1="1600" y1="0" x2="0" y2="720" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#264B31"/>
+      <stop offset="1" stop-color="#102717"/>
+    </linearGradient>
+  </defs>
+</svg>

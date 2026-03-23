@@ -1,38 +1,38 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import fpscImage from '../../img/FPSC.jfif'
-import ghqImage from '../../img/GHQ.jfif'
-import isprImage from '../../img/ISPR.jfif'
-import ppscImage from '../../img/ppscofficial_cover.jfif'
+import pakArmyBanner from '../assets/hero-pak-army.svg'
+import pafBanner from '../assets/hero-paf.svg'
+import sbpBanner from '../assets/hero-sbp.svg'
+import ppscBanner from '../assets/hero-ppsc.svg'
 
 const slides = [
   {
     id: 'slide-1',
-    department: 'Federal Public Service Commission',
-    cta: '/jobs/government',
-    tone: 'federal',
-    image: fpscImage
+    department: 'Pakistan Army',
+    cta: '/jobs/departments/pakistan-army',
+    tone: 'defence',
+    image: pakArmyBanner
   },
   {
     id: 'slide-2',
-    department: 'General Headquarters',
-    cta: '/jobs/date',
-    tone: 'defence',
-    image: ghqImage
+    department: 'Pakistan Air Force',
+    cta: '/jobs/departments/pakistan-air-force',
+    tone: 'aviation',
+    image: pafBanner
   },
   {
     id: 'slide-3',
-    department: 'Inter-Services Public Relations',
-    cta: '/admin',
-    tone: 'signals',
-    image: isprImage
+    department: 'State Bank of Pakistan',
+    cta: '/jobs/departments/state-bank-of-pakistan',
+    tone: 'federal',
+    image: sbpBanner
   },
   {
     id: 'slide-4',
     department: 'Punjab Public Service Commission',
-    cta: '/jobs/profession',
+    cta: '/jobs/departments/ppsc',
     tone: 'provincial',
-    image: ppscImage
+    image: ppscBanner
   }
 ]
 

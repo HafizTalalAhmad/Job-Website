@@ -11,11 +11,31 @@ export const importantLinks = [
     href: 'https://www.na.gov.pk/'
   },
   {
+    label: 'Senate of Pakistan',
+    href: 'https://www.senate.gov.pk/'
+  },
+  {
     label: 'WAPDA',
     href: 'https://www.wapda.gov.pk/'
   },
   {
-    label: 'Pakistan Army',
+    label: 'State Bank of Pakistan',
+    href: 'https://www.sbp.org.pk/index.html'
+  },
+  {
+    label: 'Higher Education Commission',
+    href: 'https://www.hec.gov.pk/english'
+  },
+  {
+    label: 'Federal Board of Revenue',
+    href: 'https://www.fbr.gov.pk/'
+  },
+  {
+    label: 'Election Commission',
+    href: 'https://www.ecp.gov.pk/Reports/'
+  },
+  {
+    label: 'Pak Army',
     href: 'https://www.joinpakarmy.gov.pk/'
   },
   {

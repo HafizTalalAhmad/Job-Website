@@ -1,28 +1,25 @@
 import React from 'react'
 
-function BookmarkPrompt({ open, onClose }) {
+function BookmarkPrompt({ open, onClose, onConfirm, isBookmarked }) {
   if (!open) return null
 
   return (
-    <div className="bookmark-overlay" role="presentation" onClick={onClose}>
-      <div
-        className="bookmark-modal"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="bookmark-title"
-        onClick={(event) => event.stopPropagation()}
-      >
+    <div className="bookmark-toast-shell" role="presentation">
+      <div className="bookmark-modal" role="dialog" aria-modal="true" aria-labelledby="bookmark-title">
         <span className="bookmark-kicker">Quick Tip</span>
-        <h2 id="bookmark-title">Bookmark This Page</h2>
+        <h2 id="bookmark-title">{isBookmarked ? 'Page Bookmarked' : 'Bookmark This Page?'}</h2>
         <p>
-          Save this page so you can come back quickly to the jobs you need.
+          {isBookmarked
+            ? 'This page is now saved in your quick bookmarks for easy return later.'
+            : 'Would you like to save this page for quick access later?'}
         </p>
-        <ul className="bookmark-steps">
-          <li>On computer: press <strong>Ctrl + D</strong>.</li>
-          <li>On mobile: open your browser menu and choose <strong>Add bookmark</strong> or <strong>Add to Home Screen</strong>.</li>
-        </ul>
         <div className="bookmark-actions">
-          <button type="button" className="action-btn" onClick={onClose}>Got It</button>
+          {!isBookmarked && (
+            <button type="button" className="action-btn" onClick={onConfirm}>Yes</button>
+          )}
+          <button type="button" className="action-btn secondary" onClick={onClose}>
+            {isBookmarked ? 'Close' : 'Later'}
+          </button>
         </div>
       </div>
     </div>

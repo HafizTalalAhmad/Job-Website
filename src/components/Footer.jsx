@@ -31,6 +31,7 @@ function Footer() {
     <footer className="site-footer">
       <div className="container footer-modern">
         <section className="footer-brand">
+          <span className="footer-kicker">Pakistan Government Jobs Portal</span>
           <h3>Pakistan Jobs Hub</h3>
           <p>Daily jobs from newspapers, organizations, and public/private sectors in Pakistan.</p>
           <SocialButtons className="footer-social-buttons" />
@@ -57,9 +58,6 @@ function Footer() {
                 <a href={item.href} target="_blank" rel="noreferrer">{item.label}</a>
               </li>
             ))}
-            <li>
-              <a href="https://www.joinpakarmy.gov.pk/" target="_blank" rel="noreferrer">Armed Forces Jobs</a>
-            </li>
           </ul>
         </section>
 

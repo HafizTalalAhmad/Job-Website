@@ -1,0 +1,23 @@
+<svg width="1600" height="720" viewBox="0 0 1600 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="720" fill="url(#bg)"/>
+  <circle cx="1340" cy="136" r="170" fill="#FFE2A8" opacity="0.3"/>
+  <circle cx="132" cy="612" r="210" fill="#8B5C13" opacity="0.25"/>
+  <rect x="98" y="106" width="366" height="52" rx="26" fill="#FFE4A6"/>
+  <text x="130" y="140" fill="#774D08" font-family="Tahoma, Arial, sans-serif" font-size="28" font-weight="700">PUNJAB PUBLIC SERVICE COMMISSION</text>
+  <text x="98" y="252" fill="white" font-family="Tahoma, Arial, sans-serif" font-size="64" font-weight="700">PPSC Opportunities</text>
+  <text x="98" y="324" fill="#FFF3D9" font-family="Tahoma, Arial, sans-serif" font-size="32">Provincial recruitment updates, exams,</text>
+  <text x="98" y="372" fill="#FFF3D9" font-family="Tahoma, Arial, sans-serif" font-size="32">teaching posts, and department vacancies</text>
+  <rect x="1082" y="174" width="304" height="356" rx="28" fill="#FFF8E7" stroke="#DCA94C" stroke-width="6"/>
+  <rect x="1130" y="226" width="208" height="22" rx="11" fill="#DCA94C"/>
+  <rect x="1130" y="274" width="208" height="18" rx="9" fill="#E8C676"/>
+  <rect x="1130" y="314" width="208" height="18" rx="9" fill="#E8C676"/>
+  <rect x="1130" y="354" width="160" height="18" rx="9" fill="#E8C676"/>
+  <circle cx="1308" cy="466" r="34" fill="#2A6B3E"/>
+  <path d="M1292 466L1302 476L1324 454" stroke="white" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <defs>
+    <linearGradient id="bg" x1="800" y1="0" x2="800" y2="720" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D59A31"/>
+      <stop offset="1" stop-color="#8E6012"/>
+    </linearGradient>
+  </defs>
+</svg>
