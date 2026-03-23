@@ -52,7 +52,7 @@ function HomePage() {
             </p>
             <div className="home-hero-entry-grid">
               {starterCards.map((card) => (
-                <Link key={card.title} to={card.to} className="home-hero-entry-card">
+                <Link key={card.title} to={card.to} state={{ bookmarkPrompt: true }} className="home-hero-entry-card">
                   <h3>{card.title}</h3>
                   <p>{card.description}</p>
                   <span>Open</span>

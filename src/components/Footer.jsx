@@ -2,16 +2,13 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { createSubscriber } from '../lib/jobsApi'
 import SocialButtons from './SocialButtons'
-import { departmentDirectory } from '../data/departments'
+import { importantLinks } from '../data/siteLinks'
 
 function Footer() {
   const [email, setEmail] = useState('')
   const [done, setDone] = useState(false)
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const federalDepartments = departmentDirectory
-    .filter((department) => department.scope === 'Federal')
-    .slice(0, 8)
 
   const onSubmit = async (event) => {
     event.preventDefault()
@@ -53,13 +50,16 @@ function Footer() {
         </section>
 
         <section className="footer-links">
-          <h4>Federal Departments</h4>
+          <h4>Important Links</h4>
           <ul>
-            {federalDepartments.map((department) => (
-              <li key={department.slug}>
-                <Link to={`/jobs/departments/${department.slug}`}>{department.name}</Link>
+            {importantLinks.map((item) => (
+              <li key={item.label}>
+                <a href={item.href} target="_blank" rel="noreferrer">{item.label}</a>
               </li>
             ))}
+            <li>
+              <a href="https://www.joinpakarmy.gov.pk/" target="_blank" rel="noreferrer">Armed Forces Jobs</a>
+            </li>
           </ul>
         </section>
 
@@ -85,6 +85,8 @@ function Footer() {
         <p>Copyright 2025-2026 Pakistan Jobs Hub. All Rights Reserved.</p>
         <div className="footer-mini-links">
           <Link to="/blog">Blog</Link>
+          <Link to="/terms">Terms</Link>
+          <Link to="/privacy">Privacy</Link>
           <Link to="/archives">Archives</Link>
           <Link to="/contact">Support</Link>
         </div>

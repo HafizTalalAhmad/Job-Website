@@ -11,7 +11,9 @@ const labels = {
   '/admin': 'Admin',
   '/archives': 'Archives',
   '/blog': 'Blog',
-  '/about': 'About'
+  '/about': 'About',
+  '/terms': 'Terms',
+  '/privacy': 'Privacy'
 }
 
 function Breadcrumbs({ jobTitle }) {

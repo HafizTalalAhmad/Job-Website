@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { HashRouter, Route, Routes, useLocation } from 'react-router-dom'
+import { HashRouter, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import Header from './components/Header'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
+import BookmarkPrompt from './components/BookmarkPrompt'
 import { JobsProvider } from './context/JobsContext'
 import HomePage from './pages/HomePage'
 import ListingPage from './pages/ListingPage'
@@ -12,6 +13,8 @@ import AboutPage from './pages/AboutPage'
 import ContactPage from './pages/ContactPage'
 import BlogPage from './pages/BlogPage'
 import BlogPostPage from './pages/BlogPostPage'
+import TermsPage from './pages/TermsPage'
+import PrivacyPage from './pages/PrivacyPage'
 import PostJobPage from './pages/PostJobPage'
 import NotFoundPage from './pages/NotFoundPage'
 import DepartmentsPage from './pages/DepartmentsPage'
@@ -22,7 +25,9 @@ import FeedbackPrompt from './components/FeedbackPrompt'
 
 function AppContent() {
   const [theme, setTheme] = useState(() => localStorage.getItem('jobs_theme') || 'light')
+  const [showBookmarkPrompt, setShowBookmarkPrompt] = useState(false)
   const location = useLocation()
+  const navigate = useNavigate()
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
@@ -32,6 +37,13 @@ function AppContent() {
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [location.pathname, location.search])
+
+  useEffect(() => {
+    if (location.state?.bookmarkPrompt) {
+      setShowBookmarkPrompt(true)
+      navigate(`${location.pathname}${location.search}`, { replace: true })
+    }
+  }, [location.pathname, location.search, location.state, navigate])
 
   const onToggleTheme = () => {
     setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'))
@@ -77,8 +89,11 @@ function AppContent() {
               <Route path="/blog/:id" element={<BlogPostPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/about" element={<AboutPage />} />
+              <Route path="/terms" element={<TermsPage />} />
+              <Route path="/privacy" element={<PrivacyPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
+            <BookmarkPrompt open={showBookmarkPrompt} onClose={() => setShowBookmarkPrompt(false)} />
             <FeedbackPrompt />
             <section className="disclaimer-strip">
               <p>

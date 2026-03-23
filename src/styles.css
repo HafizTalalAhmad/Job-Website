@@ -2106,6 +2106,72 @@ a:hover {
   font-size: 12px;
 }
 
+.legal-panel p {
+  margin: 0 0 12px;
+  color: #445a74;
+  line-height: 1.65;
+  font-size: 14px;
+}
+
+.bookmark-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 18, 31, 0.58);
+  display: grid;
+  place-items: center;
+  z-index: 60;
+  padding: 20px;
+}
+
+.bookmark-modal {
+  width: min(480px, 100%);
+  border: 1px solid #cfd9e6;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 24px 48px rgba(15, 23, 42, 0.24);
+  padding: 20px 20px 18px;
+}
+
+.bookmark-kicker {
+  display: inline-flex;
+  align-items: center;
+  background: #fff2c6;
+  border: 1px solid #efd176;
+  color: #8b5b00;
+  border-radius: 999px;
+  padding: 4px 10px;
+  margin-bottom: 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.bookmark-modal h2 {
+  margin: 0 0 10px;
+  font-size: 26px;
+  color: #1c4f96;
+}
+
+.bookmark-modal p {
+  margin: 0 0 12px;
+  color: #445a74;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.bookmark-steps {
+  margin: 0;
+  padding-left: 18px;
+  color: #445a74;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.bookmark-actions {
+  margin-top: 16px;
+  display: flex;
+  justify-content: flex-end;
+}
+
 .empty-state {
   border: 1px dashed #b8c6d9;
   background: #f7fbff;
@@ -2608,7 +2674,8 @@ a:hover {
 }
 
 :root[data-theme='dark'] .blog-post-card,
-:root[data-theme='dark'] .blog-detail-panel {
+:root[data-theme='dark'] .blog-detail-panel,
+:root[data-theme='dark'] .bookmark-modal {
   background: #1a2738;
   border-color: #334a63;
 }
@@ -2619,8 +2686,15 @@ a:hover {
 
 :root[data-theme='dark'] .blog-post-card p,
 :root[data-theme='dark'] .blog-detail-content p,
-:root[data-theme='dark'] .blog-meta-row {
+:root[data-theme='dark'] .blog-meta-row,
+:root[data-theme='dark'] .legal-panel p,
+:root[data-theme='dark'] .bookmark-modal p,
+:root[data-theme='dark'] .bookmark-steps {
   color: #c7d4e5;
+}
+
+:root[data-theme='dark'] .bookmark-modal h2 {
+  color: #dbeafe;
 }
 
 
