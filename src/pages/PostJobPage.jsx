@@ -241,6 +241,7 @@ function PostJobPage() {
   const [selectedSourceOption, setSelectedSourceOption] = useState('')
   const [editedSourceName, setEditedSourceName] = useState('')
   const [managementModal, setManagementModal] = useState('')
+  const [managementSearch, setManagementSearch] = useState('')
   const [newCity, setNewCity] = useState('')
   const [newCityProvince, setNewCityProvince] = useState('')
   const [newProvince, setNewProvince] = useState('')
@@ -278,6 +279,74 @@ function PostJobPage() {
     () => [...new Set(cityRecords.map((row) => row.name))].sort((a, b) => a.localeCompare(b)),
     [cityRecords]
   )
+
+  const getUsageCount = (type, value) => {
+    if (!value) return 0
+    switch (type) {
+      case 'department':
+        return publicJobs.filter((job) => job.organization === value && job.type === 'government').length
+      case 'company':
+        return publicJobs.filter((job) => job.organization === value && job.type === 'private').length
+      case 'category':
+        return publicJobs.filter((job) => job.category === value).length
+      case 'industry':
+        return publicJobs.filter((job) => job.industry === value).length
+      case 'source':
+        return publicJobs.filter((job) => job.source === value).length
+      case 'city':
+        return publicJobs.filter((job) => job.city === value).length
+      case 'province':
+        return publicJobs.filter((job) => job.province === value).length
+      default:
+        return 0
+    }
+  }
+
+  const managementItems = useMemo(() => {
+    const keyword = managementSearch.trim().toLowerCase()
+    const baseItems = (() => {
+      switch (managementModal) {
+        case 'department':
+          return departmentOptions.map((value) => ({ value, detail: `${getUsageCount('department', value)} jobs` }))
+        case 'company':
+          return companyOptions.map((value) => ({ value, detail: `${getUsageCount('company', value)} jobs` }))
+        case 'category':
+          return categoryOptions.map((value) => ({ value, detail: `${getUsageCount('category', value)} jobs` }))
+        case 'industry':
+          return industryOptions.map((value) => ({ value, detail: `${getUsageCount('industry', value)} jobs` }))
+        case 'source':
+          return sourceOptions.map((value) => ({ value, detail: `${getUsageCount('source', value)} jobs` }))
+        case 'city':
+          return cityRecords.map((row) => ({
+            value: row.name,
+            detail: `${row.province} | ${getUsageCount('city', row.name)} jobs`
+          }))
+        case 'province':
+          return provinceOptions.map((value) => ({
+            value,
+            detail: `${cityRecords.filter((row) => row.province === value).length} cities | ${getUsageCount('province', value)} jobs`
+          }))
+        default:
+          return []
+      }
+    })()
+
+    if (!keyword) return baseItems
+    return baseItems.filter(
+      (item) => item.value.toLowerCase().includes(keyword) || item.detail.toLowerCase().includes(keyword)
+    )
+  }, [
+    managementSearch,
+    managementModal,
+    departmentOptions,
+    companyOptions,
+    categoryOptions,
+    industryOptions,
+    sourceOptions,
+    cityRecords,
+    provinceOptions,
+    publicJobs
+  ])
 
   useEffect(() => {
     const customDepartments = departmentOptions.filter((name) => !defaultDepartmentOptions.includes(name))
@@ -634,11 +703,13 @@ function PostJobPage() {
 
   const openManagementModal = (type) => {
     setError('')
+    setManagementSearch('')
     setManagementModal(type)
   }
 
   const closeManagementModal = () => {
     setManagementModal('')
+    setManagementSearch('')
   }
 
   const modalTitleMap = {
@@ -1513,6 +1584,38 @@ function PostJobPage() {
 
         <section className="admin-management-block">
           <div className="panel-head-row">
+            <h2 className="panel-title admin-subtitle">Manage Lists</h2>
+          </div>
+          <p className="admin-form-note">
+            Open one popup to manage departments, companies, categories, industries, sources, cities, and provinces. Used items can be renamed but not deleted.
+          </p>
+          <div className="admin-management-actions">
+            <button type="button" className="action-btn secondary" onClick={() => openManagementModal('department')}>
+              Departments
+            </button>
+            <button type="button" className="action-btn secondary" onClick={() => openManagementModal('company')}>
+              Companies
+            </button>
+            <button type="button" className="action-btn secondary" onClick={() => openManagementModal('category')}>
+              Categories
+            </button>
+            <button type="button" className="action-btn secondary" onClick={() => openManagementModal('industry')}>
+              Industries
+            </button>
+            <button type="button" className="action-btn secondary" onClick={() => openManagementModal('source')}>
+              Sources
+            </button>
+            <button type="button" className="action-btn secondary" onClick={() => openManagementModal('city')}>
+              Cities
+            </button>
+            <button type="button" className="action-btn secondary" onClick={() => openManagementModal('province')}>
+              Provinces
+            </button>
+          </div>
+        </section>
+
+        <section className="admin-management-block">
+          <div className="panel-head-row">
             <h2 className="panel-title admin-subtitle">Manage Locations</h2>
           </div>
           <p className="admin-form-note">
@@ -1545,9 +1648,6 @@ function PostJobPage() {
                     <option key={department} value={department}>{department}</option>
                   ))}
                 </select>
-                <button type="button" className="action-btn secondary" onClick={() => openManagementModal('department')}>
-                  Manage Departments
-                </button>
               </div>
             </>
           ) : form.type === 'private' ? (
@@ -1559,9 +1659,6 @@ function PostJobPage() {
                     <option key={company} value={company}>{company}</option>
                   ))}
                 </select>
-                <button type="button" className="action-btn secondary" onClick={() => openManagementModal('company')}>
-                  Manage Companies
-                </button>
               </div>
             </>
           ) : (
@@ -1601,9 +1698,6 @@ function PostJobPage() {
                 <option key={item} value={item}>{item}</option>
               ))}
             </select>
-            <button type="button" className="action-btn secondary" onClick={() => openManagementModal('category')}>
-              Manage Categories
-            </button>
           </div>
           <div className="admin-lov-row admin-department-row">
             <select value={form.industry} onChange={(e) => onChange('industry', e.target.value)} required>
@@ -1612,9 +1706,6 @@ function PostJobPage() {
                 <option key={item} value={item}>{item}</option>
               ))}
             </select>
-            <button type="button" className="action-btn secondary" onClick={() => openManagementModal('industry')}>
-              Manage Industries
-            </button>
           </div>
           <select value={form.employmentType} onChange={(e) => onChange('employmentType', e.target.value)} required>
             <option value="">Select Type of Job</option>
@@ -1629,9 +1720,6 @@ function PostJobPage() {
                 <option key={item} value={item}>{item}</option>
               ))}
             </select>
-            <button type="button" className="action-btn secondary" onClick={() => openManagementModal('source')}>
-              Manage Sources
-            </button>
           </div>
           <label>
             Post Date
@@ -1790,6 +1878,11 @@ function PostJobPage() {
                 Close
               </button>
             </div>
+            <input
+              value={managementSearch}
+              onChange={(e) => setManagementSearch(e.target.value)}
+              placeholder="Search this list..."
+            />
 
             {managementModal === 'department' && (
               <>
@@ -1807,8 +1900,8 @@ function PostJobPage() {
                 <div className="admin-lov-row admin-department-row">
                   <select value={selectedDepartmentOption} onChange={(e) => onSelectDepartmentOption(e.target.value)}>
                     <option value="">Select Department to Edit</option>
-                    {departmentOptions.map((department) => (
-                      <option key={department} value={department}>{department}</option>
+                    {managementItems.map((item) => (
+                      <option key={item.value} value={item.value}>{item.value}</option>
                     ))}
                   </select>
                   <input
@@ -1824,6 +1917,14 @@ function PostJobPage() {
                       Delete
                     </button>
                   </div>
+                </div>
+                <div className="admin-list-preview">
+                  {managementItems.map((item) => (
+                    <button key={item.value} type="button" className="admin-list-chip" onClick={() => onSelectDepartmentOption(item.value)}>
+                      <span>{item.value}</span>
+                      <small>{item.detail}</small>
+                    </button>
+                  ))}
                 </div>
               </>
             )}
@@ -1844,8 +1945,8 @@ function PostJobPage() {
                 <div className="admin-lov-row admin-department-row">
                   <select value={selectedCompanyOption} onChange={(e) => onSelectCompanyOption(e.target.value)}>
                     <option value="">Select Company to Edit</option>
-                    {companyOptions.map((company) => (
-                      <option key={company} value={company}>{company}</option>
+                    {managementItems.map((item) => (
+                      <option key={item.value} value={item.value}>{item.value}</option>
                     ))}
                   </select>
                   <input
@@ -1861,6 +1962,14 @@ function PostJobPage() {
                       Delete
                     </button>
                   </div>
+                </div>
+                <div className="admin-list-preview">
+                  {managementItems.map((item) => (
+                    <button key={item.value} type="button" className="admin-list-chip" onClick={() => onSelectCompanyOption(item.value)}>
+                      <span>{item.value}</span>
+                      <small>{item.detail}</small>
+                    </button>
+                  ))}
                 </div>
               </>
             )}
@@ -1881,8 +1990,8 @@ function PostJobPage() {
                 <div className="admin-lov-row admin-department-row">
                   <select value={selectedCategoryOption} onChange={(e) => onSelectCategoryOption(e.target.value)}>
                     <option value="">Select Category to Edit</option>
-                    {categoryOptions.map((item) => (
-                      <option key={item} value={item}>{item}</option>
+                    {managementItems.map((item) => (
+                      <option key={item.value} value={item.value}>{item.value}</option>
                     ))}
                   </select>
                   <input
@@ -1898,6 +2007,14 @@ function PostJobPage() {
                       Delete
                     </button>
                   </div>
+                </div>
+                <div className="admin-list-preview">
+                  {managementItems.map((item) => (
+                    <button key={item.value} type="button" className="admin-list-chip" onClick={() => onSelectCategoryOption(item.value)}>
+                      <span>{item.value}</span>
+                      <small>{item.detail}</small>
+                    </button>
+                  ))}
                 </div>
               </>
             )}
@@ -1918,8 +2035,8 @@ function PostJobPage() {
                 <div className="admin-lov-row admin-department-row">
                   <select value={selectedIndustryOption} onChange={(e) => onSelectIndustryOption(e.target.value)}>
                     <option value="">Select Industry to Edit</option>
-                    {industryOptions.map((item) => (
-                      <option key={item} value={item}>{item}</option>
+                    {managementItems.map((item) => (
+                      <option key={item.value} value={item.value}>{item.value}</option>
                     ))}
                   </select>
                   <input
@@ -1935,6 +2052,14 @@ function PostJobPage() {
                       Delete
                     </button>
                   </div>
+                </div>
+                <div className="admin-list-preview">
+                  {managementItems.map((item) => (
+                    <button key={item.value} type="button" className="admin-list-chip" onClick={() => onSelectIndustryOption(item.value)}>
+                      <span>{item.value}</span>
+                      <small>{item.detail}</small>
+                    </button>
+                  ))}
                 </div>
               </>
             )}
@@ -1955,8 +2080,8 @@ function PostJobPage() {
                 <div className="admin-lov-row admin-department-row">
                   <select value={selectedSourceOption} onChange={(e) => onSelectSourceOption(e.target.value)}>
                     <option value="">Select Source to Edit</option>
-                    {sourceOptions.map((item) => (
-                      <option key={item} value={item}>{item}</option>
+                    {managementItems.map((item) => (
+                      <option key={item.value} value={item.value}>{item.value}</option>
                     ))}
                   </select>
                   <input
@@ -1972,6 +2097,14 @@ function PostJobPage() {
                       Delete
                     </button>
                   </div>
+                </div>
+                <div className="admin-list-preview">
+                  {managementItems.map((item) => (
+                    <button key={item.value} type="button" className="admin-list-chip" onClick={() => onSelectSourceOption(item.value)}>
+                      <span>{item.value}</span>
+                      <small>{item.detail}</small>
+                    </button>
+                  ))}
                 </div>
               </>
             )}
@@ -1992,8 +2125,8 @@ function PostJobPage() {
                 <div className="admin-lov-row admin-department-row">
                   <select value={selectedCityOption} onChange={(e) => onSelectCityOption(e.target.value)}>
                     <option value="">Select City to Edit</option>
-                    {cityOptions.map((city) => (
-                      <option key={city} value={city}>{city}</option>
+                    {managementItems.map((item) => (
+                      <option key={item.value} value={item.value}>{item.value}</option>
                     ))}
                   </select>
                   <input
@@ -2016,6 +2149,14 @@ function PostJobPage() {
                     </button>
                   </div>
                 </div>
+                <div className="admin-list-preview">
+                  {managementItems.map((item) => (
+                    <button key={item.value} type="button" className="admin-list-chip" onClick={() => onSelectCityOption(item.value)}>
+                      <span>{item.value}</span>
+                      <small>{item.detail}</small>
+                    </button>
+                  ))}
+                </div>
               </>
             )}
 
@@ -2029,8 +2170,8 @@ function PostJobPage() {
                 <div className="admin-lov-row admin-department-row">
                   <select value={selectedProvinceOption} onChange={(e) => onSelectProvinceOption(e.target.value)}>
                     <option value="">Select Province to Edit</option>
-                    {provinceOptions.map((province) => (
-                      <option key={province} value={province}>{province}</option>
+                    {managementItems.map((item) => (
+                      <option key={item.value} value={item.value}>{item.value}</option>
                     ))}
                   </select>
                   <input
@@ -2046,6 +2187,14 @@ function PostJobPage() {
                       Delete
                     </button>
                   </div>
+                </div>
+                <div className="admin-list-preview">
+                  {managementItems.map((item) => (
+                    <button key={item.value} type="button" className="admin-list-chip" onClick={() => onSelectProvinceOption(item.value)}>
+                      <span>{item.value}</span>
+                      <small>{item.detail}</small>
+                    </button>
+                  ))}
                 </div>
               </>
             )}
