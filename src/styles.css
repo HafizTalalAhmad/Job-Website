@@ -572,7 +572,8 @@ a:hover {
 .featured-grid {
   display: grid;
   gap: 8px;
-  height: auto;
+  height: 220px;
+  overflow: hidden;
 }
 
 .featured-card {
