@@ -4,6 +4,7 @@ import { applyFilters, groupJobs, sortJobs } from '../utils/jobs'
 import JobGroupByDate from '../components/JobGroupByDate'
 import LatestTicker from '../components/LatestTicker'
 import HeroSlider from '../components/HeroSlider'
+import FeaturedJobs from '../components/FeaturedJobs'
 import { useJobs } from '../context/JobsContext'
 import { departmentDirectory } from '../data/departments'
 
@@ -74,6 +75,7 @@ function HomePage() {
   const popularProfessions = [...new Set(jobs.map((job) => job.category).filter(Boolean))].slice(0, 8)
   const popularSources = [...new Set(jobs.map((job) => job.source).filter(Boolean))].slice(0, 6)
   const latestGovernmentJobs = sortJobs(jobs.filter((job) => job.type === 'government'), 'latest').slice(0, 6)
+  const newsUpdates = sortJobs(jobs, 'latest').slice(0, 4)
 
   useEffect(() => {
     setCurrentPage(1)
@@ -97,6 +99,21 @@ function HomePage() {
         </section>
         <LatestTicker jobs={jobs} />
         <HeroSlider />
+        <section className="home-news-section panel">
+          <div className="panel-head-row">
+            <h2 className="panel-title">News Updates</h2>
+            <span>Latest updates for job seekers</span>
+          </div>
+          <div className="home-news-grid">
+            {newsUpdates.map((job) => (
+              <Link key={job.id} to={`/job/${job.id}`} className="home-news-card">
+                <span className="home-news-meta">{job.postDate} | {job.source}</span>
+                <h3>{job.title}</h3>
+                <p>{job.organization} | {job.city}</p>
+              </Link>
+            ))}
+          </div>
+        </section>
         <section className="home-beginner-start panel">
           <div className="panel-head-row">
             <h2 className="panel-title">Choose the Easiest Way to Start</h2>
@@ -211,6 +228,7 @@ function HomePage() {
               ))}
             </div>
           </section>
+          <FeaturedJobs jobs={jobs} />
           <section className="panel">
             <div className="panel-head-row">
               <h2 className="panel-title">Latest Job Bulletin</h2>

@@ -51,7 +51,22 @@ const inferDepartmentScope = (department) => {
     return 'Public Sector'
   }
 
-  return 'Federal'
+    return 'Federal'
+}
+
+const makeDepartmentLogoText = (name) => {
+  const parts = name
+    .replace(/[^A-Za-z0-9\s]/g, ' ')
+    .split(/\s+/)
+    .filter(Boolean)
+
+  if (!parts.length) return 'PK'
+
+  if (parts[0].length <= 5 && parts.length === 1) {
+    return parts[0].slice(0, 3).toUpperCase()
+  }
+
+  return parts.slice(0, 2).map((part) => part[0]).join('').toUpperCase()
 }
 
 const departmentSeed = [
@@ -513,7 +528,8 @@ export const departmentDirectory = [...new Map(
     {
       ...department,
       slug: slugify(department.name),
-      scope: inferDepartmentScope(department)
+      scope: inferDepartmentScope(department),
+      logoText: makeDepartmentLogoText(department.name)
     }
   ])
 ).values()]

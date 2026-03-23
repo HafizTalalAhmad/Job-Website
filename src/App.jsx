@@ -17,6 +17,7 @@ import DepartmentsPage from './pages/DepartmentsPage'
 import DepartmentJobsPage from './pages/DepartmentJobsPage'
 import TaxonomyDirectoryPage from './pages/TaxonomyDirectoryPage'
 import TaxonomyJobsPage from './pages/TaxonomyJobsPage'
+import FeedbackPrompt from './components/FeedbackPrompt'
 
 function AppContent() {
   const [theme, setTheme] = useState(() => localStorage.getItem('jobs_theme') || 'light')
@@ -68,6 +69,7 @@ function AppContent() {
               <Route path="/about" element={<AboutPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
+            <FeedbackPrompt />
             <section className="disclaimer-strip">
               <p>
                 The newspaper ads provided by Pakistan Jobs Hub are collected from Pakistan&apos;s leading newspapers like Daily

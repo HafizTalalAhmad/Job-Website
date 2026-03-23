@@ -109,6 +109,7 @@ function DepartmentsPage() {
               <Link key={department.slug} to={`/jobs/departments/${department.slug}`} className="department-card">
                 <div className="department-card-head">
                   <div className="department-card-title-wrap">
+                    <span className="department-logo-badge">{department.logoText}</span>
                     <h3>{department.name}</h3>
                     <span className={`department-scope-badge scope-${department.scope.toLowerCase().replace(/\s+/g, '-')}`}>
                       {department.scope}

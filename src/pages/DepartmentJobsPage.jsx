@@ -37,10 +37,15 @@ function DepartmentJobsPage() {
         <section className="panel page-hero-panel">
           <div className="page-hero-copy">
             <span className="section-kicker">Department Jobs</span>
-            <h1 className="panel-title">{department.name} Jobs</h1>
-            <span className={`department-scope-badge scope-${department.scope.toLowerCase().replace(/\s+/g, '-')}`}>
-              {department.scope}
-            </span>
+            <div className="department-hero-row">
+              <span className="department-logo-badge large">{department.logoText}</span>
+              <div>
+                <h1 className="panel-title">{department.name} Jobs</h1>
+                <span className={`department-scope-badge scope-${department.scope.toLowerCase().replace(/\s+/g, '-')}`}>
+                  {department.scope}
+                </span>
+              </div>
+            </div>
             <p className="panel-intro">{department.description}</p>
           </div>
           <div className="page-hero-stats">

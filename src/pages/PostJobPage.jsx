@@ -754,6 +754,12 @@ function PostJobPage() {
           <button type="button" className="action-btn secondary" onClick={() => downloadCsv('jobs.csv', publicJobs)}>Export CSV</button>
         </div>
         <p className="panel-intro">Fill the form to publish a new public job post.</p>
+        <p className="admin-form-note">
+          To make a job appear properly on all website tabs, please complete the main browse fields carefully:
+          Department / Organization, City, Province, Profession / Category, Industry, Source / Newspaper, Post Date,
+          Type, and Type of Job. These fields power the pages for Departments, Location, Profession, Industry,
+          Newspaper, and Date.
+        </p>
         {!hasSupabaseConfig && (
           <p className="panel-intro">
             Local mode is active. Jobs will be saved in this browser only. Add Supabase env values for shared/public database storage.
@@ -762,7 +768,7 @@ function PostJobPage() {
 
         <form className="contact-form" onSubmit={onSubmit}>
           <input value={form.title} onChange={(e) => onChange('title', e.target.value)} placeholder="Job Title" required />
-          <input value={form.organization} onChange={(e) => onChange('organization', e.target.value)} placeholder="Organization / Company" required />
+          <input value={form.organization} onChange={(e) => onChange('organization', e.target.value)} placeholder="Department / Organization" required />
           <div className="admin-lov-row">
             <select value={form.city} onChange={(e) => onCitySelect(e.target.value)} required>
               <option value="">Select City</option>
@@ -810,7 +816,7 @@ function PostJobPage() {
               <option key={option} value={option}>{option}</option>
             ))}
           </select>
-          <input value={form.source} onChange={(e) => onChange('source', e.target.value)} placeholder="Source (e.g., Jang, Dawn, Website)" required />
+          <input value={form.source} onChange={(e) => onChange('source', e.target.value)} placeholder="Source / Newspaper (e.g., Jang, Dawn, Website)" required />
           <label>
             Post Date
             <input type="date" value={form.postDate} onChange={(e) => onChange('postDate', e.target.value)} required />
