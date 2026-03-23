@@ -672,6 +672,10 @@ a:hover {
   animation: hero-news-scroll 28s linear infinite;
 }
 
+.hero-news-banner:hover .hero-news-track {
+  animation-play-state: paused;
+}
+
 .hero-news-item {
   display: inline-flex;
   align-items: center;
