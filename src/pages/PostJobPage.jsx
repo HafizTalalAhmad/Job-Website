@@ -19,7 +19,7 @@ const defaultCityRecords = [
 
 const defaultProvinceOptions = ['Punjab', 'Sindh', 'Balochistan', 'KPK']
 const countryOptions = ['In Pakistan']
-const employmentTypeOptions = ['Full Time', 'Part Time', 'Contract']
+const employmentTypeOptions = ['Full Time', 'Part Time', 'Contract', 'Internship', 'Remote']
 const DEPARTMENTS_STORAGE_KEY = 'jobs_hub_custom_departments'
 const COMPANIES_STORAGE_KEY = 'jobs_hub_custom_companies'
 const defaultDepartmentOptions = [...new Set(departmentDirectory.map((department) => department.name))].sort((a, b) =>
