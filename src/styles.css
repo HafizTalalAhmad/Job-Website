@@ -323,32 +323,51 @@ a:hover {
   margin-bottom: 0;
 }
 
-.home-latest-updates-list {
-  display: grid;
-  gap: 10px;
-}
-
-.home-latest-update-item {
-  display: block;
+.home-latest-updates-marquee {
+  height: 250px;
+  overflow: hidden;
   border: 1px solid #d8e2ef;
   background: #fbfdff;
   border-radius: 4px;
-  padding: 12px;
+  padding: 8px 0;
+}
+
+.home-latest-updates-track {
+  display: grid;
+  gap: 4px;
+  animation: home-latest-up-scroll 18s linear infinite;
+}
+
+.home-latest-update-line {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px;
+  align-items: start;
+  padding: 8px 12px;
+  color: #1f4f97;
+  font-size: 14px;
+  line-height: 1.5;
   text-decoration: none;
 }
 
-.home-latest-update-item strong {
-  display: block;
-  margin: 0 0 8px;
-  color: #1f4f97;
-  font-size: 18px;
-  line-height: 1.35;
+.home-latest-update-bullet {
+  color: #b26a00;
+  font-size: 16px;
+  line-height: 1.2;
 }
 
-.home-latest-update-item p {
-  margin: 0;
-  color: #51677f;
-  font-size: 13px;
+.home-latest-update-line:hover {
+  background: #f4f8ff;
+  text-decoration: none;
+}
+
+@keyframes home-latest-up-scroll {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-50%);
+  }
 }
 
 .home-guide-hero,
@@ -2089,7 +2108,7 @@ a:hover {
 :root[data-theme='dark'] .department-pill,
 :root[data-theme='dark'] .feedback-prompt,
 :root[data-theme='dark'] .featured-card,
-:root[data-theme='dark'] .home-latest-update-item,
+:root[data-theme='dark'] .home-latest-updates-marquee,
 :root[data-theme='dark'] .home-beginner-card,
 :root[data-theme='dark'] .home-start-card,
 :root[data-theme='dark'] .home-highlight-card {
@@ -2115,9 +2134,20 @@ a:hover {
 :root[data-theme='dark'] .department-card p,
 :root[data-theme='dark'] .featured-card p,
 :root[data-theme='dark'] .featured-org,
-:root[data-theme='dark'] .home-latest-update-item p,
 :root[data-theme='dark'] .home-highlight-card span {
   color: #cbd5e1;
+}
+
+:root[data-theme='dark'] .home-latest-update-line {
+  color: #cfe1ff;
+}
+
+:root[data-theme='dark'] .home-latest-update-line:hover {
+  background: #223349;
+}
+
+:root[data-theme='dark'] .home-latest-update-bullet {
+  color: #f2d48d;
 }
 
 :root[data-theme='dark'] .home-news-meta,

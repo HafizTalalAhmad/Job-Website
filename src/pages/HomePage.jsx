@@ -220,14 +220,15 @@ function HomePage() {
                 <h2 className="panel-title">Latest Updates</h2>
                 <span>Fresh notices</span>
               </div>
-              <div className="home-latest-updates-list">
-                {newsUpdates.map((job) => (
-                  <Link key={job.id} to={`/job/${job.id}`} className="home-latest-update-item">
-                    <span className="home-news-meta">{job.postDate} | {job.source}</span>
-                    <strong>{job.title}</strong>
-                    <p>{job.organization} | {job.city}</p>
-                  </Link>
-                ))}
+              <div className="home-latest-updates-marquee">
+                <div className="home-latest-updates-track">
+                  {[...newsUpdates, ...newsUpdates].map((job, index) => (
+                    <Link key={`${job.id}-${index}`} to={`/job/${job.id}`} className="home-latest-update-line">
+                      <span className="home-latest-update-bullet">•</span>
+                      <span>{job.postDate} | {job.source} | {job.title} | {job.organization} | {job.city}</span>
+                    </Link>
+                  ))}
+                </div>
               </div>
             </section>
           </section>
