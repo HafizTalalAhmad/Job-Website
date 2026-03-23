@@ -326,10 +326,14 @@ a:hover {
   border-color: #d9bf74;
   background: linear-gradient(180deg, #fff8de 0%, #fcedb4 100%);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+  display: flex;
+  flex-direction: column;
 }
 
 .home-latest-updates-marquee {
-  height: 250px;
+  height: auto;
+  min-height: 250px;
+  flex: 1;
   overflow: hidden;
   border: 1px solid #e1c778;
   background: linear-gradient(180deg, #fffef8 0%, #fff6d8 100%);
@@ -2185,14 +2189,14 @@ a:hover {
 }
 
 :root[data-theme='dark'] .home-latest-updates-panel {
-  background: linear-gradient(180deg, #33280e 0%, #241b0a 100%);
-  border-color: #7d6325;
+  background: linear-gradient(180deg, #182333 0%, #111926 100%);
+  border-color: #465970;
   box-shadow: none;
 }
 
 :root[data-theme='dark'] .home-latest-updates-marquee {
-  background: linear-gradient(180deg, #171f2a 0%, #1e2732 100%);
-  border-color: #7d6325;
+  background: linear-gradient(180deg, #0f1724 0%, #172234 100%);
+  border-color: #3c4f68;
 }
 
 :root[data-theme='dark'] .hero-stat-box strong,
@@ -2221,20 +2225,40 @@ a:hover {
 }
 
 :root[data-theme='dark'] .home-latest-update-line {
-  color: #f4dfb4;
+  color: #dbe7f5;
 }
 
 :root[data-theme='dark'] .home-latest-update-line:hover {
-  background: rgba(250, 204, 21, 0.12);
+  background: rgba(147, 197, 253, 0.1);
 }
 
 :root[data-theme='dark'] .home-latest-update-bullet {
-  color: #facc15;
+  color: #f8c34a;
 }
 
 :root[data-theme='dark'] .home-news-meta,
 :root[data-theme='dark'] .admin-form-note {
   color: #f2d48d;
+}
+
+:root[data-theme='dark'] .home-guide-hero {
+  background: linear-gradient(180deg, #172334 0%, #121c2b 100%);
+  border-color: #38506d;
+}
+
+:root[data-theme='dark'] .home-guide-hero .panel-title,
+:root[data-theme='dark'] .home-featured-panel .panel-title,
+:root[data-theme='dark'] .home-explore-grid .panel-title {
+  color: #dbeafe;
+}
+
+:root[data-theme='dark'] .home-guide-hero .panel-intro,
+:root[data-theme='dark'] .home-explore-grid .panel p {
+  color: #c7d4e5;
+}
+
+:root[data-theme='dark'] .panel-head-row span {
+  color: #f4c46a;
 }
 
 :root[data-theme='dark'] .helper-step-card p,
