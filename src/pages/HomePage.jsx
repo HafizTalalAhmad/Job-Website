@@ -89,19 +89,11 @@ function HomePage() {
             <p className="panel-intro">
               If websites feel confusing, do not worry. Start from one simple choice below and we will guide you to the relevant jobs.
             </p>
+            <p className="home-guide-note">Click below to see the latest government jobs or browse by department.</p>
           </div>
           <div className="home-guide-actions">
-            <Link to="/jobs/government" className="action-btn">Open Government Jobs</Link>
-            <Link to="/jobs/organization" className="action-btn secondary">Browse Departments</Link>
-          </div>
-        </section>
-        <section className="home-direct-cta panel">
-          <div className="home-direct-cta-copy">
-            <h2>Click to See Latest Government Jobs</h2>
-            <p>Use this if you want the newest government job advertisements first.</p>
-          </div>
-          <div className="home-direct-cta-actions">
             <Link to="/jobs/government" className="action-btn">Open Latest Government Jobs</Link>
+            <Link to="/jobs/organization" className="action-btn secondary">Browse Departments</Link>
             <Link to="/jobs/date" className="action-btn secondary">Open Latest Jobs by Date</Link>
           </div>
         </section>
@@ -121,7 +113,11 @@ function HomePage() {
             ))}
           </div>
         </section>
-        <section className="home-helper-strip panel">
+        <section className="home-browse-guide panel">
+          <div className="panel-head-row">
+            <h2 className="panel-title">How to Browse Jobs</h2>
+            <span>More options</span>
+          </div>
           <div className="helper-steps-grid">
             <article className="helper-step-card">
               <span>1</span>
@@ -139,11 +135,8 @@ function HomePage() {
               <p>Open the full job page to see poster, deadline, application method, and details.</p>
             </article>
           </div>
-        </section>
-        <section className="home-quick-start panel">
-          <div className="panel-head-row">
-            <h2 className="panel-title">Other Ways to Browse</h2>
-            <span>More options</span>
+          <div className="panel-head-row home-browse-guide-subhead">
+            <h3 className="home-browse-guide-title">Other Ways to Browse</h3>
           </div>
           <div className="home-start-grid">
             {quickStartCards.map((card) => (
