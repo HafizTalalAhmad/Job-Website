@@ -166,15 +166,6 @@ function PostJobPage() {
     [cityRecords]
   )
 
-  const customDepartmentOptions = useMemo(
-    () => departmentOptions.filter((name) => !defaultDepartmentOptions.includes(name)),
-    [departmentOptions]
-  )
-  const customCompanyOptions = useMemo(
-    () => companyOptions.filter((name) => !defaultCompanyOptions.includes(name)),
-    [companyOptions]
-  )
-
   useEffect(() => {
     const customDepartments = departmentOptions.filter((name) => !defaultDepartmentOptions.includes(name))
     localStorage.setItem(DEPARTMENTS_STORAGE_KEY, JSON.stringify(customDepartments))
@@ -403,10 +394,6 @@ function PostJobPage() {
     const nextName = editedDepartmentName.trim()
 
     if (!currentName || !nextName) return
-    if (defaultDepartmentOptions.includes(currentName)) {
-      setError('Built-in departments cannot be renamed from admin. Add a custom department if needed.')
-      return
-    }
     const duplicate = departmentOptions.some(
       (item) => item.toLowerCase() === nextName.toLowerCase() && item.toLowerCase() !== currentName.toLowerCase()
     )
@@ -438,13 +425,14 @@ function PostJobPage() {
   const onDeleteDepartmentOption = async () => {
     const currentName = selectedDepartmentOption.trim()
     if (!currentName) return
-    if (defaultDepartmentOptions.includes(currentName)) {
-      setError('Built-in departments cannot be deleted from admin.')
-      return
-    }
     const linkedJobs = publicJobs.filter((job) => job.organization === currentName)
     if (linkedJobs.length) {
-      setError('This department is currently used in posted jobs. Rename it first or update those jobs.')
+      setError('This department is used in posted jobs, so it can be renamed but not deleted.')
+      return
+    }
+
+    if (defaultDepartmentOptions.includes(currentName)) {
+      setError('Built-in departments can be renamed, but they cannot be deleted.')
       return
     }
 
@@ -467,10 +455,6 @@ function PostJobPage() {
     const nextName = editedCompanyName.trim()
 
     if (!currentName || !nextName) return
-    if (defaultCompanyOptions.includes(currentName)) {
-      setError('Built-in companies cannot be renamed from admin. Add a custom company if needed.')
-      return
-    }
     const duplicate = companyOptions.some(
       (item) => item.toLowerCase() === nextName.toLowerCase() && item.toLowerCase() !== currentName.toLowerCase()
     )
@@ -502,13 +486,14 @@ function PostJobPage() {
   const onDeleteCompanyOption = () => {
     const currentName = selectedCompanyOption.trim()
     if (!currentName) return
-    if (defaultCompanyOptions.includes(currentName)) {
-      setError('Built-in companies cannot be deleted from admin.')
-      return
-    }
     const linkedJobs = publicJobs.filter((job) => job.organization === currentName && job.type === 'private')
     if (linkedJobs.length) {
-      setError('This company is currently used in posted private jobs. Rename it first or update those jobs.')
+      setError('This company is used in posted private jobs, so it can be renamed but not deleted.')
+      return
+    }
+
+    if (defaultCompanyOptions.includes(currentName)) {
+      setError('Built-in companies can be renamed, but they cannot be deleted.')
       return
     }
 
@@ -1032,8 +1017,8 @@ function PostJobPage() {
 
               <div className="admin-lov-row admin-department-row">
                 <select value={selectedDepartmentOption} onChange={(e) => onSelectDepartmentOption(e.target.value)}>
-                  <option value="">Select Custom Department to Edit</option>
-                  {customDepartmentOptions.map((department) => (
+                  <option value="">Select Department to Edit</option>
+                  {departmentOptions.map((department) => (
                     <option key={department} value={department}>{department}</option>
                   ))}
                 </select>
@@ -1073,8 +1058,8 @@ function PostJobPage() {
 
               <div className="admin-lov-row admin-department-row">
                 <select value={selectedCompanyOption} onChange={(e) => onSelectCompanyOption(e.target.value)}>
-                  <option value="">Select Custom Company to Edit</option>
-                  {customCompanyOptions.map((company) => (
+                  <option value="">Select Company to Edit</option>
+                  {companyOptions.map((company) => (
                     <option key={company} value={company}>{company}</option>
                   ))}
                 </select>
