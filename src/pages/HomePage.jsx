@@ -63,6 +63,9 @@ function HomePage() {
             <p className="panel-intro">
               Start with one option below and we will guide you to the right jobs.
             </p>
+            <p className="home-guide-note">
+              Choose one of these three simple paths to begin. You can always explore more options below.
+            </p>
             <div className="home-hero-entry-grid">
               {starterCards.map((card) => (
                 <Link key={card.title} to={card.to} className="home-hero-entry-card">
