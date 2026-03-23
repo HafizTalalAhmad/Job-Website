@@ -317,6 +317,8 @@ a:hover {
 
 .home-featured-panel {
   margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .home-latest-updates-panel {
@@ -557,6 +559,8 @@ a:hover {
 .featured-grid {
   display: grid;
   gap: 8px;
+  height: 250px;
+  overflow: hidden;
 }
 
 .featured-card {
@@ -564,13 +568,13 @@ a:hover {
   border: 1px solid #d8e2ef;
   background: #fbfdff;
   border-radius: 4px;
-  padding: 10px 12px;
+  padding: 8px 10px;
   text-decoration: none;
 }
 
 .featured-org {
   display: inline-block;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   color: #51677f;
   font-size: 11px;
   font-weight: 700;
@@ -578,16 +582,16 @@ a:hover {
 }
 
 .featured-card h3 {
-  margin: 0 0 6px;
+  margin: 0 0 4px;
   color: #1f4f97;
-  font-size: 16px;
-  line-height: 1.3;
+  font-size: 15px;
+  line-height: 1.25;
 }
 
 .featured-card p {
   margin: 0;
   color: #51677f;
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .home-highlight-card {

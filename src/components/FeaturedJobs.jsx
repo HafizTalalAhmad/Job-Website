@@ -8,7 +8,7 @@ function FeaturedJobs({ jobs, className = '' }) {
     <section className={`panel ${className}`.trim()}>
       <div className="panel-head-row">
         <h2 className="panel-title">Featured Jobs</h2>
-        <Link to="/jobs/date" className="panel-link">View All</Link>
+        <Link to="/jobs/all" className="panel-link">View All</Link>
       </div>
       <div className="featured-grid">
         {featured.map((job) => (
