@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { createSubscriber } from '../lib/jobsApi'
-import { socialLinks } from '../data/siteLinks'
+import SocialButtons from './SocialButtons'
 
 function Footer() {
   const [email, setEmail] = useState('')
@@ -32,12 +32,7 @@ function Footer() {
         <section className="footer-brand">
           <h3>Pakistan Jobs Hub</h3>
           <p>Daily jobs from newspapers, organizations, and public/private sectors in Pakistan.</p>
-          <div className="footer-social-buttons">
-            <a href={socialLinks.facebook} target="_blank" rel="noreferrer" aria-label="Facebook" className="social-btn social-facebook">f</a>
-            <a href={socialLinks.youtube} target="_blank" rel="noreferrer" aria-label="YouTube" className="social-btn social-youtube">YT</a>
-            <a href={socialLinks.x} target="_blank" rel="noreferrer" aria-label="X" className="social-btn social-x">X</a>
-            <a href={socialLinks.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn" className="social-btn social-linkedin">in</a>
-          </div>
+          <SocialButtons className="footer-social-buttons" />
         </section>
 
         <section className="footer-links">

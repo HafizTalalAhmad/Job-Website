@@ -169,32 +169,75 @@ a:hover {
 }
 
 .social-btn {
-  min-width: 42px;
-  height: 38px;
+  width: 54px;
+  height: 54px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
   color: #fff;
   font-weight: 700;
   font-size: 12px;
   letter-spacing: 0.02em;
   text-decoration: none;
-  padding: 0 12px;
-  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.16);
-  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+  padding: 0;
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.18);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease, border-color 0.18s ease;
+  position: relative;
+  overflow: hidden;
 }
 
-.social-facebook { background: #1877f2; border-color: #125ec2; }
-.social-youtube { background: #ff0000; border-color: #c30000; color: #fff; }
-.social-x { background: #000; border-color: #000; }
-.social-linkedin { background: #0a66c2; border-color: #074a8d; }
+.social-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0));
+  pointer-events: none;
+}
+
+.social-facebook { background: linear-gradient(180deg, #2f8cff 0%, #1877f2 100%); border-color: #2d7be8; }
+.social-youtube { background: linear-gradient(180deg, #ff3b30 0%, #ff0000 100%); border-color: #ea1c11; color: #fff; }
+.social-x { background: linear-gradient(180deg, #171717 0%, #000000 100%); border-color: #0b0b0b; }
+.social-linkedin { background: linear-gradient(180deg, #2a85df 0%, #0a66c2 100%); border-color: #1267bb; }
+
+.social-glyph {
+  position: relative;
+  z-index: 1;
+  color: #fff;
+  line-height: 1;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: none;
+}
+
+.social-glyph-facebook {
+  font-size: 34px;
+  font-family: Arial, sans-serif;
+  transform: translateY(2px);
+}
+
+.social-glyph-youtube {
+  font-size: 24px;
+  transform: translateX(2px);
+}
+
+.social-glyph-x {
+  font-size: 28px;
+  font-family: Arial, sans-serif;
+}
+
+.social-glyph-linkedin {
+  font-size: 24px;
+  font-family: Arial, sans-serif;
+}
 
 .social-btn:hover {
-  filter: brightness(1.02);
-  transform: translateY(-1px);
-  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.22);
+  filter: brightness(1.03);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 26px rgba(15, 23, 42, 0.24);
   text-decoration: none;
 }
 
