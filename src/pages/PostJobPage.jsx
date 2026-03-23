@@ -25,6 +25,8 @@ const COMPANIES_STORAGE_KEY = 'jobs_hub_custom_companies'
 const CATEGORIES_STORAGE_KEY = 'jobs_hub_custom_categories'
 const INDUSTRIES_STORAGE_KEY = 'jobs_hub_custom_industries'
 const SOURCES_STORAGE_KEY = 'jobs_hub_custom_sources'
+const CITY_RECORDS_STORAGE_KEY = 'jobs_hub_city_records'
+const PROVINCES_STORAGE_KEY = 'jobs_hub_province_options'
 const defaultDepartmentOptions = [...new Set(departmentDirectory.map((department) => department.name))].sort((a, b) =>
   a.localeCompare(b)
 )
@@ -153,8 +155,26 @@ function PostJobPage() {
   const { publicJobs, addJob, editJob, removeJob, hasSupabaseConfig } = useJobs()
   const [form, setForm] = useState(initialState)
   const [editJobId, setEditJobId] = useState('')
-  const [cityRecords, setCityRecords] = useState(defaultCityRecords)
-  const [provinceOptions, setProvinceOptions] = useState(defaultProvinceOptions)
+  const [cityRecords, setCityRecords] = useState(() => {
+    try {
+      const raw = localStorage.getItem(CITY_RECORDS_STORAGE_KEY)
+      const parsed = raw ? JSON.parse(raw) : null
+      const records = Array.isArray(parsed) ? parsed.filter((row) => row?.name && row?.province) : []
+      return records.length ? records.sort((a, b) => a.name.localeCompare(b.name)) : defaultCityRecords
+    } catch {
+      return defaultCityRecords
+    }
+  })
+  const [provinceOptions, setProvinceOptions] = useState(() => {
+    try {
+      const raw = localStorage.getItem(PROVINCES_STORAGE_KEY)
+      const parsed = raw ? JSON.parse(raw) : null
+      const provinces = Array.isArray(parsed) ? parsed.filter(Boolean) : []
+      return provinces.length ? provinces.sort((a, b) => a.localeCompare(b)) : defaultProvinceOptions
+    } catch {
+      return defaultProvinceOptions
+    }
+  })
   const [departmentOptions, setDepartmentOptions] = useState(() => {
     try {
       const raw = localStorage.getItem(DEPARTMENTS_STORAGE_KEY)
@@ -223,6 +243,11 @@ function PostJobPage() {
   const [newCity, setNewCity] = useState('')
   const [newCityProvince, setNewCityProvince] = useState('')
   const [newProvince, setNewProvince] = useState('')
+  const [selectedCityOption, setSelectedCityOption] = useState('')
+  const [editedCityName, setEditedCityName] = useState('')
+  const [editedCityProvince, setEditedCityProvince] = useState('')
+  const [selectedProvinceOption, setSelectedProvinceOption] = useState('')
+  const [editedProvinceName, setEditedProvinceName] = useState('')
   const [positionTitle, setPositionTitle] = useState('')
   const [positionCount, setPositionCount] = useState('')
   const [posterFile, setPosterFile] = useState(null)
@@ -277,6 +302,14 @@ function PostJobPage() {
     const customSources = sourceOptions.filter((name) => !defaultSourceOptions.includes(name))
     localStorage.setItem(SOURCES_STORAGE_KEY, JSON.stringify(customSources))
   }, [sourceOptions])
+
+  useEffect(() => {
+    localStorage.setItem(CITY_RECORDS_STORAGE_KEY, JSON.stringify(cityRecords))
+  }, [cityRecords])
+
+  useEffect(() => {
+    localStorage.setItem(PROVINCES_STORAGE_KEY, JSON.stringify(provinceOptions))
+  }, [provinceOptions])
 
   const onChange = (key, value) => setForm((prev) => ({ ...prev, [key]: value }))
 
@@ -452,6 +485,150 @@ function PostJobPage() {
     setForm((prev) => ({ ...prev, province: cleanProvince }))
     setNewCityProvince(cleanProvince)
     setNewProvince('')
+  }
+
+  const onSelectCityOption = (value) => {
+    setSelectedCityOption(value)
+    const found = cityRecords.find((row) => row.name === value)
+    setEditedCityName(found?.name || '')
+    setEditedCityProvince(found?.province || '')
+  }
+
+  const onRenameCity = async () => {
+    const currentName = selectedCityOption.trim()
+    const nextName = editedCityName.trim()
+    const nextProvince = editedCityProvince.trim()
+
+    if (!currentName || !nextName || !nextProvince) return
+
+    const duplicate = cityRecords.some(
+      (row) => row.name.toLowerCase() === nextName.toLowerCase() && row.name.toLowerCase() !== currentName.toLowerCase()
+    )
+    if (duplicate) {
+      setError('A city with this name already exists.')
+      return
+    }
+
+    if (!provinceOptions.includes(nextProvince)) {
+      setError('Please select a valid province for the city.')
+      return
+    }
+
+    setError('')
+    setCityRecords((prev) =>
+      prev
+        .map((row) => (row.name === currentName ? { name: nextName, province: nextProvince } : row))
+        .sort((a, b) => a.name.localeCompare(b.name))
+    )
+    setSelectedCityOption(nextName)
+    setEditedCityName(nextName)
+    setEditedCityProvince(nextProvince)
+
+    const matchingJobs = publicJobs.filter((job) => job.city === currentName)
+    for (const job of matchingJobs) {
+      await editJob(job.id, {
+        ...job,
+        city: nextName,
+        province: nextProvince,
+        posterImage: job.posterImage || '',
+        posterPath: job.posterPath || ''
+      })
+    }
+
+    if (form.city === currentName) {
+      setForm((prev) => ({ ...prev, city: nextName, province: nextProvince }))
+    }
+  }
+
+  const onDeleteCity = () => {
+    const currentName = selectedCityOption.trim()
+    if (!currentName) return
+
+    const linkedJobs = publicJobs.filter((job) => job.city === currentName)
+    if (linkedJobs.length) {
+      setError('This city is used in posted jobs, so it can be renamed but not deleted.')
+      return
+    }
+
+    setCityRecords((prev) => prev.filter((row) => row.name !== currentName))
+    setSelectedCityOption('')
+    setEditedCityName('')
+    setEditedCityProvince('')
+    if (form.city === currentName) {
+      setForm((prev) => ({ ...prev, city: '', province: '' }))
+    }
+    setError('')
+  }
+
+  const onSelectProvinceOption = (value) => {
+    setSelectedProvinceOption(value)
+    setEditedProvinceName(value)
+  }
+
+  const onRenameProvince = async () => {
+    const currentName = selectedProvinceOption.trim()
+    const nextName = editedProvinceName.trim()
+    if (!currentName || !nextName) return
+
+    const duplicate = provinceOptions.some(
+      (item) => item.toLowerCase() === nextName.toLowerCase() && item.toLowerCase() !== currentName.toLowerCase()
+    )
+    if (duplicate) {
+      setError('A province with this name already exists.')
+      return
+    }
+
+    setError('')
+    setProvinceOptions((prev) => prev.map((item) => (item === currentName ? nextName : item)).sort((a, b) => a.localeCompare(b)))
+    setSelectedProvinceOption(nextName)
+    setEditedProvinceName(nextName)
+    setCityRecords((prev) =>
+      prev
+        .map((row) => (row.province === currentName ? { ...row, province: nextName } : row))
+        .sort((a, b) => a.name.localeCompare(b.name))
+    )
+
+    const matchingJobs = publicJobs.filter((job) => job.province === currentName)
+    for (const job of matchingJobs) {
+      await editJob(job.id, {
+        ...job,
+        province: nextName,
+        posterImage: job.posterImage || '',
+        posterPath: job.posterPath || ''
+      })
+    }
+
+    if (form.province === currentName) {
+      setForm((prev) => ({ ...prev, province: nextName }))
+    }
+    if (newCityProvince === currentName) {
+      setNewCityProvince(nextName)
+    }
+  }
+
+  const onDeleteProvince = () => {
+    const currentName = selectedProvinceOption.trim()
+    if (!currentName) return
+
+    const linkedJobs = publicJobs.filter((job) => job.province === currentName)
+    const linkedCities = cityRecords.filter((row) => row.province === currentName)
+    if (linkedJobs.length || linkedCities.length) {
+      setError('This province is used in cities or posted jobs, so it can be renamed but not deleted.')
+      return
+    }
+
+    if (defaultProvinceOptions.includes(currentName)) {
+      setError('Built-in provinces can be renamed, but they cannot be deleted.')
+      return
+    }
+
+    setProvinceOptions((prev) => prev.filter((item) => item !== currentName))
+    setSelectedProvinceOption('')
+    setEditedProvinceName('')
+    if (form.province === currentName) {
+      setForm((prev) => ({ ...prev, province: '' }))
+    }
+    setError('')
   }
 
   const onAddDepartment = () => {
@@ -1314,6 +1491,82 @@ function PostJobPage() {
           </p>
         )}
 
+        <section className="admin-management-block">
+          <div className="panel-head-row">
+            <h2 className="panel-title admin-subtitle">Manage Locations</h2>
+          </div>
+          <p className="admin-form-note">
+            Add, rename, or remove cities and provinces from one place. If a city or province is already used in posted jobs,
+            it can be renamed but not deleted.
+          </p>
+
+          <div className="admin-lov-row admin-department-row">
+            <input value={newCity} onChange={(e) => setNewCity(e.target.value)} placeholder="Add New City" />
+            <select value={newCityProvince} onChange={(e) => setNewCityProvince(e.target.value)}>
+              <option value="">Select Province for New City</option>
+              {provinceOptions.map((province) => (
+                <option key={province} value={province}>{province}</option>
+              ))}
+            </select>
+            <button type="button" className="action-btn secondary" onClick={onAddCity}>Add City</button>
+          </div>
+
+          <div className="admin-lov-row admin-department-row">
+            <select value={selectedCityOption} onChange={(e) => onSelectCityOption(e.target.value)}>
+              <option value="">Select City to Edit</option>
+              {cityOptions.map((city) => (
+                <option key={city} value={city}>{city}</option>
+              ))}
+            </select>
+            <input
+              value={editedCityName}
+              onChange={(e) => setEditedCityName(e.target.value)}
+              placeholder="Rename Selected City"
+            />
+            <select value={editedCityProvince} onChange={(e) => setEditedCityProvince(e.target.value)}>
+              <option value="">Select Province for City</option>
+              {provinceOptions.map((province) => (
+                <option key={province} value={province}>{province}</option>
+              ))}
+            </select>
+            <div className="admin-inline-actions">
+              <button type="button" className="action-btn secondary" onClick={onRenameCity}>
+                Rename
+              </button>
+              <button type="button" className="action-btn" onClick={onDeleteCity}>
+                Delete
+              </button>
+            </div>
+          </div>
+
+          <div className="admin-lov-row admin-department-row">
+            <input value={newProvince} onChange={(e) => setNewProvince(e.target.value)} placeholder="Add New Province" />
+            <button type="button" className="action-btn secondary" onClick={onAddProvince}>Add Province</button>
+          </div>
+
+          <div className="admin-lov-row admin-department-row">
+            <select value={selectedProvinceOption} onChange={(e) => onSelectProvinceOption(e.target.value)}>
+              <option value="">Select Province to Edit</option>
+              {provinceOptions.map((province) => (
+                <option key={province} value={province}>{province}</option>
+              ))}
+            </select>
+            <input
+              value={editedProvinceName}
+              onChange={(e) => setEditedProvinceName(e.target.value)}
+              placeholder="Rename Selected Province"
+            />
+            <div className="admin-inline-actions">
+              <button type="button" className="action-btn secondary" onClick={onRenameProvince}>
+                Rename
+              </button>
+              <button type="button" className="action-btn" onClick={onDeleteProvince}>
+                Delete
+              </button>
+            </div>
+          </div>
+        </section>
+
         <form className="contact-form" onSubmit={onSubmit}>
           <input value={form.title} onChange={(e) => onChange('title', e.target.value)} placeholder="Job Title" required />
           <select value={form.type} onChange={(e) => onChange('type', e.target.value)} required>
@@ -1418,14 +1671,6 @@ function PostJobPage() {
                 <option key={city} value={city}>{city}</option>
               ))}
             </select>
-            <input value={newCity} onChange={(e) => setNewCity(e.target.value)} placeholder="Add New City" />
-            <select value={newCityProvince} onChange={(e) => setNewCityProvince(e.target.value)}>
-              <option value="">Select Province for New City</option>
-              {provinceOptions.map((province) => (
-                <option key={province} value={province}>{province}</option>
-              ))}
-            </select>
-            <button type="button" className="action-btn secondary" onClick={onAddCity}>Add City</button>
           </div>
           <div className="admin-lov-row">
             <select value={form.province} onChange={(e) => onChange('province', e.target.value)} required>
@@ -1434,8 +1679,6 @@ function PostJobPage() {
                 <option key={province} value={province}>{province}</option>
               ))}
             </select>
-            <input value={newProvince} onChange={(e) => setNewProvince(e.target.value)} placeholder="Add New Province" />
-            <button type="button" className="action-btn secondary" onClick={onAddProvince}>Add Province</button>
           </div>
           <select value={form.country} onChange={(e) => onChange('country', e.target.value)} required>
             <option value="">Select Country</option>
