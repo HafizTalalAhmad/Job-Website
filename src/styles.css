@@ -1857,6 +1857,11 @@ a:hover {
   gap: 8px;
 }
 
+.admin-department-row {
+  grid-template-columns: 1.35fr 1fr auto;
+  align-items: center;
+}
+
 .admin-position-row {
   display: grid;
   grid-template-columns: 180px 1fr auto;

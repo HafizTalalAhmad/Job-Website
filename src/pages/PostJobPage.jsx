@@ -4,6 +4,7 @@ import Breadcrumbs from '../components/Breadcrumbs'
 import { useJobs } from '../context/JobsContext'
 import { deleteContactMessage, deleteSubscriber, fetchContactMessages, fetchSubscribers, triggerJobAlert, updateContactMessage, updateSubscriber } from '../lib/jobsApi'
 import { fetchCurrentAdmin, hasSupabaseAuthConfig, loginAdmin, logoutAdmin } from '../lib/supabaseAuth'
+import { departmentDirectory } from '../data/departments'
 
 const defaultCityRecords = [
   { name: 'Lahore', province: 'Punjab' },
@@ -19,6 +20,10 @@ const defaultCityRecords = [
 const defaultProvinceOptions = ['Punjab', 'Sindh', 'Balochistan', 'KPK']
 const countryOptions = ['In Pakistan']
 const employmentTypeOptions = ['Full Time', 'Part Time', 'Contract']
+const DEPARTMENTS_STORAGE_KEY = 'jobs_hub_custom_departments'
+const defaultDepartmentOptions = [...new Set(departmentDirectory.map((department) => department.name))].sort((a, b) =>
+  a.localeCompare(b)
+)
 
 const initialState = {
   title: '',
@@ -84,6 +89,17 @@ function PostJobPage() {
   const [editJobId, setEditJobId] = useState('')
   const [cityRecords, setCityRecords] = useState(defaultCityRecords)
   const [provinceOptions, setProvinceOptions] = useState(defaultProvinceOptions)
+  const [departmentOptions, setDepartmentOptions] = useState(() => {
+    try {
+      const raw = localStorage.getItem(DEPARTMENTS_STORAGE_KEY)
+      const parsed = raw ? JSON.parse(raw) : []
+      const custom = Array.isArray(parsed) ? parsed.filter(Boolean) : []
+      return [...new Set([...defaultDepartmentOptions, ...custom])].sort((a, b) => a.localeCompare(b))
+    } catch {
+      return defaultDepartmentOptions
+    }
+  })
+  const [newDepartment, setNewDepartment] = useState('')
   const [newCity, setNewCity] = useState('')
   const [newCityProvince, setNewCityProvince] = useState('')
   const [newProvince, setNewProvince] = useState('')
@@ -116,6 +132,11 @@ function PostJobPage() {
     () => [...new Set(cityRecords.map((row) => row.name))].sort((a, b) => a.localeCompare(b)),
     [cityRecords]
   )
+
+  useEffect(() => {
+    const customDepartments = departmentOptions.filter((name) => !defaultDepartmentOptions.includes(name))
+    localStorage.setItem(DEPARTMENTS_STORAGE_KEY, JSON.stringify(customDepartments))
+  }, [departmentOptions])
 
   const onChange = (key, value) => setForm((prev) => ({ ...prev, [key]: value }))
 
@@ -293,6 +314,22 @@ function PostJobPage() {
     setNewProvince('')
   }
 
+  const onAddDepartment = () => {
+    const cleanDepartment = newDepartment.trim()
+    if (!cleanDepartment) return
+
+    const existing = departmentOptions.find((item) => item.toLowerCase() === cleanDepartment.toLowerCase())
+    const finalDepartment = existing || cleanDepartment
+
+    if (!existing) {
+      setDepartmentOptions((prev) => [...prev, cleanDepartment].sort((a, b) => a.localeCompare(b)))
+    }
+
+    setForm((prev) => ({ ...prev, organization: finalDepartment }))
+    setNewDepartment('')
+    setError('')
+  }
+
   const onAddPosition = () => {
     const cleanTitle = positionTitle.trim()
     const cleanCount = positionCount.trim()
@@ -319,6 +356,10 @@ function PostJobPage() {
 
     if (provinceName && !provinceOptions.includes(provinceName)) {
       setProvinceOptions((prev) => [...prev, provinceName].sort((a, b) => a.localeCompare(b)))
+    }
+
+    if (job.organization && !departmentOptions.some((item) => item.toLowerCase() === job.organization.toLowerCase())) {
+      setDepartmentOptions((prev) => [...prev, job.organization].sort((a, b) => a.localeCompare(b)))
     }
 
     setEditJobId(job.id)
@@ -760,6 +801,10 @@ function PostJobPage() {
           Type, and Type of Job. These fields power the pages for Departments, Location, Profession, Industry,
           Newspaper, and Date.
         </p>
+        <p className="admin-form-note">
+          For government jobs, choose a department from the list below. If a department is missing, add it once and it
+          will remain available in this admin form for future job posts.
+        </p>
         {!hasSupabaseConfig && (
           <p className="panel-intro">
             Local mode is active. Jobs will be saved in this browser only. Add Supabase env values for shared/public database storage.
@@ -768,7 +813,31 @@ function PostJobPage() {
 
         <form className="contact-form" onSubmit={onSubmit}>
           <input value={form.title} onChange={(e) => onChange('title', e.target.value)} placeholder="Job Title" required />
-          <input value={form.organization} onChange={(e) => onChange('organization', e.target.value)} placeholder="Department / Organization" required />
+          {form.type === 'government' ? (
+            <div className="admin-lov-row admin-department-row">
+              <select value={form.organization} onChange={(e) => onChange('organization', e.target.value)} required>
+                <option value="">Select Government Department</option>
+                {departmentOptions.map((department) => (
+                  <option key={department} value={department}>{department}</option>
+                ))}
+              </select>
+              <input
+                value={newDepartment}
+                onChange={(e) => setNewDepartment(e.target.value)}
+                placeholder="Add New Department"
+              />
+              <button type="button" className="action-btn secondary" onClick={onAddDepartment}>
+                Add Department
+              </button>
+            </div>
+          ) : (
+            <input
+              value={form.organization}
+              onChange={(e) => onChange('organization', e.target.value)}
+              placeholder="Organization / Company"
+              required
+            />
+          )}
           <div className="admin-lov-row">
             <select value={form.city} onChange={(e) => onCitySelect(e.target.value)} required>
               <option value="">Select City</option>
