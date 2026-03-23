@@ -300,25 +300,6 @@ a:hover {
   margin-bottom: 10px;
 }
 
-.home-news-section {
-  margin-top: 10px;
-}
-
-.home-news-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.home-news-card {
-  display: block;
-  border: 1px solid #d8e2ef;
-  background: #fbfdff;
-  border-radius: 4px;
-  padding: 12px;
-  text-decoration: none;
-}
-
 .home-news-meta {
   display: inline-block;
   margin-bottom: 8px;
@@ -327,14 +308,43 @@ a:hover {
   font-weight: 700;
 }
 
-.home-news-card h3 {
+.home-featured-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(300px, 0.9fr);
+  gap: 10px;
+}
+
+.home-featured-panel {
+  margin-bottom: 0;
+}
+
+.home-latest-updates-panel {
+  margin-bottom: 0;
+}
+
+.home-latest-updates-list {
+  display: grid;
+  gap: 10px;
+}
+
+.home-latest-update-item {
+  display: block;
+  border: 1px solid #d8e2ef;
+  background: #fbfdff;
+  border-radius: 4px;
+  padding: 12px;
+  text-decoration: none;
+}
+
+.home-latest-update-item strong {
+  display: block;
   margin: 0 0 8px;
   color: #1f4f97;
   font-size: 18px;
   line-height: 1.35;
 }
 
-.home-news-card p {
+.home-latest-update-item p {
   margin: 0;
   color: #51677f;
   font-size: 13px;
@@ -463,6 +473,42 @@ a:hover {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
+}
+
+.featured-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.featured-card {
+  display: block;
+  border: 1px solid #d8e2ef;
+  background: #fbfdff;
+  border-radius: 4px;
+  padding: 12px;
+  text-decoration: none;
+}
+
+.featured-org {
+  display: inline-block;
+  margin-bottom: 8px;
+  color: #51677f;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.featured-card h3 {
+  margin: 0 0 8px;
+  color: #1f4f97;
+  font-size: 18px;
+  line-height: 1.35;
+}
+
+.featured-card p {
+  margin: 0;
+  color: #51677f;
+  font-size: 13px;
 }
 
 .home-highlight-card {
@@ -1969,8 +2015,9 @@ a:hover {
 :root[data-theme='dark'] .helper-step-card,
 :root[data-theme='dark'] .department-card,
 :root[data-theme='dark'] .department-pill,
-:root[data-theme='dark'] .home-news-card,
 :root[data-theme='dark'] .feedback-prompt,
+:root[data-theme='dark'] .featured-card,
+:root[data-theme='dark'] .home-latest-update-item,
 :root[data-theme='dark'] .home-beginner-card,
 :root[data-theme='dark'] .home-start-card,
 :root[data-theme='dark'] .home-highlight-card {
@@ -1982,7 +2029,8 @@ a:hover {
 :root[data-theme='dark'] .department-card-head h3,
 :root[data-theme='dark'] .department-pill,
 :root[data-theme='dark'] .department-logo-badge,
-:root[data-theme='dark'] .home-news-card h3,
+:root[data-theme='dark'] .featured-card h3,
+:root[data-theme='dark'] .home-latest-update-item strong,
 :root[data-theme='dark'] .home-beginner-card h3,
 :root[data-theme='dark'] .home-start-card h3,
 :root[data-theme='dark'] .home-highlight-card strong,
@@ -1993,7 +2041,9 @@ a:hover {
 :root[data-theme='dark'] .hero-stat-box span,
 :root[data-theme='dark'] .helper-step-card h3,
 :root[data-theme='dark'] .department-card p,
-:root[data-theme='dark'] .home-news-card p,
+:root[data-theme='dark'] .featured-card p,
+:root[data-theme='dark'] .featured-org,
+:root[data-theme='dark'] .home-latest-update-item p,
 :root[data-theme='dark'] .home-highlight-card span {
   color: #cbd5e1;
 }
@@ -2130,6 +2180,7 @@ a:hover {
   .helper-steps-grid,
   .home-start-grid,
   .home-explore-grid,
+  .home-featured-layout,
   .home-highlight-list,
   .layout,
   .hero-inner,

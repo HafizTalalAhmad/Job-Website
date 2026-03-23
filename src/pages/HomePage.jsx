@@ -99,21 +99,6 @@ function HomePage() {
         </section>
         <LatestTicker jobs={jobs} />
         <HeroSlider />
-        <section className="home-news-section panel">
-          <div className="panel-head-row">
-            <h2 className="panel-title">News Updates</h2>
-            <span>Latest updates for job seekers</span>
-          </div>
-          <div className="home-news-grid">
-            {newsUpdates.map((job) => (
-              <Link key={job.id} to={`/job/${job.id}`} className="home-news-card">
-                <span className="home-news-meta">{job.postDate} | {job.source}</span>
-                <h3>{job.title}</h3>
-                <p>{job.organization} | {job.city}</p>
-              </Link>
-            ))}
-          </div>
-        </section>
         <section className="home-beginner-start panel">
           <div className="panel-head-row">
             <h2 className="panel-title">Choose the Easiest Way to Start</h2>
@@ -228,7 +213,24 @@ function HomePage() {
               ))}
             </div>
           </section>
-          <FeaturedJobs jobs={jobs} />
+          <section className="home-featured-layout">
+            <FeaturedJobs jobs={jobs} className="home-featured-panel" />
+            <section className="panel home-latest-updates-panel">
+              <div className="panel-head-row">
+                <h2 className="panel-title">Latest Updates</h2>
+                <span>Fresh notices</span>
+              </div>
+              <div className="home-latest-updates-list">
+                {newsUpdates.map((job) => (
+                  <Link key={job.id} to={`/job/${job.id}`} className="home-latest-update-item">
+                    <span className="home-news-meta">{job.postDate} | {job.source}</span>
+                    <strong>{job.title}</strong>
+                    <p>{job.organization} | {job.city}</p>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          </section>
           <section className="panel">
             <div className="panel-head-row">
               <h2 className="panel-title">Latest Job Bulletin</h2>

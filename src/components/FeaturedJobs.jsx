@@ -1,11 +1,11 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-function FeaturedJobs({ jobs }) {
+function FeaturedJobs({ jobs, className = '' }) {
   const featured = jobs.filter((job) => job.isFeatured).slice(0, 4)
 
   return (
-    <section className="panel">
+    <section className={`panel ${className}`.trim()}>
       <div className="panel-head-row">
         <h2 className="panel-title">Featured Jobs</h2>
         <Link to="/jobs/date" className="panel-link">View All</Link>
