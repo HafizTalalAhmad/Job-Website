@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { applyFilters, groupJobs, sortJobs } from '../utils/jobs'
 import JobGroupByDate from '../components/JobGroupByDate'
-import LatestTicker from '../components/LatestTicker'
 import HeroSlider from '../components/HeroSlider'
 import FeaturedJobs from '../components/FeaturedJobs'
 import { useJobs } from '../context/JobsContext'
@@ -97,7 +96,16 @@ function HomePage() {
             <Link to="/jobs/organization" className="action-btn secondary">Browse Departments</Link>
           </div>
         </section>
-        <LatestTicker jobs={jobs} />
+        <section className="home-direct-cta panel">
+          <div className="home-direct-cta-copy">
+            <h2>Click to See Latest Government Jobs</h2>
+            <p>Use this if you want the newest government job advertisements first.</p>
+          </div>
+          <div className="home-direct-cta-actions">
+            <Link to="/jobs/government" className="action-btn">Open Latest Government Jobs</Link>
+            <Link to="/jobs/date" className="action-btn secondary">Open Latest Jobs by Date</Link>
+          </div>
+        </section>
         <HeroSlider jobs={jobs} />
         <section className="home-beginner-start panel">
           <div className="panel-head-row">
@@ -224,7 +232,7 @@ function HomePage() {
                 <div className="home-latest-updates-track">
                   {[...newsUpdates, ...newsUpdates].map((job, index) => (
                     <Link key={`${job.id}-${index}`} to={`/job/${job.id}`} className="home-latest-update-line">
-                      <span className="home-latest-update-bullet">â€¢</span>
+                      <span className="home-latest-update-bullet">•</span>
                       <span>{job.postDate} | {job.source} | {job.title} | {job.organization} | {job.city}</span>
                     </Link>
                   ))}
@@ -276,3 +284,4 @@ function HomePage() {
 }
 
 export default HomePage
+
