@@ -1953,6 +1953,16 @@ a:hover {
   flex-wrap: wrap;
 }
 
+.admin-management-block {
+  margin-bottom: 14px;
+}
+
+.admin-management-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .admin-stats-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -2228,6 +2238,35 @@ a:hover {
   top: 88px;
   right: 18px;
   z-index: 60;
+}
+
+.admin-popup-shell {
+  inset: 0;
+  top: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(15, 23, 42, 0.45);
+}
+
+.admin-management-modal {
+  width: min(860px, calc(100vw - 40px));
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+}
+
+.admin-management-modal .panel-head-row {
+  margin-bottom: 10px;
+}
+
+.admin-management-modal h2 {
+  margin: 0;
+}
+
+.admin-management-modal p {
+  margin-bottom: 12px;
 }
 
 .bookmark-modal {
@@ -2828,6 +2867,10 @@ a:hover {
 :root[data-theme='dark'] .bookmark-modal {
   background: #1a2738;
   border-color: #334a63;
+}
+
+:root[data-theme='dark'] .admin-popup-shell {
+  background: rgba(2, 6, 23, 0.72);
 }
 
 :root[data-theme='dark'] .blog-post-card h2 {

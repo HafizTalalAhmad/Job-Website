@@ -240,6 +240,7 @@ function PostJobPage() {
   const [newSource, setNewSource] = useState('')
   const [selectedSourceOption, setSelectedSourceOption] = useState('')
   const [editedSourceName, setEditedSourceName] = useState('')
+  const [managementModal, setManagementModal] = useState('')
   const [newCity, setNewCity] = useState('')
   const [newCityProvince, setNewCityProvince] = useState('')
   const [newProvince, setNewProvince] = useState('')
@@ -629,6 +630,25 @@ function PostJobPage() {
       setForm((prev) => ({ ...prev, province: '' }))
     }
     setError('')
+  }
+
+  const openManagementModal = (type) => {
+    setError('')
+    setManagementModal(type)
+  }
+
+  const closeManagementModal = () => {
+    setManagementModal('')
+  }
+
+  const modalTitleMap = {
+    department: 'Manage Government Departments',
+    company: 'Manage Private Companies',
+    category: 'Manage Professions / Categories',
+    industry: 'Manage Industries',
+    source: 'Manage Sources / Newspapers',
+    city: 'Manage Cities',
+    province: 'Manage Provinces'
   }
 
   const onAddDepartment = () => {
@@ -1496,74 +1516,16 @@ function PostJobPage() {
             <h2 className="panel-title admin-subtitle">Manage Locations</h2>
           </div>
           <p className="admin-form-note">
-            Add, rename, or remove cities and provinces from one place. If a city or province is already used in posted jobs,
+            Open a popup to add, rename, or remove cities and provinces. If a city or province is already used in posted jobs,
             it can be renamed but not deleted.
           </p>
-
-          <div className="admin-lov-row admin-department-row">
-            <input value={newCity} onChange={(e) => setNewCity(e.target.value)} placeholder="Add New City" />
-            <select value={newCityProvince} onChange={(e) => setNewCityProvince(e.target.value)}>
-              <option value="">Select Province for New City</option>
-              {provinceOptions.map((province) => (
-                <option key={province} value={province}>{province}</option>
-              ))}
-            </select>
-            <button type="button" className="action-btn secondary" onClick={onAddCity}>Add City</button>
-          </div>
-
-          <div className="admin-lov-row admin-department-row">
-            <select value={selectedCityOption} onChange={(e) => onSelectCityOption(e.target.value)}>
-              <option value="">Select City to Edit</option>
-              {cityOptions.map((city) => (
-                <option key={city} value={city}>{city}</option>
-              ))}
-            </select>
-            <input
-              value={editedCityName}
-              onChange={(e) => setEditedCityName(e.target.value)}
-              placeholder="Rename Selected City"
-            />
-            <select value={editedCityProvince} onChange={(e) => setEditedCityProvince(e.target.value)}>
-              <option value="">Select Province for City</option>
-              {provinceOptions.map((province) => (
-                <option key={province} value={province}>{province}</option>
-              ))}
-            </select>
-            <div className="admin-inline-actions">
-              <button type="button" className="action-btn secondary" onClick={onRenameCity}>
-                Rename
-              </button>
-              <button type="button" className="action-btn" onClick={onDeleteCity}>
-                Delete
-              </button>
-            </div>
-          </div>
-
-          <div className="admin-lov-row admin-department-row">
-            <input value={newProvince} onChange={(e) => setNewProvince(e.target.value)} placeholder="Add New Province" />
-            <button type="button" className="action-btn secondary" onClick={onAddProvince}>Add Province</button>
-          </div>
-
-          <div className="admin-lov-row admin-department-row">
-            <select value={selectedProvinceOption} onChange={(e) => onSelectProvinceOption(e.target.value)}>
-              <option value="">Select Province to Edit</option>
-              {provinceOptions.map((province) => (
-                <option key={province} value={province}>{province}</option>
-              ))}
-            </select>
-            <input
-              value={editedProvinceName}
-              onChange={(e) => setEditedProvinceName(e.target.value)}
-              placeholder="Rename Selected Province"
-            />
-            <div className="admin-inline-actions">
-              <button type="button" className="action-btn secondary" onClick={onRenameProvince}>
-                Rename
-              </button>
-              <button type="button" className="action-btn" onClick={onDeleteProvince}>
-                Delete
-              </button>
-            </div>
+          <div className="admin-management-actions">
+            <button type="button" className="action-btn secondary" onClick={() => openManagementModal('city')}>
+              Manage Cities
+            </button>
+            <button type="button" className="action-btn secondary" onClick={() => openManagementModal('province')}>
+              Manage Provinces
+            </button>
           </div>
         </section>
 
@@ -1583,36 +1545,9 @@ function PostJobPage() {
                     <option key={department} value={department}>{department}</option>
                   ))}
                 </select>
-                <input
-                  value={newDepartment}
-                  onChange={(e) => setNewDepartment(e.target.value)}
-                  placeholder="Add New Department"
-                />
-                <button type="button" className="action-btn secondary" onClick={onAddDepartment}>
-                  Add Department
+                <button type="button" className="action-btn secondary" onClick={() => openManagementModal('department')}>
+                  Manage Departments
                 </button>
-              </div>
-
-              <div className="admin-lov-row admin-department-row">
-                <select value={selectedDepartmentOption} onChange={(e) => onSelectDepartmentOption(e.target.value)}>
-                  <option value="">Select Department to Edit</option>
-                  {departmentOptions.map((department) => (
-                    <option key={department} value={department}>{department}</option>
-                  ))}
-                </select>
-                <input
-                  value={editedDepartmentName}
-                  onChange={(e) => setEditedDepartmentName(e.target.value)}
-                  placeholder="Rename Selected Department"
-                />
-                <div className="admin-inline-actions">
-                  <button type="button" className="action-btn secondary" onClick={onRenameDepartment}>
-                    Rename
-                  </button>
-                  <button type="button" className="action-btn" onClick={onDeleteDepartmentOption}>
-                    Delete
-                  </button>
-                </div>
               </div>
             </>
           ) : form.type === 'private' ? (
@@ -1624,36 +1559,9 @@ function PostJobPage() {
                     <option key={company} value={company}>{company}</option>
                   ))}
                 </select>
-                <input
-                  value={newCompany}
-                  onChange={(e) => setNewCompany(e.target.value)}
-                  placeholder="Add New Company"
-                />
-                <button type="button" className="action-btn secondary" onClick={onAddCompany}>
-                  Add Company
+                <button type="button" className="action-btn secondary" onClick={() => openManagementModal('company')}>
+                  Manage Companies
                 </button>
-              </div>
-
-              <div className="admin-lov-row admin-department-row">
-                <select value={selectedCompanyOption} onChange={(e) => onSelectCompanyOption(e.target.value)}>
-                  <option value="">Select Company to Edit</option>
-                  {companyOptions.map((company) => (
-                    <option key={company} value={company}>{company}</option>
-                  ))}
-                </select>
-                <input
-                  value={editedCompanyName}
-                  onChange={(e) => setEditedCompanyName(e.target.value)}
-                  placeholder="Rename Selected Company"
-                />
-                <div className="admin-inline-actions">
-                  <button type="button" className="action-btn secondary" onClick={onRenameCompany}>
-                    Rename
-                  </button>
-                  <button type="button" className="action-btn" onClick={onDeleteCompanyOption}>
-                    Delete
-                  </button>
-                </div>
               </div>
             </>
           ) : (
@@ -1693,35 +1601,9 @@ function PostJobPage() {
                 <option key={item} value={item}>{item}</option>
               ))}
             </select>
-            <input
-              value={newCategory}
-              onChange={(e) => setNewCategory(e.target.value)}
-              placeholder="Add New Profession / Category"
-            />
-            <button type="button" className="action-btn secondary" onClick={onAddCategory}>
-              Add
+            <button type="button" className="action-btn secondary" onClick={() => openManagementModal('category')}>
+              Manage Categories
             </button>
-          </div>
-          <div className="admin-lov-row admin-department-row">
-            <select value={selectedCategoryOption} onChange={(e) => onSelectCategoryOption(e.target.value)}>
-              <option value="">Select Category to Edit</option>
-              {categoryOptions.map((item) => (
-                <option key={item} value={item}>{item}</option>
-              ))}
-            </select>
-            <input
-              value={editedCategoryName}
-              onChange={(e) => setEditedCategoryName(e.target.value)}
-              placeholder="Rename Selected Category"
-            />
-            <div className="admin-inline-actions">
-              <button type="button" className="action-btn secondary" onClick={onRenameCategory}>
-                Rename
-              </button>
-              <button type="button" className="action-btn" onClick={onDeleteCategoryOption}>
-                Delete
-              </button>
-            </div>
           </div>
           <div className="admin-lov-row admin-department-row">
             <select value={form.industry} onChange={(e) => onChange('industry', e.target.value)} required>
@@ -1730,35 +1612,9 @@ function PostJobPage() {
                 <option key={item} value={item}>{item}</option>
               ))}
             </select>
-            <input
-              value={newIndustry}
-              onChange={(e) => setNewIndustry(e.target.value)}
-              placeholder="Add New Industry"
-            />
-            <button type="button" className="action-btn secondary" onClick={onAddIndustry}>
-              Add
+            <button type="button" className="action-btn secondary" onClick={() => openManagementModal('industry')}>
+              Manage Industries
             </button>
-          </div>
-          <div className="admin-lov-row admin-department-row">
-            <select value={selectedIndustryOption} onChange={(e) => onSelectIndustryOption(e.target.value)}>
-              <option value="">Select Industry to Edit</option>
-              {industryOptions.map((item) => (
-                <option key={item} value={item}>{item}</option>
-              ))}
-            </select>
-            <input
-              value={editedIndustryName}
-              onChange={(e) => setEditedIndustryName(e.target.value)}
-              placeholder="Rename Selected Industry"
-            />
-            <div className="admin-inline-actions">
-              <button type="button" className="action-btn secondary" onClick={onRenameIndustry}>
-                Rename
-              </button>
-              <button type="button" className="action-btn" onClick={onDeleteIndustryOption}>
-                Delete
-              </button>
-            </div>
           </div>
           <select value={form.employmentType} onChange={(e) => onChange('employmentType', e.target.value)} required>
             <option value="">Select Type of Job</option>
@@ -1773,35 +1629,9 @@ function PostJobPage() {
                 <option key={item} value={item}>{item}</option>
               ))}
             </select>
-            <input
-              value={newSource}
-              onChange={(e) => setNewSource(e.target.value)}
-              placeholder="Add New Source / Newspaper"
-            />
-            <button type="button" className="action-btn secondary" onClick={onAddSource}>
-              Add
+            <button type="button" className="action-btn secondary" onClick={() => openManagementModal('source')}>
+              Manage Sources
             </button>
-          </div>
-          <div className="admin-lov-row admin-department-row">
-            <select value={selectedSourceOption} onChange={(e) => onSelectSourceOption(e.target.value)}>
-              <option value="">Select Source to Edit</option>
-              {sourceOptions.map((item) => (
-                <option key={item} value={item}>{item}</option>
-              ))}
-            </select>
-            <input
-              value={editedSourceName}
-              onChange={(e) => setEditedSourceName(e.target.value)}
-              placeholder="Rename Selected Source"
-            />
-            <div className="admin-inline-actions">
-              <button type="button" className="action-btn secondary" onClick={onRenameSource}>
-                Rename
-              </button>
-              <button type="button" className="action-btn" onClick={onDeleteSourceOption}>
-                Delete
-              </button>
-            </div>
           </div>
           <label>
             Post Date
@@ -1951,6 +1781,279 @@ function PostJobPage() {
           </>
         )}
       </section>
+      {managementModal && (
+        <div className="bookmark-toast-shell admin-popup-shell">
+          <div className="bookmark-modal admin-management-modal">
+            <div className="panel-head-row">
+              <h2>{modalTitleMap[managementModal]}</h2>
+              <button type="button" className="action-btn secondary" onClick={closeManagementModal}>
+                Close
+              </button>
+            </div>
+
+            {managementModal === 'department' && (
+              <>
+                <p>Add a new department or rename an existing one. Used departments cannot be deleted.</p>
+                <div className="admin-lov-row admin-department-row">
+                  <input
+                    value={newDepartment}
+                    onChange={(e) => setNewDepartment(e.target.value)}
+                    placeholder="Add New Department"
+                  />
+                  <button type="button" className="action-btn secondary" onClick={onAddDepartment}>
+                    Add Department
+                  </button>
+                </div>
+                <div className="admin-lov-row admin-department-row">
+                  <select value={selectedDepartmentOption} onChange={(e) => onSelectDepartmentOption(e.target.value)}>
+                    <option value="">Select Department to Edit</option>
+                    {departmentOptions.map((department) => (
+                      <option key={department} value={department}>{department}</option>
+                    ))}
+                  </select>
+                  <input
+                    value={editedDepartmentName}
+                    onChange={(e) => setEditedDepartmentName(e.target.value)}
+                    placeholder="Rename Selected Department"
+                  />
+                  <div className="admin-inline-actions">
+                    <button type="button" className="action-btn secondary" onClick={onRenameDepartment}>
+                      Rename
+                    </button>
+                    <button type="button" className="action-btn" onClick={onDeleteDepartmentOption}>
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {managementModal === 'company' && (
+              <>
+                <p>Add a new company or rename an existing one. Used companies cannot be deleted.</p>
+                <div className="admin-lov-row admin-department-row">
+                  <input
+                    value={newCompany}
+                    onChange={(e) => setNewCompany(e.target.value)}
+                    placeholder="Add New Company"
+                  />
+                  <button type="button" className="action-btn secondary" onClick={onAddCompany}>
+                    Add Company
+                  </button>
+                </div>
+                <div className="admin-lov-row admin-department-row">
+                  <select value={selectedCompanyOption} onChange={(e) => onSelectCompanyOption(e.target.value)}>
+                    <option value="">Select Company to Edit</option>
+                    {companyOptions.map((company) => (
+                      <option key={company} value={company}>{company}</option>
+                    ))}
+                  </select>
+                  <input
+                    value={editedCompanyName}
+                    onChange={(e) => setEditedCompanyName(e.target.value)}
+                    placeholder="Rename Selected Company"
+                  />
+                  <div className="admin-inline-actions">
+                    <button type="button" className="action-btn secondary" onClick={onRenameCompany}>
+                      Rename
+                    </button>
+                    <button type="button" className="action-btn" onClick={onDeleteCompanyOption}>
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {managementModal === 'category' && (
+              <>
+                <p>Add a new profession/category or rename an existing one. Used values cannot be deleted.</p>
+                <div className="admin-lov-row admin-department-row">
+                  <input
+                    value={newCategory}
+                    onChange={(e) => setNewCategory(e.target.value)}
+                    placeholder="Add New Profession / Category"
+                  />
+                  <button type="button" className="action-btn secondary" onClick={onAddCategory}>
+                    Add
+                  </button>
+                </div>
+                <div className="admin-lov-row admin-department-row">
+                  <select value={selectedCategoryOption} onChange={(e) => onSelectCategoryOption(e.target.value)}>
+                    <option value="">Select Category to Edit</option>
+                    {categoryOptions.map((item) => (
+                      <option key={item} value={item}>{item}</option>
+                    ))}
+                  </select>
+                  <input
+                    value={editedCategoryName}
+                    onChange={(e) => setEditedCategoryName(e.target.value)}
+                    placeholder="Rename Selected Category"
+                  />
+                  <div className="admin-inline-actions">
+                    <button type="button" className="action-btn secondary" onClick={onRenameCategory}>
+                      Rename
+                    </button>
+                    <button type="button" className="action-btn" onClick={onDeleteCategoryOption}>
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {managementModal === 'industry' && (
+              <>
+                <p>Add a new industry or rename an existing one. Used values cannot be deleted.</p>
+                <div className="admin-lov-row admin-department-row">
+                  <input
+                    value={newIndustry}
+                    onChange={(e) => setNewIndustry(e.target.value)}
+                    placeholder="Add New Industry"
+                  />
+                  <button type="button" className="action-btn secondary" onClick={onAddIndustry}>
+                    Add
+                  </button>
+                </div>
+                <div className="admin-lov-row admin-department-row">
+                  <select value={selectedIndustryOption} onChange={(e) => onSelectIndustryOption(e.target.value)}>
+                    <option value="">Select Industry to Edit</option>
+                    {industryOptions.map((item) => (
+                      <option key={item} value={item}>{item}</option>
+                    ))}
+                  </select>
+                  <input
+                    value={editedIndustryName}
+                    onChange={(e) => setEditedIndustryName(e.target.value)}
+                    placeholder="Rename Selected Industry"
+                  />
+                  <div className="admin-inline-actions">
+                    <button type="button" className="action-btn secondary" onClick={onRenameIndustry}>
+                      Rename
+                    </button>
+                    <button type="button" className="action-btn" onClick={onDeleteIndustryOption}>
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {managementModal === 'source' && (
+              <>
+                <p>Add a new source/newspaper or rename an existing one. Used values cannot be deleted.</p>
+                <div className="admin-lov-row admin-department-row">
+                  <input
+                    value={newSource}
+                    onChange={(e) => setNewSource(e.target.value)}
+                    placeholder="Add New Source / Newspaper"
+                  />
+                  <button type="button" className="action-btn secondary" onClick={onAddSource}>
+                    Add
+                  </button>
+                </div>
+                <div className="admin-lov-row admin-department-row">
+                  <select value={selectedSourceOption} onChange={(e) => onSelectSourceOption(e.target.value)}>
+                    <option value="">Select Source to Edit</option>
+                    {sourceOptions.map((item) => (
+                      <option key={item} value={item}>{item}</option>
+                    ))}
+                  </select>
+                  <input
+                    value={editedSourceName}
+                    onChange={(e) => setEditedSourceName(e.target.value)}
+                    placeholder="Rename Selected Source"
+                  />
+                  <div className="admin-inline-actions">
+                    <button type="button" className="action-btn secondary" onClick={onRenameSource}>
+                      Rename
+                    </button>
+                    <button type="button" className="action-btn" onClick={onDeleteSourceOption}>
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {managementModal === 'city' && (
+              <>
+                <p>Add a new city or rename an existing one. Used cities cannot be deleted.</p>
+                <div className="admin-lov-row admin-department-row">
+                  <input value={newCity} onChange={(e) => setNewCity(e.target.value)} placeholder="Add New City" />
+                  <select value={newCityProvince} onChange={(e) => setNewCityProvince(e.target.value)}>
+                    <option value="">Select Province for New City</option>
+                    {provinceOptions.map((province) => (
+                      <option key={province} value={province}>{province}</option>
+                    ))}
+                  </select>
+                  <button type="button" className="action-btn secondary" onClick={onAddCity}>Add City</button>
+                </div>
+                <div className="admin-lov-row admin-department-row">
+                  <select value={selectedCityOption} onChange={(e) => onSelectCityOption(e.target.value)}>
+                    <option value="">Select City to Edit</option>
+                    {cityOptions.map((city) => (
+                      <option key={city} value={city}>{city}</option>
+                    ))}
+                  </select>
+                  <input
+                    value={editedCityName}
+                    onChange={(e) => setEditedCityName(e.target.value)}
+                    placeholder="Rename Selected City"
+                  />
+                  <select value={editedCityProvince} onChange={(e) => setEditedCityProvince(e.target.value)}>
+                    <option value="">Select Province for City</option>
+                    {provinceOptions.map((province) => (
+                      <option key={province} value={province}>{province}</option>
+                    ))}
+                  </select>
+                  <div className="admin-inline-actions">
+                    <button type="button" className="action-btn secondary" onClick={onRenameCity}>
+                      Rename
+                    </button>
+                    <button type="button" className="action-btn" onClick={onDeleteCity}>
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {managementModal === 'province' && (
+              <>
+                <p>Add a new province or rename an existing one. Provinces linked to cities or jobs cannot be deleted.</p>
+                <div className="admin-lov-row admin-department-row">
+                  <input value={newProvince} onChange={(e) => setNewProvince(e.target.value)} placeholder="Add New Province" />
+                  <button type="button" className="action-btn secondary" onClick={onAddProvince}>Add Province</button>
+                </div>
+                <div className="admin-lov-row admin-department-row">
+                  <select value={selectedProvinceOption} onChange={(e) => onSelectProvinceOption(e.target.value)}>
+                    <option value="">Select Province to Edit</option>
+                    {provinceOptions.map((province) => (
+                      <option key={province} value={province}>{province}</option>
+                    ))}
+                  </select>
+                  <input
+                    value={editedProvinceName}
+                    onChange={(e) => setEditedProvinceName(e.target.value)}
+                    placeholder="Rename Selected Province"
+                  />
+                  <div className="admin-inline-actions">
+                    <button type="button" className="action-btn secondary" onClick={onRenameProvince}>
+                      Rename
+                    </button>
+                    <button type="button" className="action-btn" onClick={onDeleteProvince}>
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {error && <p className="form-error">{error}</p>}
+          </div>
+        </div>
+      )}
     </main>
   )
 }
