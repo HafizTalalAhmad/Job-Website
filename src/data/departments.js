@@ -5,6 +5,10 @@ import logoPakArmy from '../assets/department-logos-official/pak-army.ico'
 import logoPaf from '../assets/department-logos-official/paf.ico'
 import logoPakNavy from '../assets/department-logos-official/pak-navy.ico'
 import logoHec from '../assets/department-logos-official/hec.ico'
+import logoPunjabPolice from '../assets/department-logos-official/punjab-police.ico'
+import logoFia from '../assets/department-logos-official/fia.ico'
+import logoAnf from '../assets/department-logos-official/anf.png'
+import logoNhmp from '../assets/department-logos-official/nhmp.png'
 
 const slugify = (value) =>
   value
@@ -104,7 +108,8 @@ const departmentSeed = [
   {
     name: 'Punjab Police',
     description: 'Police department jobs for field operations, investigation, and administration.',
-    aliases: ['Punjab Police']
+    aliases: ['Punjab Police'],
+    logo: logoPunjabPolice
   },
   {
     name: 'Pakistan Railways',
@@ -373,12 +378,14 @@ const departmentSeed = [
   {
     name: 'National Highway and Motorway Police',
     description: 'Motorway policing and traffic management careers.',
-    aliases: ['National Highway and Motorway Police', 'NHMP', 'Motorway Police']
+    aliases: ['National Highway and Motorway Police', 'NHMP', 'Motorway Police'],
+    logo: logoNhmp
   },
   {
     name: 'FIA',
     description: 'Federal Investigation Agency jobs in investigation, cybercrime, and administration.',
-    aliases: ['Federal Investigation Agency', 'FIA']
+    aliases: ['Federal Investigation Agency', 'FIA'],
+    logo: logoFia
   },
   {
     name: 'ASF',
@@ -388,7 +395,8 @@ const departmentSeed = [
   {
     name: 'ANF',
     description: 'Anti Narcotics Force jobs in enforcement, intelligence, and support services.',
-    aliases: ['Anti Narcotics Force', 'ANF']
+    aliases: ['Anti Narcotics Force', 'ANF'],
+    logo: logoAnf
   },
   {
     name: 'Pakistan Railways',
