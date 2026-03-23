@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 function FeaturedJobs({ jobs, className = '' }) {
-  const featured = jobs.filter((job) => job.isFeatured).slice(0, 4)
+  const featured = jobs.filter((job) => job.isFeatured)
 
   return (
     <section className={`panel ${className}`.trim()}>

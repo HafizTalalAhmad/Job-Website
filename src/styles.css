@@ -614,9 +614,12 @@ a:hover {
 
 .featured-grid {
   display: grid;
-  gap: 8px;
+  gap: 7px;
   height: 220px;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 4px;
+  scrollbar-width: thin;
 }
 
 .featured-card {
@@ -624,7 +627,7 @@ a:hover {
   border: 1px solid #d8e2ef;
   background: #fbfdff;
   border-radius: 4px;
-  padding: 8px 10px;
+  padding: 7px 10px;
   text-decoration: none;
 }
 
@@ -640,7 +643,7 @@ a:hover {
 .featured-card h3 {
   margin: 0 0 4px;
   color: #1f4f97;
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.25;
 }
 
@@ -648,6 +651,15 @@ a:hover {
   margin: 0;
   color: #51677f;
   font-size: 11px;
+}
+
+.featured-grid::-webkit-scrollbar {
+  width: 6px;
+}
+
+.featured-grid::-webkit-scrollbar-thumb {
+  background: #c6d4e6;
+  border-radius: 999px;
 }
 
 .home-highlight-card {
