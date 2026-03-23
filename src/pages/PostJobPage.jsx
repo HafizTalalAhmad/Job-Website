@@ -21,9 +21,27 @@ const defaultProvinceOptions = ['Punjab', 'Sindh', 'Balochistan', 'KPK']
 const countryOptions = ['In Pakistan']
 const employmentTypeOptions = ['Full Time', 'Part Time', 'Contract']
 const DEPARTMENTS_STORAGE_KEY = 'jobs_hub_custom_departments'
+const COMPANIES_STORAGE_KEY = 'jobs_hub_custom_companies'
 const defaultDepartmentOptions = [...new Set(departmentDirectory.map((department) => department.name))].sort((a, b) =>
   a.localeCompare(b)
 )
+const defaultCompanyOptions = [
+  '10Pearls',
+  'Systems Limited',
+  'NETSOL',
+  'TRG Pakistan',
+  'Jazz',
+  'Telenor Pakistan',
+  'Zong',
+  'Ufone',
+  'Engro',
+  'HBL',
+  'UBL',
+  'Meezan Bank',
+  'Packages Limited',
+  'PTCL',
+  'Daraz'
+].sort((a, b) => a.localeCompare(b))
 
 const initialState = {
   title: '',
@@ -102,6 +120,19 @@ function PostJobPage() {
   const [newDepartment, setNewDepartment] = useState('')
   const [selectedDepartmentOption, setSelectedDepartmentOption] = useState('')
   const [editedDepartmentName, setEditedDepartmentName] = useState('')
+  const [companyOptions, setCompanyOptions] = useState(() => {
+    try {
+      const raw = localStorage.getItem(COMPANIES_STORAGE_KEY)
+      const parsed = raw ? JSON.parse(raw) : []
+      const custom = Array.isArray(parsed) ? parsed.filter(Boolean) : []
+      return [...new Set([...defaultCompanyOptions, ...custom])].sort((a, b) => a.localeCompare(b))
+    } catch {
+      return defaultCompanyOptions
+    }
+  })
+  const [newCompany, setNewCompany] = useState('')
+  const [selectedCompanyOption, setSelectedCompanyOption] = useState('')
+  const [editedCompanyName, setEditedCompanyName] = useState('')
   const [newCity, setNewCity] = useState('')
   const [newCityProvince, setNewCityProvince] = useState('')
   const [newProvince, setNewProvince] = useState('')
@@ -139,11 +170,20 @@ function PostJobPage() {
     () => departmentOptions.filter((name) => !defaultDepartmentOptions.includes(name)),
     [departmentOptions]
   )
+  const customCompanyOptions = useMemo(
+    () => companyOptions.filter((name) => !defaultCompanyOptions.includes(name)),
+    [companyOptions]
+  )
 
   useEffect(() => {
     const customDepartments = departmentOptions.filter((name) => !defaultDepartmentOptions.includes(name))
     localStorage.setItem(DEPARTMENTS_STORAGE_KEY, JSON.stringify(customDepartments))
   }, [departmentOptions])
+
+  useEffect(() => {
+    const customCompanies = companyOptions.filter((name) => !defaultCompanyOptions.includes(name))
+    localStorage.setItem(COMPANIES_STORAGE_KEY, JSON.stringify(customCompanies))
+  }, [companyOptions])
 
   const onChange = (key, value) => setForm((prev) => ({ ...prev, [key]: value }))
 
@@ -337,6 +377,22 @@ function PostJobPage() {
     setError('')
   }
 
+  const onAddCompany = () => {
+    const cleanCompany = newCompany.trim()
+    if (!cleanCompany) return
+
+    const existing = companyOptions.find((item) => item.toLowerCase() === cleanCompany.toLowerCase())
+    const finalCompany = existing || cleanCompany
+
+    if (!existing) {
+      setCompanyOptions((prev) => [...prev, cleanCompany].sort((a, b) => a.localeCompare(b)))
+    }
+
+    setForm((prev) => ({ ...prev, organization: finalCompany }))
+    setNewCompany('')
+    setError('')
+  }
+
   const onSelectDepartmentOption = (value) => {
     setSelectedDepartmentOption(value)
     setEditedDepartmentName(value)
@@ -395,6 +451,70 @@ function PostJobPage() {
     setDepartmentOptions((prev) => prev.filter((item) => item !== currentName))
     setSelectedDepartmentOption('')
     setEditedDepartmentName('')
+    if (form.organization === currentName) {
+      setForm((prev) => ({ ...prev, organization: '' }))
+    }
+    setError('')
+  }
+
+  const onSelectCompanyOption = (value) => {
+    setSelectedCompanyOption(value)
+    setEditedCompanyName(value)
+  }
+
+  const onRenameCompany = async () => {
+    const currentName = selectedCompanyOption.trim()
+    const nextName = editedCompanyName.trim()
+
+    if (!currentName || !nextName) return
+    if (defaultCompanyOptions.includes(currentName)) {
+      setError('Built-in companies cannot be renamed from admin. Add a custom company if needed.')
+      return
+    }
+    const duplicate = companyOptions.some(
+      (item) => item.toLowerCase() === nextName.toLowerCase() && item.toLowerCase() !== currentName.toLowerCase()
+    )
+    if (duplicate) {
+      setError('A company with this name already exists.')
+      return
+    }
+
+    setError('')
+    setCompanyOptions((prev) => prev.map((item) => (item === currentName ? nextName : item)).sort((a, b) => a.localeCompare(b)))
+    setSelectedCompanyOption(nextName)
+    setEditedCompanyName(nextName)
+
+    const matchingJobs = publicJobs.filter((job) => job.organization === currentName && job.type === 'private')
+    for (const job of matchingJobs) {
+      await editJob(job.id, {
+        ...job,
+        organization: nextName,
+        posterImage: job.posterImage || '',
+        posterPath: job.posterPath || ''
+      })
+    }
+
+    if (form.organization === currentName) {
+      setForm((prev) => ({ ...prev, organization: nextName }))
+    }
+  }
+
+  const onDeleteCompanyOption = () => {
+    const currentName = selectedCompanyOption.trim()
+    if (!currentName) return
+    if (defaultCompanyOptions.includes(currentName)) {
+      setError('Built-in companies cannot be deleted from admin.')
+      return
+    }
+    const linkedJobs = publicJobs.filter((job) => job.organization === currentName && job.type === 'private')
+    if (linkedJobs.length) {
+      setError('This company is currently used in posted private jobs. Rename it first or update those jobs.')
+      return
+    }
+
+    setCompanyOptions((prev) => prev.filter((item) => item !== currentName))
+    setSelectedCompanyOption('')
+    setEditedCompanyName('')
     if (form.organization === currentName) {
       setForm((prev) => ({ ...prev, organization: '' }))
     }
@@ -927,6 +1047,47 @@ function PostJobPage() {
                     Rename
                   </button>
                   <button type="button" className="action-btn" onClick={onDeleteDepartmentOption}>
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </>
+          ) : form.type === 'private' ? (
+            <>
+              <div className="admin-lov-row admin-department-row">
+                <select value={form.organization} onChange={(e) => onChange('organization', e.target.value)} required>
+                  <option value="">Select Private Company</option>
+                  {companyOptions.map((company) => (
+                    <option key={company} value={company}>{company}</option>
+                  ))}
+                </select>
+                <input
+                  value={newCompany}
+                  onChange={(e) => setNewCompany(e.target.value)}
+                  placeholder="Add New Company"
+                />
+                <button type="button" className="action-btn secondary" onClick={onAddCompany}>
+                  Add Company
+                </button>
+              </div>
+
+              <div className="admin-lov-row admin-department-row">
+                <select value={selectedCompanyOption} onChange={(e) => onSelectCompanyOption(e.target.value)}>
+                  <option value="">Select Custom Company to Edit</option>
+                  {customCompanyOptions.map((company) => (
+                    <option key={company} value={company}>{company}</option>
+                  ))}
+                </select>
+                <input
+                  value={editedCompanyName}
+                  onChange={(e) => setEditedCompanyName(e.target.value)}
+                  placeholder="Rename Selected Company"
+                />
+                <div className="admin-inline-actions">
+                  <button type="button" className="action-btn secondary" onClick={onRenameCompany}>
+                    Rename
+                  </button>
+                  <button type="button" className="action-btn" onClick={onDeleteCompanyOption}>
                     Delete
                   </button>
                 </div>
