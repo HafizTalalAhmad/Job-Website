@@ -670,8 +670,8 @@ a:hover {
 
 .hero-news-banner {
   position: absolute;
-  left: 20px;
-  right: 20px;
+  left: 0;
+  right: 0;
   bottom: 18px;
   display: grid;
   grid-template-columns: auto 1fr;
