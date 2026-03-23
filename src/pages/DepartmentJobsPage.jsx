@@ -5,6 +5,17 @@ import { departmentDirectory, findDepartmentBySlug, getDepartmentJobs } from '..
 import { useJobs } from '../context/JobsContext'
 import { groupJobs, sortJobs } from '../utils/jobs'
 
+const DepartmentLogo = ({ department, large = false }) =>
+  department.logo ? (
+    <img
+      src={department.logo}
+      alt={`${department.name} logo`}
+      className={`department-logo-image${large ? ' large' : ''}`}
+    />
+  ) : (
+    <span className={`department-logo-badge${large ? ' large' : ''}`}>{department.logoText}</span>
+  )
+
 function DepartmentJobsPage() {
   const { slug } = useParams()
   const { jobs } = useJobs()
@@ -38,7 +49,7 @@ function DepartmentJobsPage() {
           <div className="page-hero-copy">
             <span className="section-kicker">Department Jobs</span>
             <div className="department-hero-row">
-              <span className="department-logo-badge large">{department.logoText}</span>
+              <DepartmentLogo department={department} large />
               <div>
                 <h1 className="panel-title">{department.name} Jobs</h1>
                 <span className={`department-scope-badge scope-${department.scope.toLowerCase().replace(/\s+/g, '-')}`}>

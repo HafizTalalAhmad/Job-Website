@@ -1023,10 +1023,27 @@ a:hover {
   flex-shrink: 0;
 }
 
+.department-logo-image {
+  width: 34px;
+  height: 34px;
+  object-fit: cover;
+  border-radius: 999px;
+  border: 1px solid #cfd9b1;
+  background: #ffffff;
+  flex-shrink: 0;
+  box-shadow: 0 3px 8px rgba(21, 47, 80, 0.08);
+}
+
 .department-logo-badge.large {
   width: 56px;
   height: 56px;
   font-size: 20px;
+}
+
+.department-logo-image.large {
+  width: 56px;
+  height: 56px;
+  border-width: 2px;
 }
 
 .department-hero-row {
@@ -2528,6 +2545,12 @@ a:hover {
   background: #443114;
   border-color: #7d5b28;
   color: #f3d29a;
+}
+
+:root[data-theme='dark'] .department-logo-image {
+  border-color: #4f6b49;
+  background: #f8fafc;
+  box-shadow: 0 6px 16px rgba(2, 6, 23, 0.22);
 }
 
 :root[data-theme='dark'] .contact-right h3 {
