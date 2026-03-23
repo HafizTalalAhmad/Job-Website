@@ -22,6 +22,8 @@ const countryOptions = ['In Pakistan']
 const employmentTypeOptions = ['Full Time', 'Part Time', 'Contract', 'Internship', 'Remote']
 const DEPARTMENTS_STORAGE_KEY = 'jobs_hub_custom_departments'
 const COMPANIES_STORAGE_KEY = 'jobs_hub_custom_companies'
+const CATEGORIES_STORAGE_KEY = 'jobs_hub_custom_categories'
+const INDUSTRIES_STORAGE_KEY = 'jobs_hub_custom_industries'
 const defaultDepartmentOptions = [...new Set(departmentDirectory.map((department) => department.name))].sort((a, b) =>
   a.localeCompare(b)
 )
@@ -41,6 +43,39 @@ const defaultCompanyOptions = [
   'Packages Limited',
   'PTCL',
   'Daraz'
+].sort((a, b) => a.localeCompare(b))
+const defaultCategoryOptions = [
+  'Administration',
+  'Banking',
+  'Data Entry',
+  'Design',
+  'Education',
+  'Engineering',
+  'Finance',
+  'Healthcare',
+  'Human Resources',
+  'IT',
+  'Management',
+  'Marketing',
+  'Operations',
+  'Software Development',
+  'Teaching'
+].sort((a, b) => a.localeCompare(b))
+const defaultIndustryOptions = [
+  'Aviation',
+  'Banking',
+  'Defence',
+  'Education',
+  'Energy',
+  'Finance',
+  'Government',
+  'Healthcare',
+  'Information Technology',
+  'Logistics',
+  'Manufacturing',
+  'Public Sector',
+  'Telecom',
+  'Transport'
 ].sort((a, b) => a.localeCompare(b))
 
 const initialState = {
@@ -133,6 +168,32 @@ function PostJobPage() {
   const [newCompany, setNewCompany] = useState('')
   const [selectedCompanyOption, setSelectedCompanyOption] = useState('')
   const [editedCompanyName, setEditedCompanyName] = useState('')
+  const [categoryOptions, setCategoryOptions] = useState(() => {
+    try {
+      const raw = localStorage.getItem(CATEGORIES_STORAGE_KEY)
+      const parsed = raw ? JSON.parse(raw) : []
+      const custom = Array.isArray(parsed) ? parsed.filter(Boolean) : []
+      return [...new Set([...defaultCategoryOptions, ...custom])].sort((a, b) => a.localeCompare(b))
+    } catch {
+      return defaultCategoryOptions
+    }
+  })
+  const [newCategory, setNewCategory] = useState('')
+  const [selectedCategoryOption, setSelectedCategoryOption] = useState('')
+  const [editedCategoryName, setEditedCategoryName] = useState('')
+  const [industryOptions, setIndustryOptions] = useState(() => {
+    try {
+      const raw = localStorage.getItem(INDUSTRIES_STORAGE_KEY)
+      const parsed = raw ? JSON.parse(raw) : []
+      const custom = Array.isArray(parsed) ? parsed.filter(Boolean) : []
+      return [...new Set([...defaultIndustryOptions, ...custom])].sort((a, b) => a.localeCompare(b))
+    } catch {
+      return defaultIndustryOptions
+    }
+  })
+  const [newIndustry, setNewIndustry] = useState('')
+  const [selectedIndustryOption, setSelectedIndustryOption] = useState('')
+  const [editedIndustryName, setEditedIndustryName] = useState('')
   const [newCity, setNewCity] = useState('')
   const [newCityProvince, setNewCityProvince] = useState('')
   const [newProvince, setNewProvince] = useState('')
@@ -175,6 +236,16 @@ function PostJobPage() {
     const customCompanies = companyOptions.filter((name) => !defaultCompanyOptions.includes(name))
     localStorage.setItem(COMPANIES_STORAGE_KEY, JSON.stringify(customCompanies))
   }, [companyOptions])
+
+  useEffect(() => {
+    const customCategories = categoryOptions.filter((name) => !defaultCategoryOptions.includes(name))
+    localStorage.setItem(CATEGORIES_STORAGE_KEY, JSON.stringify(customCategories))
+  }, [categoryOptions])
+
+  useEffect(() => {
+    const customIndustries = industryOptions.filter((name) => !defaultIndustryOptions.includes(name))
+    localStorage.setItem(INDUSTRIES_STORAGE_KEY, JSON.stringify(customIndustries))
+  }, [industryOptions])
 
   const onChange = (key, value) => setForm((prev) => ({ ...prev, [key]: value }))
 
@@ -384,6 +455,38 @@ function PostJobPage() {
     setError('')
   }
 
+  const onAddCategory = () => {
+    const cleanCategory = newCategory.trim()
+    if (!cleanCategory) return
+
+    const existing = categoryOptions.find((item) => item.toLowerCase() === cleanCategory.toLowerCase())
+    const finalCategory = existing || cleanCategory
+
+    if (!existing) {
+      setCategoryOptions((prev) => [...prev, cleanCategory].sort((a, b) => a.localeCompare(b)))
+    }
+
+    setForm((prev) => ({ ...prev, category: finalCategory }))
+    setNewCategory('')
+    setError('')
+  }
+
+  const onAddIndustry = () => {
+    const cleanIndustry = newIndustry.trim()
+    if (!cleanIndustry) return
+
+    const existing = industryOptions.find((item) => item.toLowerCase() === cleanIndustry.toLowerCase())
+    const finalIndustry = existing || cleanIndustry
+
+    if (!existing) {
+      setIndustryOptions((prev) => [...prev, cleanIndustry].sort((a, b) => a.localeCompare(b)))
+    }
+
+    setForm((prev) => ({ ...prev, industry: finalIndustry }))
+    setNewIndustry('')
+    setError('')
+  }
+
   const onSelectDepartmentOption = (value) => {
     setSelectedDepartmentOption(value)
     setEditedDepartmentName(value)
@@ -502,6 +605,124 @@ function PostJobPage() {
     setEditedCompanyName('')
     if (form.organization === currentName) {
       setForm((prev) => ({ ...prev, organization: '' }))
+    }
+    setError('')
+  }
+
+  const onSelectCategoryOption = (value) => {
+    setSelectedCategoryOption(value)
+    setEditedCategoryName(value)
+  }
+
+  const onRenameCategory = async () => {
+    const currentName = selectedCategoryOption.trim()
+    const nextName = editedCategoryName.trim()
+    if (!currentName || !nextName) return
+
+    const duplicate = categoryOptions.some(
+      (item) => item.toLowerCase() === nextName.toLowerCase() && item.toLowerCase() !== currentName.toLowerCase()
+    )
+    if (duplicate) {
+      setError('A profession/category with this name already exists.')
+      return
+    }
+
+    setError('')
+    setCategoryOptions((prev) => prev.map((item) => (item === currentName ? nextName : item)).sort((a, b) => a.localeCompare(b)))
+    setSelectedCategoryOption(nextName)
+    setEditedCategoryName(nextName)
+
+    const matchingJobs = publicJobs.filter((job) => job.category === currentName)
+    for (const job of matchingJobs) {
+      await editJob(job.id, {
+        ...job,
+        category: nextName,
+        posterImage: job.posterImage || '',
+        posterPath: job.posterPath || ''
+      })
+    }
+
+    if (form.category === currentName) {
+      setForm((prev) => ({ ...prev, category: nextName }))
+    }
+  }
+
+  const onDeleteCategoryOption = () => {
+    const currentName = selectedCategoryOption.trim()
+    if (!currentName) return
+    const linkedJobs = publicJobs.filter((job) => job.category === currentName)
+    if (linkedJobs.length) {
+      setError('This profession/category is used in posted jobs, so it can be renamed but not deleted.')
+      return
+    }
+    if (defaultCategoryOptions.includes(currentName)) {
+      setError('Built-in profession/category names can be renamed, but they cannot be deleted.')
+      return
+    }
+    setCategoryOptions((prev) => prev.filter((item) => item !== currentName))
+    setSelectedCategoryOption('')
+    setEditedCategoryName('')
+    if (form.category === currentName) {
+      setForm((prev) => ({ ...prev, category: '' }))
+    }
+    setError('')
+  }
+
+  const onSelectIndustryOption = (value) => {
+    setSelectedIndustryOption(value)
+    setEditedIndustryName(value)
+  }
+
+  const onRenameIndustry = async () => {
+    const currentName = selectedIndustryOption.trim()
+    const nextName = editedIndustryName.trim()
+    if (!currentName || !nextName) return
+
+    const duplicate = industryOptions.some(
+      (item) => item.toLowerCase() === nextName.toLowerCase() && item.toLowerCase() !== currentName.toLowerCase()
+    )
+    if (duplicate) {
+      setError('An industry with this name already exists.')
+      return
+    }
+
+    setError('')
+    setIndustryOptions((prev) => prev.map((item) => (item === currentName ? nextName : item)).sort((a, b) => a.localeCompare(b)))
+    setSelectedIndustryOption(nextName)
+    setEditedIndustryName(nextName)
+
+    const matchingJobs = publicJobs.filter((job) => job.industry === currentName)
+    for (const job of matchingJobs) {
+      await editJob(job.id, {
+        ...job,
+        industry: nextName,
+        posterImage: job.posterImage || '',
+        posterPath: job.posterPath || ''
+      })
+    }
+
+    if (form.industry === currentName) {
+      setForm((prev) => ({ ...prev, industry: nextName }))
+    }
+  }
+
+  const onDeleteIndustryOption = () => {
+    const currentName = selectedIndustryOption.trim()
+    if (!currentName) return
+    const linkedJobs = publicJobs.filter((job) => job.industry === currentName)
+    if (linkedJobs.length) {
+      setError('This industry is used in posted jobs, so it can be renamed but not deleted.')
+      return
+    }
+    if (defaultIndustryOptions.includes(currentName)) {
+      setError('Built-in industry names can be renamed, but they cannot be deleted.')
+      return
+    }
+    setIndustryOptions((prev) => prev.filter((item) => item !== currentName))
+    setSelectedIndustryOption('')
+    setEditedIndustryName('')
+    if (form.industry === currentName) {
+      setForm((prev) => ({ ...prev, industry: '' }))
     }
     setError('')
   }
@@ -1118,8 +1339,80 @@ function PostJobPage() {
               <option key={country} value={country}>{country}</option>
             ))}
           </select>
-          <input value={form.category} onChange={(e) => onChange('category', e.target.value)} placeholder="Profession / Category" required />
-          <input value={form.industry} onChange={(e) => onChange('industry', e.target.value)} placeholder="Industry" required />
+          <div className="admin-lov-row admin-department-row">
+            <select value={form.category} onChange={(e) => onChange('category', e.target.value)} required>
+              <option value="">Select Profession / Category</option>
+              {categoryOptions.map((item) => (
+                <option key={item} value={item}>{item}</option>
+              ))}
+            </select>
+            <input
+              value={newCategory}
+              onChange={(e) => setNewCategory(e.target.value)}
+              placeholder="Add New Profession / Category"
+            />
+            <button type="button" className="action-btn secondary" onClick={onAddCategory}>
+              Add
+            </button>
+          </div>
+          <div className="admin-lov-row admin-department-row">
+            <select value={selectedCategoryOption} onChange={(e) => onSelectCategoryOption(e.target.value)}>
+              <option value="">Select Category to Edit</option>
+              {categoryOptions.map((item) => (
+                <option key={item} value={item}>{item}</option>
+              ))}
+            </select>
+            <input
+              value={editedCategoryName}
+              onChange={(e) => setEditedCategoryName(e.target.value)}
+              placeholder="Rename Selected Category"
+            />
+            <div className="admin-inline-actions">
+              <button type="button" className="action-btn secondary" onClick={onRenameCategory}>
+                Rename
+              </button>
+              <button type="button" className="action-btn" onClick={onDeleteCategoryOption}>
+                Delete
+              </button>
+            </div>
+          </div>
+          <div className="admin-lov-row admin-department-row">
+            <select value={form.industry} onChange={(e) => onChange('industry', e.target.value)} required>
+              <option value="">Select Industry</option>
+              {industryOptions.map((item) => (
+                <option key={item} value={item}>{item}</option>
+              ))}
+            </select>
+            <input
+              value={newIndustry}
+              onChange={(e) => setNewIndustry(e.target.value)}
+              placeholder="Add New Industry"
+            />
+            <button type="button" className="action-btn secondary" onClick={onAddIndustry}>
+              Add
+            </button>
+          </div>
+          <div className="admin-lov-row admin-department-row">
+            <select value={selectedIndustryOption} onChange={(e) => onSelectIndustryOption(e.target.value)}>
+              <option value="">Select Industry to Edit</option>
+              {industryOptions.map((item) => (
+                <option key={item} value={item}>{item}</option>
+              ))}
+            </select>
+            <input
+              value={editedIndustryName}
+              onChange={(e) => setEditedIndustryName(e.target.value)}
+              placeholder="Rename Selected Industry"
+            />
+            <div className="admin-inline-actions">
+              <button type="button" className="action-btn secondary" onClick={onRenameIndustry}>
+                Rename
+              </button>
+              <button type="button" className="action-btn" onClick={onDeleteIndustryOption}>
+                Delete
+              </button>
+            </div>
+          </div>
           <select value={form.employmentType} onChange={(e) => onChange('employmentType', e.target.value)} required>
             <option value="">Select Type of Job</option>
             {employmentTypeOptions.map((option) => (
