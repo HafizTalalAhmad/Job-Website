@@ -88,7 +88,7 @@ function HomePage() {
           </section>
 
           <section className="home-explore-grid">
-            <section className="panel">
+            <section className="panel home-popular-panel">
               <h2 className="panel-title">Popular Departments</h2>
               <div className="department-inline-list">
                 {popularDepartments.map((department) => (
@@ -98,7 +98,7 @@ function HomePage() {
                 ))}
               </div>
             </section>
-            <section className="panel">
+            <section className="panel home-popular-panel">
               <h2 className="panel-title">Popular Cities</h2>
               <div className="department-inline-list">
                 {popularCities.map((city) => (
@@ -108,7 +108,7 @@ function HomePage() {
                 ))}
               </div>
             </section>
-            <section className="panel">
+            <section className="panel home-popular-panel">
               <h2 className="panel-title">Popular Professions</h2>
               <div className="department-inline-list">
                 {popularProfessions.map((profession) => (
@@ -118,7 +118,7 @@ function HomePage() {
                 ))}
               </div>
             </section>
-            <section className="panel">
+            <section className="panel home-popular-panel">
               <h2 className="panel-title">Popular Newspapers</h2>
               <div className="department-inline-list">
                 {popularSources.map((source) => (

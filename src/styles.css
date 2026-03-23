@@ -600,6 +600,35 @@ a:hover {
   gap: 10px;
 }
 
+.home-popular-panel {
+  padding: 16px 18px 18px;
+  background: linear-gradient(180deg, #ffffff 0%, #f6faff 100%);
+  border-color: #cddbec;
+  box-shadow: 0 10px 18px rgba(22, 55, 104, 0.04);
+}
+
+.home-popular-panel .panel-title {
+  margin-bottom: 14px;
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+.home-popular-panel .department-inline-list {
+  gap: 10px;
+}
+
+.home-popular-panel .department-pill {
+  padding: 9px 14px;
+  border-color: #bfd0e6;
+  background: #ffffff;
+  box-shadow: 0 4px 10px rgba(31, 79, 151, 0.05);
+}
+
+.home-popular-panel .department-pill:hover {
+  background: #edf5ff;
+  border-color: #8fb1e0;
+}
+
 .panel-link {
   color: #1f5ed1;
   font-weight: 700;
@@ -2137,11 +2166,15 @@ a:hover {
   gap: 12px;
   font-size: 12px;
   color: #bbcae0;
+  flex-wrap: wrap;
 }
 
 .footer-mini-links {
   display: flex;
   gap: 12px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  margin-left: auto;
 }
 
 .footer-mini-links a {
@@ -2420,6 +2453,24 @@ a:hover {
 :root[data-theme='dark'] .home-guide-hero {
   background: linear-gradient(180deg, #172334 0%, #121c2b 100%);
   border-color: #38506d;
+}
+
+:root[data-theme='dark'] .home-popular-panel {
+  background: linear-gradient(180deg, #172334 0%, #121c2b 100%);
+  border-color: #38506d;
+  box-shadow: none;
+}
+
+:root[data-theme='dark'] .home-popular-panel .department-pill {
+  background: #1b2a3d;
+  border-color: #47617d;
+  color: #dbeafe;
+  box-shadow: none;
+}
+
+:root[data-theme='dark'] .home-popular-panel .department-pill:hover {
+  background: #223349;
+  border-color: #6f8db5;
 }
 
 :root[data-theme='dark'] .home-guide-hero .panel-title,
