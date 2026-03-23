@@ -813,6 +813,13 @@ function PostJobPage() {
 
         <form className="contact-form" onSubmit={onSubmit}>
           <input value={form.title} onChange={(e) => onChange('title', e.target.value)} placeholder="Job Title" required />
+          <select value={form.type} onChange={(e) => onChange('type', e.target.value)} required>
+            <option value="">Select Category Type</option>
+            <option value="government">Government</option>
+            <option value="private">Private</option>
+            <option value="internship">Internship</option>
+            <option value="remote">Remote</option>
+          </select>
           {form.type === 'government' ? (
             <div className="admin-lov-row admin-department-row">
               <select value={form.organization} onChange={(e) => onChange('organization', e.target.value)} required>
@@ -872,13 +879,6 @@ function PostJobPage() {
           </select>
           <input value={form.category} onChange={(e) => onChange('category', e.target.value)} placeholder="Profession / Category" required />
           <input value={form.industry} onChange={(e) => onChange('industry', e.target.value)} placeholder="Industry" required />
-          <select value={form.type} onChange={(e) => onChange('type', e.target.value)} required>
-            <option value="">Select Category Type</option>
-            <option value="government">Government</option>
-            <option value="private">Private</option>
-            <option value="internship">Internship</option>
-            <option value="remote">Remote</option>
-          </select>
           <select value={form.employmentType} onChange={(e) => onChange('employmentType', e.target.value)} required>
             <option value="">Select Type of Job</option>
             {employmentTypeOptions.map((option) => (
