@@ -1999,7 +1999,7 @@ a:hover {
 
 .footer-modern {
   display: grid;
-  grid-template-columns: 1.4fr 1fr 1.2fr;
+  grid-template-columns: 1.35fr 0.95fr 1.05fr 1.15fr;
   gap: 16px;
   padding: 20px 0;
 }
