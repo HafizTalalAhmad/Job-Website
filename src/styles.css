@@ -2466,6 +2466,7 @@ a:hover {
   display: grid;
   grid-template-columns: minmax(0, 1.05fr) minmax(280px, 0.95fr);
   gap: 14px;
+  align-items: start;
 }
 
 .admin-modal-layout-wide {
@@ -2478,6 +2479,7 @@ a:hover {
   background: linear-gradient(180deg, #ffffff 0%, #f9fbff 100%);
   border-radius: 16px;
   padding: 16px;
+  min-width: 0;
 }
 
 .admin-modal-card-head {
@@ -3010,6 +3012,13 @@ a:hover {
     align-items: flex-start;
   }
 
+  .admin-modal-layout,
+  .admin-modal-layout-wide {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 1100px) {
   .admin-modal-layout,
   .admin-modal-layout-wide {
     grid-template-columns: 1fr;
