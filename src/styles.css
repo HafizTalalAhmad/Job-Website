@@ -2120,6 +2120,30 @@ a:hover {
   border-bottom: none;
 }
 
+.admin-import-warnings {
+  margin: 0;
+  padding-left: 16px;
+  color: #946200;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.admin-import-warnings li + li {
+  margin-top: 4px;
+}
+
+.admin-import-clear {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #cde3d3;
+  background: #eef9f1;
+  color: #1f6a39;
+  border-radius: 999px;
+  padding: 3px 9px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
 .admin-list-preview {
   margin-top: 0;
   display: grid;
@@ -3525,6 +3549,16 @@ a:hover {
 :root[data-theme='dark'] .admin-import-preview-table td {
   color: #d7e4f5;
   border-bottom-color: #2f4259;
+}
+
+:root[data-theme='dark'] .admin-import-warnings {
+  color: #f3d29a;
+}
+
+:root[data-theme='dark'] .admin-import-clear {
+  background: #173225;
+  border-color: #2b6a47;
+  color: #9ae6b4;
 }
 
 :root[data-theme='dark'] .admin-management-actions .action-btn.secondary:hover {

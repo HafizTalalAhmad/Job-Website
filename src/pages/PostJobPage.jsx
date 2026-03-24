@@ -146,14 +146,42 @@ const importTemplateRows = [
   }
 ]
 
-function downloadCsv(filename, rows) {
+const importColumnOrder = [
+  'id',
+  'title',
+  'organization',
+  'city',
+  'province',
+  'country',
+  'category',
+  'industry',
+  'type',
+  'employmentType',
+  'source',
+  'postDate',
+  'deadline',
+  'summary',
+  'description',
+  'jobPositions',
+  'keywords',
+  'applyProcedure',
+  'applyLink',
+  'posterImage',
+  'isArchived',
+  'isFeatured'
+]
+
+function downloadCsv(filename, rows, columnOrder = null) {
   if (!rows.length) return
-  const keys = Array.from(
+  const discoveredKeys = Array.from(
     rows.reduce((set, row) => {
       Object.keys(row).forEach((key) => set.add(key))
       return set
     }, new Set())
   )
+  const keys = columnOrder?.length
+    ? [...columnOrder, ...discoveredKeys.filter((key) => !columnOrder.includes(key))]
+    : discoveredKeys
 
   const escapeCell = (value) => {
     const stringValue = Array.isArray(value) ? value.join(' | ') : String(value ?? '')
@@ -566,6 +594,42 @@ function PostJobPage() {
 
   const liveJobs = useMemo(() => publicJobs.filter((job) => !job.isArchived), [publicJobs])
   const archivedJobs = useMemo(() => publicJobs.filter((job) => job.isArchived), [publicJobs])
+  const importPreviewRows = useMemo(
+    () =>
+      pendingImportRows.map((row) => {
+        const warnings = []
+        const existingJob = row.id ? publicJobs.find((job) => job.id === row.id) : null
+        const duplicateTitle = publicJobs.find(
+          (job) =>
+            job.title.toLowerCase() === row.title.toLowerCase() &&
+            job.organization.toLowerCase() === row.organization.toLowerCase() &&
+            job.id !== row.id
+        )
+
+        if (!existingJob && row.id) warnings.push('ID not found; this row will create a new job')
+        if (duplicateTitle) warnings.push('Similar job title already exists')
+        if (!provinceOptions.includes(row.province)) warnings.push('Province will be added to lists')
+        if (!cityRecords.some((city) => city.name.toLowerCase() === row.city.toLowerCase() && city.province === row.province)) {
+          warnings.push('City/province combination will be added')
+        }
+        if (row.type === 'government' && !departmentOptions.some((item) => item.toLowerCase() === row.organization.toLowerCase())) {
+          warnings.push('Department will be added to lists')
+        }
+        if (row.type === 'private' && !companyOptions.some((item) => item.toLowerCase() === row.organization.toLowerCase())) {
+          warnings.push('Company will be added to lists')
+        }
+        if (!categoryOptions.some((item) => item.toLowerCase() === row.category.toLowerCase())) warnings.push('Category will be added to lists')
+        if (!industryOptions.some((item) => item.toLowerCase() === row.industry.toLowerCase())) warnings.push('Industry will be added to lists')
+        if (!sourceOptions.some((item) => item.toLowerCase() === row.source.toLowerCase())) warnings.push('Source will be added to lists')
+
+        return {
+          ...row,
+          mode: existingJob ? 'Update' : 'Create',
+          warnings
+        }
+      }),
+    [pendingImportRows, publicJobs, provinceOptions, cityRecords, departmentOptions, companyOptions, categoryOptions, industryOptions, sourceOptions]
+  )
 
   const dashboardStats = useMemo(
     () => ({
@@ -597,7 +661,35 @@ function PostJobPage() {
   }
 
   const downloadImportTemplate = () => {
-    downloadCsv('job-import-template.csv', importTemplateRows)
+    downloadCsv('job-import-template.csv', importTemplateRows, importColumnOrder)
+  }
+
+  const exportJobsTemplateCsv = () => {
+    const rows = publicJobs.map((job) => ({
+      id: job.id || '',
+      title: job.title || '',
+      organization: job.organization || '',
+      city: job.city || '',
+      province: job.province || '',
+      country: job.country || 'In Pakistan',
+      category: job.category || '',
+      industry: job.industry || '',
+      type: job.type || '',
+      employmentType: job.employmentType || '',
+      source: job.source || '',
+      postDate: job.postDate || '',
+      deadline: job.deadline || '',
+      summary: job.summary || '',
+      description: job.description || '',
+      jobPositions: (job.jobPositions || job.requirements || []).join(' | '),
+      keywords: (job.keywords || []).join(' | '),
+      applyProcedure: job.applyProcedure || '',
+      applyLink: job.applyLink || '',
+      posterImage: job.posterImage || '',
+      isArchived: String(Boolean(job.isArchived)),
+      isFeatured: String(Boolean(job.isFeatured))
+    }))
+    downloadCsv('jobs-template-format.csv', rows, importColumnOrder)
   }
 
   const normalizeImportedRow = (row, rowIndex) => {
@@ -2018,7 +2110,7 @@ function PostJobPage() {
       <section className="panel">
         <div className="panel-head-row">
           <h1 className="panel-title">Admin: Post a Job</h1>
-          <button type="button" className="action-btn secondary" onClick={() => downloadCsv('jobs.csv', publicJobs)}>Export CSV</button>
+          <button type="button" className="action-btn secondary" onClick={exportJobsTemplateCsv}>Export CSV</button>
         </div>
         <p className="panel-intro">Fill the form to publish a new public job post.</p>
         <p className="admin-form-note">
@@ -2063,7 +2155,7 @@ function PostJobPage() {
                 <div>
                   <h3>Review Import Before Saving</h3>
                   <p>
-                    File: <strong>{pendingImportFileName}</strong> | Rows: <strong>{pendingImportRows.length}</strong>
+                    File: <strong>{pendingImportFileName}</strong> | Rows: <strong>{importPreviewRows.length}</strong>
                   </p>
                 </div>
                 <div className="admin-import-preview-actions">
@@ -2086,20 +2178,31 @@ function PostJobPage() {
                       <th>City</th>
                       <th>Category</th>
                       <th>Source</th>
+                      <th>Warnings</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {pendingImportRows.map((row, index) => {
-                      const willUpdate = row.id && publicJobs.some((job) => job.id === row.id)
+                    {importPreviewRows.map((row, index) => {
                       return (
                         <tr key={`${row.id || row.title}-${index}`}>
-                          <td>{willUpdate ? 'Update' : 'Create'}</td>
+                          <td>{row.mode}</td>
                           <td>{row.title}</td>
                           <td>{row.organization}</td>
                           <td>{row.type}</td>
                           <td>{row.city}</td>
                           <td>{row.category}</td>
                           <td>{row.source}</td>
+                          <td>
+                            {row.warnings.length ? (
+                              <ul className="admin-import-warnings">
+                                {row.warnings.map((warning) => (
+                                  <li key={warning}>{warning}</li>
+                                ))}
+                              </ul>
+                            ) : (
+                              <span className="admin-import-clear">Ready</span>
+                            )}
+                          </td>
                         </tr>
                       )
                     })}
