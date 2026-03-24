@@ -2003,22 +2003,28 @@ a:hover {
 }
 
 .admin-list-preview {
-  margin-top: 12px;
-  display: flex;
-  flex-wrap: wrap;
+  margin-top: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
   gap: 8px;
+  align-content: start;
+  max-height: 420px;
+  overflow-y: auto;
+  padding-right: 4px;
 }
 
 .admin-list-chip {
   border: 1px solid #c9d6e6;
   background: #f8fbff;
-  border-radius: 10px;
-  padding: 8px 10px;
+  border-radius: 14px;
+  padding: 11px 12px;
   text-align: left;
   cursor: pointer;
-  min-width: 180px;
   display: grid;
-  gap: 3px;
+  gap: 4px;
+  min-height: 72px;
+  align-content: start;
+  transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease, box-shadow 0.16s ease;
 }
 
 .admin-list-chip span {
@@ -2035,6 +2041,8 @@ a:hover {
 .admin-list-chip:hover {
   border-color: #8fb1e0;
   background: #eef5ff;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 18px rgba(28, 79, 150, 0.08);
 }
 
 .admin-stats-grid {
@@ -2322,25 +2330,144 @@ a:hover {
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: rgba(15, 23, 42, 0.45);
+  background:
+    radial-gradient(circle at top, rgba(37, 99, 235, 0.12), transparent 26%),
+    rgba(15, 23, 42, 0.56);
+  backdrop-filter: blur(10px);
 }
 
 .admin-management-modal {
   width: min(860px, calc(100vw - 40px));
   max-height: calc(100vh - 40px);
   overflow-y: auto;
+  border: 1px solid #d2deed;
+  background: linear-gradient(180deg, #ffffff 0%, #f6faff 100%);
+  border-radius: 20px;
+  box-shadow: 0 28px 70px rgba(15, 23, 42, 0.28);
+  padding: 18px;
 }
 
-.admin-management-modal .panel-head-row {
-  margin-bottom: 10px;
-}
-
-.admin-management-modal h2 {
-  margin: 0;
-}
-
-.admin-management-modal p {
+.admin-modal-kicker {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #c4d5ea;
+  background: #edf4ff;
+  color: #21569f;
+  border-radius: 999px;
+  padding: 5px 11px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   margin-bottom: 12px;
+}
+
+.admin-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.admin-modal-copy {
+  min-width: 0;
+}
+
+.admin-modal-copy h2 {
+  margin: 0;
+  font-size: 34px;
+  line-height: 1.05;
+}
+
+.admin-modal-copy p {
+  margin: 10px 0 0;
+  color: #5a718b;
+  font-size: 15px;
+  line-height: 1.65;
+  max-width: 640px;
+}
+
+.admin-modal-close {
+  flex-shrink: 0;
+}
+
+.admin-modal-search-row {
+  margin-bottom: 16px;
+}
+
+.admin-modal-search-row input {
+  width: 100%;
+  border: 1px solid #c9d8ea;
+  border-radius: 14px;
+  background: #fbfdff;
+  padding: 13px 15px;
+  font-size: 14px;
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.03);
+}
+
+.admin-modal-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(280px, 0.95fr);
+  gap: 14px;
+}
+
+.admin-modal-layout-wide {
+  grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+}
+
+.admin-modal-editor-card,
+.admin-modal-library-card {
+  border: 1px solid #d7e2ef;
+  background: linear-gradient(180deg, #ffffff 0%, #f9fbff 100%);
+  border-radius: 16px;
+  padding: 16px;
+}
+
+.admin-modal-card-head {
+  margin-bottom: 12px;
+}
+
+.admin-modal-card-head h3,
+.admin-modal-library-head h3 {
+  margin: 0;
+  color: #1c4f96;
+  font-size: 18px;
+}
+
+.admin-modal-card-head p,
+.admin-modal-library-head p {
+  margin: 8px 0 0;
+  color: #5a718b;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.admin-modal-library-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.admin-modal-count {
+  flex-shrink: 0;
+  border: 1px solid #c9d8ea;
+  background: #edf4ff;
+  color: #21569f;
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.admin-modal-city-row {
+  grid-template-columns: 1.2fr 0.95fr auto;
+}
+
+.admin-modal-city-row + .admin-modal-city-row {
+  margin-top: 8px;
 }
 
 .bookmark-modal {
@@ -2826,6 +2953,11 @@ a:hover {
     flex-direction: column;
     align-items: flex-start;
   }
+
+  .admin-modal-layout,
+  .admin-modal-layout-wide {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 620px) {
@@ -2844,6 +2976,19 @@ a:hover {
   }
 
   .admin-message-filters {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-modal-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .admin-modal-copy h2 {
+    font-size: 28px;
+  }
+
+  .admin-modal-city-row {
     grid-template-columns: 1fr;
   }
 
@@ -2945,6 +3090,48 @@ a:hover {
 
 :root[data-theme='dark'] .admin-popup-shell {
   background: rgba(2, 6, 23, 0.72);
+}
+
+:root[data-theme='dark'] .admin-management-modal {
+  background: linear-gradient(180deg, #152236 0%, #101a2a 100%);
+  border-color: #334a63;
+  box-shadow: 0 28px 70px rgba(2, 6, 23, 0.55);
+}
+
+:root[data-theme='dark'] .admin-modal-kicker {
+  background: #16263a;
+  border-color: #38506d;
+  color: #dbeafe;
+}
+
+:root[data-theme='dark'] .admin-modal-copy p,
+:root[data-theme='dark'] .admin-modal-card-head p,
+:root[data-theme='dark'] .admin-modal-library-head p {
+  color: #c7d4e5;
+}
+
+:root[data-theme='dark'] .admin-modal-search-row input {
+  background: #0f1928;
+  border-color: #334b6a;
+  color: #e8edf5;
+  box-shadow: none;
+}
+
+:root[data-theme='dark'] .admin-modal-editor-card,
+:root[data-theme='dark'] .admin-modal-library-card {
+  background: linear-gradient(180deg, #162437 0%, #101a29 100%);
+  border-color: #32475f;
+}
+
+:root[data-theme='dark'] .admin-modal-card-head h3,
+:root[data-theme='dark'] .admin-modal-library-head h3 {
+  color: #dbeafe;
+}
+
+:root[data-theme='dark'] .admin-modal-count {
+  background: #16304d;
+  border-color: #35537a;
+  color: #dbeafe;
 }
 
 :root[data-theme='dark'] .admin-management-card {
