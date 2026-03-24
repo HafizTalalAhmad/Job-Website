@@ -2027,15 +2027,71 @@ a:hover {
   transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease, box-shadow 0.16s ease;
 }
 
+.admin-list-chip-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+}
+
 .admin-list-chip span {
   color: #1c4f96;
   font-size: 13px;
   font-weight: 700;
 }
 
+.admin-list-chip-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 5px;
+}
+
+.admin-chip-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 3px 8px;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.admin-chip-badge.is-built-in {
+  background: #edf4ff;
+  border: 1px solid #c7d7ec;
+  color: #21569f;
+}
+
+.admin-chip-badge.is-custom {
+  background: #f5f7fb;
+  border: 1px solid #d8e0ea;
+  color: #566d86;
+}
+
+.admin-chip-badge.is-used {
+  background: #edf8ef;
+  border: 1px solid #bed7c1;
+  color: #1f6a39;
+}
+
+.admin-chip-badge.is-unused {
+  background: #fff4df;
+  border: 1px solid #ecd2a1;
+  color: #946200;
+}
+
 .admin-list-chip small {
   color: #5c7088;
   font-size: 11px;
+}
+
+.admin-list-chip.is-selected {
+  border-color: #5b8fd8;
+  background: linear-gradient(180deg, #f7fbff 0%, #e9f2ff 100%);
+  box-shadow: 0 0 0 2px rgba(91, 143, 216, 0.16), 0 12px 22px rgba(28, 79, 150, 0.10);
 }
 
 .admin-list-chip:hover {
@@ -3160,8 +3216,38 @@ a:hover {
   border-color: #35506d;
 }
 
+:root[data-theme='dark'] .admin-list-chip.is-selected {
+  background: linear-gradient(180deg, #1a2d45 0%, #15263b 100%);
+  border-color: #6b95c7;
+  box-shadow: 0 0 0 2px rgba(107, 149, 199, 0.16), 0 14px 24px rgba(0, 0, 0, 0.26);
+}
+
 :root[data-theme='dark'] .admin-list-chip span {
   color: #dbeafe;
+}
+
+:root[data-theme='dark'] .admin-chip-badge.is-built-in {
+  background: #16304d;
+  border-color: #35537a;
+  color: #b9d8ff;
+}
+
+:root[data-theme='dark'] .admin-chip-badge.is-custom {
+  background: #1d2a3b;
+  border-color: #41556f;
+  color: #d0dceb;
+}
+
+:root[data-theme='dark'] .admin-chip-badge.is-used {
+  background: #193224;
+  border-color: #2f6b4c;
+  color: #9ae6b4;
+}
+
+:root[data-theme='dark'] .admin-chip-badge.is-unused {
+  background: #3c2b12;
+  border-color: #7d5b28;
+  color: #f3d29a;
 }
 
 :root[data-theme='dark'] .admin-list-chip small {

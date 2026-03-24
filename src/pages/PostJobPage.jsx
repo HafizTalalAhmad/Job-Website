@@ -304,28 +304,72 @@ function PostJobPage() {
 
   const managementItems = useMemo(() => {
     const keyword = managementSearch.trim().toLowerCase()
+    const withMeta = (value, detail, builtIn = false, usageCount = 0) => ({
+      value,
+      detail,
+      builtIn,
+      usageCount
+    })
     const baseItems = (() => {
       switch (managementModal) {
         case 'department':
-          return departmentOptions.map((value) => ({ value, detail: `${getUsageCount('department', value)} jobs` }))
+          return departmentOptions.map((value) =>
+            withMeta(
+              value,
+              `${getUsageCount('department', value)} jobs`,
+              defaultDepartmentOptions.includes(value),
+              getUsageCount('department', value)
+            )
+          )
         case 'company':
-          return companyOptions.map((value) => ({ value, detail: `${getUsageCount('company', value)} jobs` }))
+          return companyOptions.map((value) =>
+            withMeta(
+              value,
+              `${getUsageCount('company', value)} jobs`,
+              defaultCompanyOptions.includes(value),
+              getUsageCount('company', value)
+            )
+          )
         case 'category':
-          return categoryOptions.map((value) => ({ value, detail: `${getUsageCount('category', value)} jobs` }))
+          return categoryOptions.map((value) =>
+            withMeta(
+              value,
+              `${getUsageCount('category', value)} jobs`,
+              defaultCategoryOptions.includes(value),
+              getUsageCount('category', value)
+            )
+          )
         case 'industry':
-          return industryOptions.map((value) => ({ value, detail: `${getUsageCount('industry', value)} jobs` }))
+          return industryOptions.map((value) =>
+            withMeta(
+              value,
+              `${getUsageCount('industry', value)} jobs`,
+              defaultIndustryOptions.includes(value),
+              getUsageCount('industry', value)
+            )
+          )
         case 'source':
-          return sourceOptions.map((value) => ({ value, detail: `${getUsageCount('source', value)} jobs` }))
+          return sourceOptions.map((value) =>
+            withMeta(
+              value,
+              `${getUsageCount('source', value)} jobs`,
+              defaultSourceOptions.includes(value),
+              getUsageCount('source', value)
+            )
+          )
         case 'city':
-          return cityRecords.map((row) => ({
-            value: row.name,
-            detail: `${row.province} | ${getUsageCount('city', row.name)} jobs`
-          }))
+          return cityRecords.map((row) =>
+            withMeta(row.name, `${row.province} | ${getUsageCount('city', row.name)} jobs`, true, getUsageCount('city', row.name))
+          )
         case 'province':
-          return provinceOptions.map((value) => ({
-            value,
-            detail: `${cityRecords.filter((row) => row.province === value).length} cities | ${getUsageCount('province', value)} jobs`
-          }))
+          return provinceOptions.map((value) =>
+            withMeta(
+              value,
+              `${cityRecords.filter((row) => row.province === value).length} cities | ${getUsageCount('province', value)} jobs`,
+              defaultProvinceOptions.includes(value),
+              getUsageCount('province', value)
+            )
+          )
         default:
           return []
       }
@@ -732,6 +776,27 @@ function PostJobPage() {
     province: 'Province names affect both jobs and city records, so keep them clean and stable.'
   }
 
+  const selectedManagementValue = (() => {
+    switch (managementModal) {
+      case 'department':
+        return selectedDepartmentOption
+      case 'company':
+        return selectedCompanyOption
+      case 'category':
+        return selectedCategoryOption
+      case 'industry':
+        return selectedIndustryOption
+      case 'source':
+        return selectedSourceOption
+      case 'city':
+        return selectedCityOption
+      case 'province':
+        return selectedProvinceOption
+      default:
+        return ''
+    }
+  })()
+
   const renderManagementList = (onSelect) => (
     <div className="admin-modal-library-card">
       <div className="admin-modal-library-head">
@@ -743,8 +808,23 @@ function PostJobPage() {
       </div>
       <div className="admin-list-preview">
         {managementItems.map((item) => (
-          <button key={item.value} type="button" className="admin-list-chip" onClick={() => onSelect(item.value)}>
-            <span>{item.value}</span>
+          <button
+            key={item.value}
+            type="button"
+            className={`admin-list-chip ${selectedManagementValue === item.value ? 'is-selected' : ''}`}
+            onClick={() => onSelect(item.value)}
+          >
+            <div className="admin-list-chip-top">
+              <span>{item.value}</span>
+              <div className="admin-list-chip-badges">
+                <em className={`admin-chip-badge ${item.builtIn ? 'is-built-in' : 'is-custom'}`}>
+                  {item.builtIn ? 'Built-in' : 'Custom'}
+                </em>
+                <em className={`admin-chip-badge ${item.usageCount ? 'is-used' : 'is-unused'}`}>
+                  {item.usageCount ? `Used in ${item.usageCount}` : 'Unused'}
+                </em>
+              </div>
+            </div>
             <small>{item.detail}</small>
           </button>
         ))}
@@ -1742,13 +1822,6 @@ function PostJobPage() {
           </label>
           <textarea value={form.summary} onChange={(e) => onChange('summary', e.target.value)} placeholder="Short Summary" rows="2" required />
           <textarea value={form.description} onChange={(e) => onChange('description', e.target.value)} placeholder="Full Job Description" rows="5" required />
-          <textarea
-            value={form.jobPositions}
-            onChange={(e) => onChange('jobPositions', e.target.value)}
-            placeholder="Job Positions (one per line)"
-            rows="5"
-            required
-          />
           <div className="admin-position-row">
             <input
               type="number"
@@ -1764,6 +1837,13 @@ function PostJobPage() {
             />
             <button type="button" className="action-btn secondary" onClick={onAddPosition}>Add Position Line</button>
           </div>
+          <textarea
+            value={form.jobPositions}
+            onChange={(e) => onChange('jobPositions', e.target.value)}
+            placeholder="Job Positions (one per line)"
+            rows="5"
+            required
+          />
           <textarea
             value={form.keywords}
             onChange={(e) => onChange('keywords', e.target.value)}
