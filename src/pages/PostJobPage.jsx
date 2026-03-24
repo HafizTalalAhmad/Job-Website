@@ -387,6 +387,7 @@ function PostJobPage() {
   const [importResult, setImportResult] = useState(null)
   const [pendingImportRows, setPendingImportRows] = useState([])
   const [pendingImportFileName, setPendingImportFileName] = useState('')
+  const [skippedImportKeys, setSkippedImportKeys] = useState([])
   const [messages, setMessages] = useState([])
   const [messagesError, setMessagesError] = useState('')
   const [isLoadingMessages, setIsLoadingMessages] = useState(false)
@@ -596,7 +597,7 @@ function PostJobPage() {
   const archivedJobs = useMemo(() => publicJobs.filter((job) => job.isArchived), [publicJobs])
   const importPreviewRows = useMemo(
     () =>
-      pendingImportRows.map((row) => {
+      pendingImportRows.map((row, index) => {
         const warnings = []
         const existingJob = row.id ? publicJobs.find((job) => job.id === row.id) : null
         const duplicateTitle = publicJobs.find(
@@ -622,13 +623,20 @@ function PostJobPage() {
         if (!industryOptions.some((item) => item.toLowerCase() === row.industry.toLowerCase())) warnings.push('Industry will be added to lists')
         if (!sourceOptions.some((item) => item.toLowerCase() === row.source.toLowerCase())) warnings.push('Source will be added to lists')
 
+        const key = row.id || `${row.title}-${row.organization}-${index}`
+        const isSkipped = skippedImportKeys.includes(key)
+        const status = isSkipped ? 'skipped' : warnings.length ? 'review' : 'ready'
+
         return {
           ...row,
+          key,
           mode: existingJob ? 'Update' : 'Create',
-          warnings
+          warnings,
+          status,
+          isSkipped
         }
       }),
-    [pendingImportRows, publicJobs, provinceOptions, cityRecords, departmentOptions, companyOptions, categoryOptions, industryOptions, sourceOptions]
+    [pendingImportRows, publicJobs, provinceOptions, cityRecords, departmentOptions, companyOptions, categoryOptions, industryOptions, sourceOptions, skippedImportKeys]
   )
 
   const dashboardStats = useMemo(
@@ -789,6 +797,7 @@ function PostJobPage() {
     setImportResult(null)
     setPendingImportRows([])
     setPendingImportFileName('')
+    setSkippedImportKeys([])
     setIsImporting(true)
 
     try {
@@ -810,19 +819,20 @@ function PostJobPage() {
   }
 
   const onConfirmImport = async () => {
-    if (!pendingImportRows.length) return
+    const rowsToImport = importPreviewRows.filter((row) => !row.isSkipped)
+    if (!rowsToImport.length) return
 
     setIsImporting(true)
     setError('')
     setImportResult(null)
 
     try {
-      applyImportedLists(pendingImportRows)
+      applyImportedLists(rowsToImport)
 
       let created = 0
       let updated = 0
 
-      for (const row of pendingImportRows) {
+      for (const row of rowsToImport) {
         const payload = {
           ...row,
           requirements: row.jobPositions,
@@ -842,11 +852,12 @@ function PostJobPage() {
       setImportResult({
         created,
         updated,
-        total: pendingImportRows.length,
+        total: rowsToImport.length,
         fileName: pendingImportFileName
       })
       setPendingImportRows([])
       setPendingImportFileName('')
+      setSkippedImportKeys([])
     } catch (importError) {
       setError(importError.message || 'Unable to import jobs from the selected file.')
     } finally {
@@ -857,8 +868,15 @@ function PostJobPage() {
   const onCancelImport = () => {
     setPendingImportRows([])
     setPendingImportFileName('')
+    setSkippedImportKeys([])
     setImportResult(null)
     setError('')
+  }
+
+  const onToggleSkipImportRow = (rowKey) => {
+    setSkippedImportKeys((prev) =>
+      prev.includes(rowKey) ? prev.filter((item) => item !== rowKey) : [...prev, rowKey]
+    )
   }
 
   const onSubmit = async (event) => {
@@ -2155,7 +2173,8 @@ function PostJobPage() {
                 <div>
                   <h3>Review Import Before Saving</h3>
                   <p>
-                    File: <strong>{pendingImportFileName}</strong> | Rows: <strong>{importPreviewRows.length}</strong>
+                    File: <strong>{pendingImportFileName}</strong> | Rows: <strong>{importPreviewRows.length}</strong> | Importing:{' '}
+                    <strong>{importPreviewRows.filter((row) => !row.isSkipped).length}</strong>
                   </p>
                 </div>
                 <div className="admin-import-preview-actions">
@@ -2172,6 +2191,7 @@ function PostJobPage() {
                   <thead>
                     <tr>
                       <th>Mode</th>
+                      <th>Status</th>
                       <th>Title</th>
                       <th>Organization</th>
                       <th>Type</th>
@@ -2179,13 +2199,19 @@ function PostJobPage() {
                       <th>Category</th>
                       <th>Source</th>
                       <th>Warnings</th>
+                      <th>Skip</th>
                     </tr>
                   </thead>
                   <tbody>
                     {importPreviewRows.map((row, index) => {
                       return (
-                        <tr key={`${row.id || row.title}-${index}`}>
+                        <tr key={row.key} className={row.isSkipped ? 'is-skipped' : ''}>
                           <td>{row.mode}</td>
+                          <td>
+                            <span className={`admin-import-status is-${row.status}`}>
+                              {row.status === 'ready' ? 'Ready' : row.status === 'review' ? 'Review' : 'Skipped'}
+                            </span>
+                          </td>
                           <td>{row.title}</td>
                           <td>{row.organization}</td>
                           <td>{row.type}</td>
@@ -2202,6 +2228,16 @@ function PostJobPage() {
                             ) : (
                               <span className="admin-import-clear">Ready</span>
                             )}
+                          </td>
+                          <td>
+                            <label className="admin-import-skip">
+                              <input
+                                type="checkbox"
+                                checked={row.isSkipped}
+                                onChange={() => onToggleSkipImportRow(row.key)}
+                              />
+                              <span>Skip</span>
+                            </label>
                           </td>
                         </tr>
                       )
