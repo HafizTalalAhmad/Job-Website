@@ -357,6 +357,8 @@ function PostJobPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isImporting, setIsImporting] = useState(false)
   const [importResult, setImportResult] = useState(null)
+  const [pendingImportRows, setPendingImportRows] = useState([])
+  const [pendingImportFileName, setPendingImportFileName] = useState('')
   const [messages, setMessages] = useState([])
   const [messagesError, setMessagesError] = useState('')
   const [isLoadingMessages, setIsLoadingMessages] = useState(false)
@@ -693,6 +695,8 @@ function PostJobPage() {
     setError('')
     setDone(false)
     setImportResult(null)
+    setPendingImportRows([])
+    setPendingImportFileName('')
     setIsImporting(true)
 
     try {
@@ -703,12 +707,30 @@ function PostJobPage() {
       }
 
       const normalizedRows = parsedRows.map((row, index) => normalizeImportedRow(row, index + 2))
-      applyImportedLists(normalizedRows)
+      setPendingImportRows(normalizedRows)
+      setPendingImportFileName(file.name)
+    } catch (importError) {
+      setError(importError.message || 'Unable to import jobs from the selected file.')
+    } finally {
+      setIsImporting(false)
+      event.target.value = ''
+    }
+  }
+
+  const onConfirmImport = async () => {
+    if (!pendingImportRows.length) return
+
+    setIsImporting(true)
+    setError('')
+    setImportResult(null)
+
+    try {
+      applyImportedLists(pendingImportRows)
 
       let created = 0
       let updated = 0
 
-      for (const row of normalizedRows) {
+      for (const row of pendingImportRows) {
         const payload = {
           ...row,
           requirements: row.jobPositions,
@@ -728,15 +750,23 @@ function PostJobPage() {
       setImportResult({
         created,
         updated,
-        total: normalizedRows.length,
-        fileName: file.name
+        total: pendingImportRows.length,
+        fileName: pendingImportFileName
       })
+      setPendingImportRows([])
+      setPendingImportFileName('')
     } catch (importError) {
       setError(importError.message || 'Unable to import jobs from the selected file.')
     } finally {
       setIsImporting(false)
-      event.target.value = ''
     }
+  }
+
+  const onCancelImport = () => {
+    setPendingImportRows([])
+    setPendingImportFileName('')
+    setImportResult(null)
+    setError('')
   }
 
   const onSubmit = async (event) => {
@@ -2027,6 +2057,57 @@ function PostJobPage() {
             `employmentType`, `source`, `postDate`, `deadline`, `summary`, `description`, `applyProcedure`, and
             `applyLink`. Optional columns: `id`, `keywords`, `jobPositions`, `posterImage`, `isArchived`, `isFeatured`.
           </div>
+          {!!pendingImportRows.length && (
+            <div className="admin-import-preview">
+              <div className="admin-import-preview-head">
+                <div>
+                  <h3>Review Import Before Saving</h3>
+                  <p>
+                    File: <strong>{pendingImportFileName}</strong> | Rows: <strong>{pendingImportRows.length}</strong>
+                  </p>
+                </div>
+                <div className="admin-import-preview-actions">
+                  <button type="button" className="action-btn secondary" onClick={onCancelImport} disabled={isImporting}>
+                    Cancel
+                  </button>
+                  <button type="button" className="load-more-btn" onClick={onConfirmImport} disabled={isImporting}>
+                    {isImporting ? 'Importing...' : 'Import Now'}
+                  </button>
+                </div>
+              </div>
+              <div className="admin-import-preview-table-wrap">
+                <table className="admin-import-preview-table">
+                  <thead>
+                    <tr>
+                      <th>Mode</th>
+                      <th>Title</th>
+                      <th>Organization</th>
+                      <th>Type</th>
+                      <th>City</th>
+                      <th>Category</th>
+                      <th>Source</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {pendingImportRows.map((row, index) => {
+                      const willUpdate = row.id && publicJobs.some((job) => job.id === row.id)
+                      return (
+                        <tr key={`${row.id || row.title}-${index}`}>
+                          <td>{willUpdate ? 'Update' : 'Create'}</td>
+                          <td>{row.title}</td>
+                          <td>{row.organization}</td>
+                          <td>{row.type}</td>
+                          <td>{row.city}</td>
+                          <td>{row.category}</td>
+                          <td>{row.source}</td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
           {importResult && (
             <div className="admin-import-result">
               Imported <strong>{importResult.total}</strong> rows from <strong>{importResult.fileName}</strong>:
