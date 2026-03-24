@@ -638,6 +638,14 @@ function PostJobPage() {
       }),
     [pendingImportRows, publicJobs, provinceOptions, cityRecords, departmentOptions, companyOptions, categoryOptions, industryOptions, sourceOptions, skippedImportKeys]
   )
+  const importRowsToSaveCount = useMemo(
+    () => importPreviewRows.filter((row) => !row.isSkipped).length,
+    [importPreviewRows]
+  )
+  const importSkippedCount = useMemo(
+    () => importPreviewRows.filter((row) => row.isSkipped).length,
+    [importPreviewRows]
+  )
 
   const dashboardStats = useMemo(
     () => ({
@@ -877,6 +885,46 @@ function PostJobPage() {
     setSkippedImportKeys((prev) =>
       prev.includes(rowKey) ? prev.filter((item) => item !== rowKey) : [...prev, rowKey]
     )
+  }
+
+  const onSkipAllImportRows = () => {
+    setSkippedImportKeys(importPreviewRows.map((row) => row.key))
+  }
+
+  const onClearSkippedImportRows = () => {
+    setSkippedImportKeys([])
+  }
+
+  const downloadImportReviewReport = () => {
+    if (!importPreviewRows.length) return
+
+    const rows = importPreviewRows.map((row) => ({
+      mode: row.mode,
+      status: row.status === 'ready' ? 'Ready' : row.status === 'review' ? 'Review' : 'Skipped',
+      title: row.title,
+      organization: row.organization,
+      type: row.type,
+      city: row.city,
+      province: row.province,
+      category: row.category,
+      source: row.source,
+      skip: row.isSkipped ? 'Yes' : 'No',
+      warnings: row.warnings.join(' | ')
+    }))
+
+    downloadCsv('job-import-review-report.csv', rows, [
+      'mode',
+      'status',
+      'title',
+      'organization',
+      'type',
+      'city',
+      'province',
+      'category',
+      'source',
+      'skip',
+      'warnings'
+    ])
   }
 
   const onSubmit = async (event) => {
@@ -2174,14 +2222,38 @@ function PostJobPage() {
                   <h3>Review Import Before Saving</h3>
                   <p>
                     File: <strong>{pendingImportFileName}</strong> | Rows: <strong>{importPreviewRows.length}</strong> | Importing:{' '}
-                    <strong>{importPreviewRows.filter((row) => !row.isSkipped).length}</strong>
+                    <strong>{importRowsToSaveCount}</strong> | Skipped: <strong>{importSkippedCount}</strong>
                   </p>
                 </div>
                 <div className="admin-import-preview-actions">
+                  <button
+                    type="button"
+                    className="action-btn secondary"
+                    onClick={onSkipAllImportRows}
+                    disabled={isImporting || !importPreviewRows.length || importSkippedCount === importPreviewRows.length}
+                  >
+                    Skip All
+                  </button>
+                  <button
+                    type="button"
+                    className="action-btn secondary"
+                    onClick={onClearSkippedImportRows}
+                    disabled={isImporting || !importSkippedCount}
+                  >
+                    Clear Skipped
+                  </button>
+                  <button
+                    type="button"
+                    className="action-btn secondary"
+                    onClick={downloadImportReviewReport}
+                    disabled={!importPreviewRows.length}
+                  >
+                    Download Review Report
+                  </button>
                   <button type="button" className="action-btn secondary" onClick={onCancelImport} disabled={isImporting}>
                     Cancel
                   </button>
-                  <button type="button" className="load-more-btn" onClick={onConfirmImport} disabled={isImporting}>
+                  <button type="button" className="load-more-btn" onClick={onConfirmImport} disabled={isImporting || !importRowsToSaveCount}>
                     {isImporting ? 'Importing...' : 'Import Now'}
                   </button>
                 </div>
