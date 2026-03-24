@@ -2002,6 +2002,59 @@ a:hover {
   border-color: #8fb1e0;
 }
 
+.admin-import-card {
+  margin-top: 14px;
+}
+
+.admin-import-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.admin-import-upload {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid #bfd0e6;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #1c4f96;
+  font-weight: 700;
+  box-shadow: 0 3px 8px rgba(26, 63, 117, 0.05);
+  cursor: pointer;
+}
+
+.admin-import-upload input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.admin-import-note {
+  margin-top: 12px;
+  color: #4f6782;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.admin-import-result {
+  margin-top: 12px;
+  border: 1px solid #cde3d3;
+  background: #eef9f1;
+  border-radius: 12px;
+  padding: 11px 13px;
+  color: #1f6a39;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
 .admin-list-preview {
   margin-top: 0;
   display: grid;
@@ -3362,6 +3415,23 @@ a:hover {
   border-color: #3f5e82;
   color: #dbeafe;
   box-shadow: none;
+}
+
+:root[data-theme='dark'] .admin-import-upload {
+  background: #1a2a40;
+  border-color: #3f5e82;
+  color: #dbeafe;
+  box-shadow: none;
+}
+
+:root[data-theme='dark'] .admin-import-note {
+  color: #c7d4e5;
+}
+
+:root[data-theme='dark'] .admin-import-result {
+  background: #173225;
+  border-color: #2b6a47;
+  color: #9ae6b4;
 }
 
 :root[data-theme='dark'] .admin-management-actions .action-btn.secondary:hover {

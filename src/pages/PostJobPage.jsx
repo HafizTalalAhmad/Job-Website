@@ -119,6 +119,33 @@ const initialState = {
   isFeatured: false
 }
 
+const importTemplateRows = [
+  {
+    id: '',
+    title: 'Assistant Director Operations',
+    organization: 'WAPDA',
+    city: 'Lahore',
+    province: 'Punjab',
+    country: 'In Pakistan',
+    category: 'Operations',
+    industry: 'Government',
+    type: 'government',
+    employmentType: 'Full Time',
+    source: 'Daily Jang',
+    postDate: '2026-03-24',
+    deadline: '2026-04-10',
+    summary: 'Oversee operational teams and coordinate regional power projects.',
+    description: 'Manage teams, reporting, and field operations for power projects.',
+    jobPositions: '3 Assistant Director Operations | 2 Operations Officer',
+    keywords: 'WAPDA | Operations | Lahore',
+    applyProcedure: 'Apply online and attach required documents before the deadline.',
+    applyLink: 'https://example.com/apply',
+    posterImage: '',
+    isArchived: 'false',
+    isFeatured: 'true'
+  }
+]
+
 function downloadCsv(filename, rows) {
   if (!rows.length) return
   const keys = Array.from(
@@ -147,6 +174,71 @@ function downloadCsv(filename, rows) {
   link.click()
   document.body.removeChild(link)
   URL.revokeObjectURL(url)
+}
+
+function parseCsvText(text) {
+  const rows = []
+  let current = ''
+  let row = []
+  let insideQuotes = false
+
+  for (let i = 0; i < text.length; i += 1) {
+    const char = text[i]
+    const next = text[i + 1]
+
+    if (char === '"') {
+      if (insideQuotes && next === '"') {
+        current += '"'
+        i += 1
+      } else {
+        insideQuotes = !insideQuotes
+      }
+      continue
+    }
+
+    if (char === ',' && !insideQuotes) {
+      row.push(current)
+      current = ''
+      continue
+    }
+
+    if ((char === '\n' || char === '\r') && !insideQuotes) {
+      if (char === '\r' && next === '\n') i += 1
+      row.push(current)
+      if (row.some((cell) => cell.trim() !== '')) rows.push(row)
+      row = []
+      current = ''
+      continue
+    }
+
+    current += char
+  }
+
+  row.push(current)
+  if (row.some((cell) => cell.trim() !== '')) rows.push(row)
+
+  if (!rows.length) return []
+
+  const headers = rows[0].map((cell) => cell.trim())
+  return rows.slice(1).map((cells) =>
+    headers.reduce((acc, header, index) => {
+      acc[header] = (cells[index] || '').trim()
+      return acc
+    }, {})
+  )
+}
+
+function splitImportList(value) {
+  if (!value) return []
+  return value
+    .split(/\r?\n|\|/g)
+    .map((item) => item.trim())
+    .filter(Boolean)
+}
+
+function parseImportBoolean(value) {
+  const normalized = String(value ?? '').trim().toLowerCase()
+  return ['1', 'true', 'yes', 'y'].includes(normalized)
 }
 
 function PostJobPage() {
@@ -263,6 +355,8 @@ function PostJobPage() {
   const [lastAction, setLastAction] = useState('create')
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isImporting, setIsImporting] = useState(false)
+  const [importResult, setImportResult] = useState(null)
   const [messages, setMessages] = useState([])
   const [messagesError, setMessagesError] = useState('')
   const [isLoadingMessages, setIsLoadingMessages] = useState(false)
@@ -498,6 +592,151 @@ function PostJobPage() {
       city: cityName,
       province: found?.province || prev.province
     }))
+  }
+
+  const downloadImportTemplate = () => {
+    downloadCsv('job-import-template.csv', importTemplateRows)
+  }
+
+  const normalizeImportedRow = (row, rowIndex) => {
+    const normalized = {
+      id: row.id || '',
+      title: row.title || '',
+      organization: row.organization || '',
+      city: row.city || '',
+      province: row.province || '',
+      country: row.country || 'In Pakistan',
+      category: row.category || '',
+      industry: row.industry || '',
+      type: (row.type || '').toLowerCase(),
+      employmentType: row.employmentType || '',
+      source: row.source || '',
+      postDate: row.postDate || '',
+      deadline: row.deadline || '',
+      summary: row.summary || '',
+      description: row.description || '',
+      jobPositions: splitImportList(row.jobPositions),
+      keywords: splitImportList(row.keywords),
+      applyProcedure: row.applyProcedure || '',
+      applyLink: row.applyLink || '',
+      posterImage: row.posterImage || '',
+      posterPath: row.posterPath || '',
+      isArchived: parseImportBoolean(row.isArchived),
+      isFeatured: parseImportBoolean(row.isFeatured)
+    }
+
+    const requiredFields = [
+      'title',
+      'organization',
+      'city',
+      'province',
+      'category',
+      'industry',
+      'type',
+      'employmentType',
+      'source',
+      'postDate',
+      'deadline',
+      'summary',
+      'description',
+      'applyProcedure',
+      'applyLink'
+    ]
+
+    const missing = requiredFields.filter((field) => !normalized[field])
+    if (missing.length) {
+      throw new Error(`Row ${rowIndex}: missing required fields -> ${missing.join(', ')}`)
+    }
+    if (!['government', 'private'].includes(normalized.type)) {
+      throw new Error(`Row ${rowIndex}: type must be government or private`)
+    }
+    if (!employmentTypeOptions.includes(normalized.employmentType)) {
+      throw new Error(`Row ${rowIndex}: invalid employmentType "${normalized.employmentType}"`)
+    }
+    if (!isValidUrl(normalized.applyLink)) {
+      throw new Error(`Row ${rowIndex}: applyLink must be a valid http/https URL`)
+    }
+
+    return normalized
+  }
+
+  const applyImportedLists = (rows) => {
+    const importedDepartments = rows.filter((row) => row.type === 'government').map((row) => row.organization)
+    const importedCompanies = rows.filter((row) => row.type === 'private').map((row) => row.organization)
+    const importedCategories = rows.map((row) => row.category)
+    const importedIndustries = rows.map((row) => row.industry)
+    const importedSources = rows.map((row) => row.source)
+    const importedProvinces = rows.map((row) => row.province)
+    const importedCities = rows.map((row) => ({ name: row.city, province: row.province }))
+
+    setDepartmentOptions((prev) => [...new Set([...prev, ...importedDepartments])].sort((a, b) => a.localeCompare(b)))
+    setCompanyOptions((prev) => [...new Set([...prev, ...importedCompanies])].sort((a, b) => a.localeCompare(b)))
+    setCategoryOptions((prev) => [...new Set([...prev, ...importedCategories])].sort((a, b) => a.localeCompare(b)))
+    setIndustryOptions((prev) => [...new Set([...prev, ...importedIndustries])].sort((a, b) => a.localeCompare(b)))
+    setSourceOptions((prev) => [...new Set([...prev, ...importedSources])].sort((a, b) => a.localeCompare(b)))
+    setProvinceOptions((prev) => [...new Set([...prev, ...importedProvinces])].sort((a, b) => a.localeCompare(b)))
+    setCityRecords((prev) => {
+      const map = new Map(prev.map((row) => [`${row.name.toLowerCase()}|${row.province.toLowerCase()}`, row]))
+      importedCities.forEach((row) => {
+        if (row.name && row.province) {
+          map.set(`${row.name.toLowerCase()}|${row.province.toLowerCase()}`, row)
+        }
+      })
+      return [...map.values()].sort((a, b) => a.name.localeCompare(b.name))
+    })
+  }
+
+  const onImportFile = async (event) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    setError('')
+    setDone(false)
+    setImportResult(null)
+    setIsImporting(true)
+
+    try {
+      const text = await file.text()
+      const parsedRows = parseCsvText(text)
+      if (!parsedRows.length) {
+        throw new Error('The selected CSV file is empty.')
+      }
+
+      const normalizedRows = parsedRows.map((row, index) => normalizeImportedRow(row, index + 2))
+      applyImportedLists(normalizedRows)
+
+      let created = 0
+      let updated = 0
+
+      for (const row of normalizedRows) {
+        const payload = {
+          ...row,
+          requirements: row.jobPositions,
+          posterFile: null
+        }
+
+        const existingJob = row.id ? publicJobs.find((job) => job.id === row.id) : null
+        if (existingJob) {
+          await editJob(existingJob.id, payload)
+          updated += 1
+        } else {
+          await addJob(payload)
+          created += 1
+        }
+      }
+
+      setImportResult({
+        created,
+        updated,
+        total: normalizedRows.length,
+        fileName: file.name
+      })
+    } catch (importError) {
+      setError(importError.message || 'Unable to import jobs from the selected file.')
+    } finally {
+      setIsImporting(false)
+      event.target.value = ''
+    }
   }
 
   const onSubmit = async (event) => {
@@ -1763,6 +2002,38 @@ function PostJobPage() {
             Local mode is active. Jobs will be saved in this browser only. Add Supabase env values for shared/public database storage.
           </p>
         )}
+
+        <section className="admin-management-block admin-management-card admin-import-card">
+          <div className="admin-management-head">
+            <div>
+              <h2 className="panel-title admin-subtitle">Import Jobs</h2>
+              <p className="admin-management-copy">
+                Download the CSV template, fill the required columns, then import it here. If an existing job `id`
+                is included, that job will be updated. If no `id` is present, a new job will be created.
+              </p>
+            </div>
+          </div>
+          <div className="admin-import-actions">
+            <button type="button" className="action-btn secondary" onClick={downloadImportTemplate}>
+              Download Template
+            </button>
+            <label className="admin-import-upload">
+              <span>{isImporting ? 'Importing...' : 'Import CSV'}</span>
+              <input type="file" accept=".csv,text/csv" onChange={onImportFile} disabled={isImporting} />
+            </label>
+          </div>
+          <div className="admin-import-note">
+            Required columns: `title`, `organization`, `city`, `province`, `category`, `industry`, `type`,
+            `employmentType`, `source`, `postDate`, `deadline`, `summary`, `description`, `applyProcedure`, and
+            `applyLink`. Optional columns: `id`, `keywords`, `jobPositions`, `posterImage`, `isArchived`, `isFeatured`.
+          </div>
+          {importResult && (
+            <div className="admin-import-result">
+              Imported <strong>{importResult.total}</strong> rows from <strong>{importResult.fileName}</strong>:
+              created <strong>{importResult.created}</strong>, updated <strong>{importResult.updated}</strong>.
+            </div>
+          )}
+        </section>
 
         <section className="admin-management-block admin-management-card">
           <div className="admin-management-head">
