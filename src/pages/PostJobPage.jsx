@@ -804,6 +804,32 @@ function PostJobPage() {
     ? managementItems.find((item) => item.value.toLowerCase() === trimmedManagementSearch.toLowerCase())
     : null
   const selectedManagementItem = managementItems.find((item) => item.value === selectedManagementValue) || null
+  const isSelectedDeleteBlocked = (() => {
+    if (!selectedManagementItem) return true
+
+    switch (managementModal) {
+      case 'department':
+        return defaultDepartmentOptions.includes(selectedManagementItem.value) || selectedManagementItem.usageCount > 0
+      case 'company':
+        return defaultCompanyOptions.includes(selectedManagementItem.value) || selectedManagementItem.usageCount > 0
+      case 'category':
+        return defaultCategoryOptions.includes(selectedManagementItem.value) || selectedManagementItem.usageCount > 0
+      case 'industry':
+        return defaultIndustryOptions.includes(selectedManagementItem.value) || selectedManagementItem.usageCount > 0
+      case 'source':
+        return defaultSourceOptions.includes(selectedManagementItem.value) || selectedManagementItem.usageCount > 0
+      case 'city':
+        return selectedManagementItem.usageCount > 0
+      case 'province':
+        return (
+          defaultProvinceOptions.includes(selectedManagementItem.value) ||
+          selectedManagementItem.usageCount > 0 ||
+          cityRecords.some((row) => row.province === selectedManagementItem.value)
+        )
+      default:
+        return true
+    }
+  })()
 
   const renderManagementList = (onSelect) => (
     <div className="admin-modal-library-card">
@@ -2045,6 +2071,9 @@ function PostJobPage() {
                         <strong>Selected Department</strong>
                         <span>{selectedManagementItem.value}</span>
                       </div>
+                      {isSelectedDeleteBlocked ? (
+                        <p className="admin-modal-selection-note">This department can be renamed, but it cannot be deleted while it is built-in or used in jobs.</p>
+                      ) : null}
                       <div className="admin-lov-row admin-department-row">
                         <input
                           value={editedDepartmentName}
@@ -2055,7 +2084,7 @@ function PostJobPage() {
                           <button type="button" className="action-btn secondary" onClick={onRenameDepartment}>
                             Rename
                           </button>
-                          <button type="button" className="action-btn" onClick={onDeleteDepartmentOption}>
+                          <button type="button" className="action-btn" onClick={onDeleteDepartmentOption} disabled={isSelectedDeleteBlocked}>
                             Delete
                           </button>
                         </div>
@@ -2081,6 +2110,9 @@ function PostJobPage() {
                         <strong>Selected Company</strong>
                         <span>{selectedManagementItem.value}</span>
                       </div>
+                      {isSelectedDeleteBlocked ? (
+                        <p className="admin-modal-selection-note">This company can be renamed, but it cannot be deleted while it is built-in or used in jobs.</p>
+                      ) : null}
                       <div className="admin-lov-row admin-department-row">
                         <input
                           value={editedCompanyName}
@@ -2091,7 +2123,7 @@ function PostJobPage() {
                           <button type="button" className="action-btn secondary" onClick={onRenameCompany}>
                             Rename
                           </button>
-                          <button type="button" className="action-btn" onClick={onDeleteCompanyOption}>
+                          <button type="button" className="action-btn" onClick={onDeleteCompanyOption} disabled={isSelectedDeleteBlocked}>
                             Delete
                           </button>
                         </div>
@@ -2117,6 +2149,9 @@ function PostJobPage() {
                         <strong>Selected Category</strong>
                         <span>{selectedManagementItem.value}</span>
                       </div>
+                      {isSelectedDeleteBlocked ? (
+                        <p className="admin-modal-selection-note">This category can be renamed, but it cannot be deleted while it is built-in or used in jobs.</p>
+                      ) : null}
                       <div className="admin-lov-row admin-department-row">
                         <input
                           value={editedCategoryName}
@@ -2127,7 +2162,7 @@ function PostJobPage() {
                           <button type="button" className="action-btn secondary" onClick={onRenameCategory}>
                             Rename
                           </button>
-                          <button type="button" className="action-btn" onClick={onDeleteCategoryOption}>
+                          <button type="button" className="action-btn" onClick={onDeleteCategoryOption} disabled={isSelectedDeleteBlocked}>
                             Delete
                           </button>
                         </div>
@@ -2153,6 +2188,9 @@ function PostJobPage() {
                         <strong>Selected Industry</strong>
                         <span>{selectedManagementItem.value}</span>
                       </div>
+                      {isSelectedDeleteBlocked ? (
+                        <p className="admin-modal-selection-note">This industry can be renamed, but it cannot be deleted while it is built-in or used in jobs.</p>
+                      ) : null}
                       <div className="admin-lov-row admin-department-row">
                         <input
                           value={editedIndustryName}
@@ -2163,7 +2201,7 @@ function PostJobPage() {
                           <button type="button" className="action-btn secondary" onClick={onRenameIndustry}>
                             Rename
                           </button>
-                          <button type="button" className="action-btn" onClick={onDeleteIndustryOption}>
+                          <button type="button" className="action-btn" onClick={onDeleteIndustryOption} disabled={isSelectedDeleteBlocked}>
                             Delete
                           </button>
                         </div>
@@ -2189,6 +2227,9 @@ function PostJobPage() {
                         <strong>Selected Source</strong>
                         <span>{selectedManagementItem.value}</span>
                       </div>
+                      {isSelectedDeleteBlocked ? (
+                        <p className="admin-modal-selection-note">This source can be renamed, but it cannot be deleted while it is built-in or used in jobs.</p>
+                      ) : null}
                       <div className="admin-lov-row admin-department-row">
                         <input
                           value={editedSourceName}
@@ -2199,7 +2240,7 @@ function PostJobPage() {
                           <button type="button" className="action-btn secondary" onClick={onRenameSource}>
                             Rename
                           </button>
-                          <button type="button" className="action-btn" onClick={onDeleteSourceOption}>
+                          <button type="button" className="action-btn" onClick={onDeleteSourceOption} disabled={isSelectedDeleteBlocked}>
                             Delete
                           </button>
                         </div>
@@ -2242,6 +2283,9 @@ function PostJobPage() {
                         <strong>Selected City</strong>
                         <span>{selectedManagementItem.value}</span>
                       </div>
+                      {isSelectedDeleteBlocked ? (
+                        <p className="admin-modal-selection-note">This city can be renamed, but it cannot be deleted while it is being used in jobs.</p>
+                      ) : null}
                       <div className="admin-lov-row admin-modal-city-row">
                         <input
                           value={editedCityName}
@@ -2258,7 +2302,7 @@ function PostJobPage() {
                           <button type="button" className="action-btn secondary" onClick={onRenameCity}>
                             Rename
                           </button>
-                          <button type="button" className="action-btn" onClick={onDeleteCity}>
+                          <button type="button" className="action-btn" onClick={onDeleteCity} disabled={isSelectedDeleteBlocked}>
                             Delete
                           </button>
                         </div>
@@ -2284,6 +2328,9 @@ function PostJobPage() {
                         <strong>Selected Province</strong>
                         <span>{selectedManagementItem.value}</span>
                       </div>
+                      {isSelectedDeleteBlocked ? (
+                        <p className="admin-modal-selection-note">This province can be renamed, but it cannot be deleted while it is built-in, linked to cities, or used in jobs.</p>
+                      ) : null}
                       <div className="admin-lov-row admin-department-row">
                         <input
                           value={editedProvinceName}
@@ -2294,7 +2341,7 @@ function PostJobPage() {
                           <button type="button" className="action-btn secondary" onClick={onRenameProvince}>
                             Rename
                           </button>
-                          <button type="button" className="action-btn" onClick={onDeleteProvince}>
+                          <button type="button" className="action-btn" onClick={onDeleteProvince} disabled={isSelectedDeleteBlocked}>
                             Delete
                           </button>
                         </div>

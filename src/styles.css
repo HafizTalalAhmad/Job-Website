@@ -2620,6 +2620,29 @@ a:hover {
   font-weight: 700;
 }
 
+.admin-modal-selection-note {
+  margin: 0 0 12px;
+  color: #7a5b00;
+  font-size: 12px;
+  line-height: 1.5;
+  background: #fff6df;
+  border: 1px solid #ecd2a1;
+  border-radius: 12px;
+  padding: 9px 11px;
+}
+
+.action-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.52;
+  box-shadow: none;
+  transform: none;
+}
+
+.action-btn:disabled:hover {
+  transform: none;
+  filter: none;
+}
+
 .bookmark-modal {
   width: min(360px, calc(100vw - 32px));
   border: 1px solid #cfd9e6;
@@ -3306,6 +3329,12 @@ a:hover {
 :root[data-theme='dark'] .admin-modal-state-card p,
 :root[data-theme='dark'] .admin-modal-selected-head span {
   color: #c7d4e5;
+}
+
+:root[data-theme='dark'] .admin-modal-selection-note {
+  background: #3c2b12;
+  border-color: #7d5b28;
+  color: #f3d29a;
 }
 
 :root[data-theme='dark'] .admin-modal-card-head h3,
