@@ -1853,13 +1853,19 @@ a:hover {
 
 .admin-lov-row {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: 8px;
+  align-items: center;
 }
 
 .admin-department-row {
-  grid-template-columns: 1.35fr 1fr auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
+}
+
+.admin-inline-manage {
+  min-width: 104px;
+  white-space: nowrap;
 }
 
 .admin-inline-actions {

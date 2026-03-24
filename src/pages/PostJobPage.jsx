@@ -2327,41 +2327,6 @@ function PostJobPage() {
           )}
         </section>
 
-        <section className="admin-management-block admin-management-card">
-          <div className="admin-management-head">
-            <div>
-              <h2 className="panel-title admin-subtitle">Manage Lists</h2>
-              <p className="admin-management-copy">
-                Keep departments, companies, categories, industries, sources, cities, and provinces organized in one place.
-                If a list item is already used in posted jobs, it can be renamed but not deleted.
-              </p>
-            </div>
-          </div>
-          <div className="admin-management-actions">
-            <button type="button" className="action-btn secondary" onClick={() => openManagementModal('department')}>
-              Departments
-            </button>
-            <button type="button" className="action-btn secondary" onClick={() => openManagementModal('company')}>
-              Companies
-            </button>
-            <button type="button" className="action-btn secondary" onClick={() => openManagementModal('category')}>
-              Categories
-            </button>
-            <button type="button" className="action-btn secondary" onClick={() => openManagementModal('industry')}>
-              Industries
-            </button>
-            <button type="button" className="action-btn secondary" onClick={() => openManagementModal('source')}>
-              Sources
-            </button>
-            <button type="button" className="action-btn secondary" onClick={() => openManagementModal('city')}>
-              Cities
-            </button>
-            <button type="button" className="action-btn secondary" onClick={() => openManagementModal('province')}>
-              Provinces
-            </button>
-          </div>
-        </section>
-
         <form className="contact-form" onSubmit={onSubmit}>
           <input value={form.title} onChange={(e) => onChange('title', e.target.value)} placeholder="Job Title" required />
           <select value={form.type} onChange={(e) => onChange('type', e.target.value)} required>
@@ -2378,6 +2343,9 @@ function PostJobPage() {
                     <option key={department} value={department}>{department}</option>
                   ))}
                 </select>
+                <button type="button" className="action-btn secondary admin-inline-manage" onClick={() => openManagementModal('department')}>
+                  Manage
+                </button>
               </div>
             </>
           ) : form.type === 'private' ? (
@@ -2389,6 +2357,9 @@ function PostJobPage() {
                     <option key={company} value={company}>{company}</option>
                   ))}
                 </select>
+                <button type="button" className="action-btn secondary admin-inline-manage" onClick={() => openManagementModal('company')}>
+                  Manage
+                </button>
               </div>
             </>
           ) : (
@@ -2406,6 +2377,9 @@ function PostJobPage() {
                 <option key={city} value={city}>{city}</option>
               ))}
             </select>
+            <button type="button" className="action-btn secondary admin-inline-manage" onClick={() => openManagementModal('city')}>
+              Manage
+            </button>
           </div>
           <div className="admin-lov-row">
             <select value={form.province} onChange={(e) => onChange('province', e.target.value)} required>
@@ -2414,6 +2388,9 @@ function PostJobPage() {
                 <option key={province} value={province}>{province}</option>
               ))}
             </select>
+            <button type="button" className="action-btn secondary admin-inline-manage" onClick={() => openManagementModal('province')}>
+              Manage
+            </button>
           </div>
           <select value={form.country} onChange={(e) => onChange('country', e.target.value)} required>
             <option value="">Select Country</option>
@@ -2428,6 +2405,9 @@ function PostJobPage() {
                 <option key={item} value={item}>{item}</option>
               ))}
             </select>
+            <button type="button" className="action-btn secondary admin-inline-manage" onClick={() => openManagementModal('category')}>
+              Manage
+            </button>
           </div>
           <div className="admin-lov-row admin-department-row">
             <select value={form.industry} onChange={(e) => onChange('industry', e.target.value)} required>
@@ -2436,6 +2416,9 @@ function PostJobPage() {
                 <option key={item} value={item}>{item}</option>
               ))}
             </select>
+            <button type="button" className="action-btn secondary admin-inline-manage" onClick={() => openManagementModal('industry')}>
+              Manage
+            </button>
           </div>
           <select value={form.employmentType} onChange={(e) => onChange('employmentType', e.target.value)} required>
             <option value="">Select Type of Job</option>
@@ -2450,6 +2433,9 @@ function PostJobPage() {
                 <option key={item} value={item}>{item}</option>
               ))}
             </select>
+            <button type="button" className="action-btn secondary admin-inline-manage" onClick={() => openManagementModal('source')}>
+              Manage
+            </button>
           </div>
           <label>
             Post Date
