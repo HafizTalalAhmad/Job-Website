@@ -59,6 +59,16 @@ function JobDetailPage() {
     `How to Apply, Application Deadline / Procedure, Last Date to Apply`
   ]
   const displayKeywords = job.keywords && job.keywords.length ? job.keywords : keywordItems
+  const privateSummaryItems = [
+    { label: 'Company', value: job.organization },
+    { label: 'City', value: job.city },
+    { label: 'Province', value: provinceText },
+    { label: 'Category', value: job.category },
+    { label: 'Industry', value: job.industry },
+    { label: 'Job Type', value: job.employmentType || '-' },
+    { label: 'Posted', value: formatDate(job.postDate) },
+    { label: 'Deadline', value: formatDate(job.deadline) }
+  ]
 
   return (
     <main className="container page-block">
@@ -71,81 +81,133 @@ function JobDetailPage() {
           {job.organization} | {job.city} | {provinceText} | {countryText} | {job.type} | {job.industry}
         </p>
 
-        <div className="detail-grid">
-          <div>
-            <h2>Job Description</h2>
-            <p>{job.description}</p>
+        {isPrivateJob ? (
+          <div className="private-detail-layout">
+            <section className="private-detail-summary">
+              <div className="private-detail-grid">
+                {privateSummaryItems.map((item) => (
+                  <div key={item.label} className="private-detail-item">
+                    <span>{item.label}</span>
+                    <strong>{item.value}</strong>
+                  </div>
+                ))}
+              </div>
+            </section>
 
-            <h2>Job Positions</h2>
-            <ul>
-              {(job.jobPositions || job.requirements || []).map((req) => (
-                <li key={req}>{req}</li>
-              ))}
-            </ul>
+            <section className="private-detail-copy">
+              <div className="private-detail-section">
+                <h2>Role Overview</h2>
+                <p>{job.summary || job.description}</p>
+              </div>
 
-            <h2>Application Procedure</h2>
-            <p>{job.applyProcedure}</p>
+              <div className="private-detail-section">
+                <h2>What You Will Do</h2>
+                <ul>
+                  {(job.jobPositions || job.requirements || []).map((req) => (
+                    <li key={req}>{req}</li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="private-detail-section">
+                <h2>How to Apply</h2>
+                <p>{job.applyProcedure}</p>
+              </div>
+            </section>
+
+            <aside className="detail-card detail-card-private">
+              <h3>{factsTitle}</h3>
+              <p><strong>Source:</strong> {job.source}</p>
+              <p><strong>Location:</strong> {job.city}, {provinceText}</p>
+              <p><strong>Apply Link:</strong> Open the official company page below.</p>
+
+              <div className="detail-actions">
+                <a href={job.applyLink} target="_blank" rel="noreferrer" className="action-btn">{applyButtonLabel}</a>
+                <Link to={parentTo} className="action-btn secondary">{backButtonLabel}</Link>
+              </div>
+            </aside>
           </div>
+        ) : (
+          <div className="detail-grid">
+            <div>
+              <h2>Job Description</h2>
+              <p>{job.description}</p>
 
-          <aside className={`detail-card ${isPrivateJob ? 'detail-card-private' : ''}`}>
-            <h3>{factsTitle}</h3>
-            <p><strong>Posting Date:</strong> {formatDate(job.postDate)}</p>
-            <p><strong>Deadline:</strong> {formatDate(job.deadline)}</p>
-            <p><strong>Source:</strong> {job.source}</p>
-            <p><strong>Category:</strong> {job.category}</p>
-            <p><strong>Type of Job:</strong> {job.employmentType || '-'}</p>
-            <p><strong>Location:</strong> {job.city}, {provinceText}, {countryText}</p>
+              <h2>Job Positions</h2>
+              <ul>
+                {(job.jobPositions || job.requirements || []).map((req) => (
+                  <li key={req}>{req}</li>
+                ))}
+              </ul>
 
-            <div className="detail-actions">
-              <a href={job.applyLink} target="_blank" rel="noreferrer" className="action-btn">{applyButtonLabel}</a>
-              <Link to={parentTo} className="action-btn secondary">{backButtonLabel}</Link>
+              <h2>Application Procedure</h2>
+              <p>{job.applyProcedure}</p>
             </div>
-          </aside>
-        </div>
+
+            <aside className={`detail-card ${isPrivateJob ? 'detail-card-private' : ''}`}>
+              <h3>{factsTitle}</h3>
+              <p><strong>Posting Date:</strong> {formatDate(job.postDate)}</p>
+              <p><strong>Deadline:</strong> {formatDate(job.deadline)}</p>
+              <p><strong>Source:</strong> {job.source}</p>
+              <p><strong>Category:</strong> {job.category}</p>
+              <p><strong>Type of Job:</strong> {job.employmentType || '-'}</p>
+              <p><strong>Location:</strong> {job.city}, {provinceText}, {countryText}</p>
+
+              <div className="detail-actions">
+                <a href={job.applyLink} target="_blank" rel="noreferrer" className="action-btn">{applyButtonLabel}</a>
+                <Link to={parentTo} className="action-btn secondary">{backButtonLabel}</Link>
+              </div>
+            </aside>
+          </div>
+        )}
       </article>
 
-      <section className="panel">
-        <h2 className="panel-title">{posterTitle}</h2>
-        <div className="poster-page">
-          <p className="poster-note-green">Please click the image to view it in original size.</p>
-          <div className="poster-wrap">
-            <a href={posterImage} target="_blank" rel="noreferrer">
-              <img src={posterImage} alt={`${job.title} poster`} />
-            </a>
-          </div>
-          <p className="poster-note-red">Please click the link given near the end of this webpage for further details.</p>
-          <p className="poster-note-green">Please click the image to view it in original size.</p>
+      {!isPrivateJob && (
+        <>
+          <section className="panel">
+            <h2 className="panel-title">{posterTitle}</h2>
+            <div className="poster-page">
+              <p className="poster-note-green">Please click the image to view it in original size.</p>
+              <div className="poster-wrap">
+                <a href={posterImage} target="_blank" rel="noreferrer">
+                  <img src={posterImage} alt={`${job.title} poster`} />
+                </a>
+              </div>
+              <p className="poster-note-red">Please click the link given near the end of this webpage for further details.</p>
+              <p className="poster-note-green">Please click the image to view it in original size.</p>
 
-          <div className="poster-share-box">
-            <h3>Share This Ad With Your Friends</h3>
-            <div className="poster-share-links">
-              <a href={facebookShare} target="_blank" rel="noreferrer" aria-label="Share on Facebook">f</a>
-              <a href={xShare} target="_blank" rel="noreferrer" aria-label="Share on X">X</a>
-              <a href={emailShare} aria-label="Share by Email">@</a>
+              <div className="poster-share-box">
+                <h3>Share This Ad With Your Friends</h3>
+                <div className="poster-share-links">
+                  <a href={facebookShare} target="_blank" rel="noreferrer" aria-label="Share on Facebook">f</a>
+                  <a href={xShare} target="_blank" rel="noreferrer" aria-label="Share on X">X</a>
+                  <a href={emailShare} aria-label="Share by Email">@</a>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      </section>
+          </section>
 
-      <section className="panel bottom-keywords-panel">
-        <p className="bottom-label">Keywords:</p>
-        <ul>
-          {displayKeywords.map((item) => (
-            <li key={item}>{item}</li>
-          ))}
-        </ul>
-      </section>
+          <section className="panel bottom-keywords-panel">
+            <p className="bottom-label">Keywords:</p>
+            <ul>
+              {displayKeywords.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </section>
 
-      <section className="panel bottom-apply-panel">
-        <h2>{job.title}</h2>
-        <p>{bottomApplyCopy}</p>
-        <p>
-          <a href={job.applyLink} target="_blank" rel="noreferrer">{job.applyLink}</a>
-        </p>
-      </section>
+          <section className="panel bottom-apply-panel">
+            <h2>{job.title}</h2>
+            <p>{bottomApplyCopy}</p>
+            <p>
+              <a href={job.applyLink} target="_blank" rel="noreferrer">{job.applyLink}</a>
+            </p>
+          </section>
+        </>
+      )}
 
       <section className="panel related-panel">
-        <h2 className="panel-title">Related Jobs</h2>
+        <h2 className="panel-title">{isPrivateJob ? 'Similar Private Jobs' : 'Related Jobs'}</h2>
         <ul className="related-list">
           {relatedJobs.map((item) => (
             <li key={item.id}>

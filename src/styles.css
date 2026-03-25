@@ -1650,6 +1650,79 @@ a:hover {
   margin-top: 8px;
 }
 
+.private-detail-layout {
+  display: grid;
+  gap: 14px;
+}
+
+.private-detail-summary {
+  border: 1px solid #d7e0eb;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.private-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.private-detail-item {
+  border: 1px solid #dbe3ee;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: grid;
+  gap: 4px;
+}
+
+.private-detail-item span {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #6b7d92;
+}
+
+.private-detail-item strong {
+  color: #1f3553;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.private-detail-copy {
+  display: grid;
+  gap: 12px;
+}
+
+.private-detail-section {
+  border: 1px solid #d7e0eb;
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.private-detail-section h2 {
+  margin: 0 0 8px;
+  font-size: 16px;
+  color: #1c4f96;
+}
+
+.private-detail-section p,
+.private-detail-section li {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #435972;
+}
+
+.private-detail-section ul {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 6px;
+}
+
 .poster-page {
   text-align: center;
 }
@@ -2950,6 +3023,34 @@ a:hover {
   border-color: #38506d;
 }
 
+:root[data-theme='dark'] .private-detail-summary,
+:root[data-theme='dark'] .private-detail-section {
+  background: linear-gradient(180deg, #162437 0%, #101a29 100%);
+  border-color: #32475f;
+}
+
+:root[data-theme='dark'] .private-detail-item {
+  background: #17283b;
+  border-color: #3a536f;
+}
+
+:root[data-theme='dark'] .private-detail-item span {
+  color: #9fb3cc;
+}
+
+:root[data-theme='dark'] .private-detail-item strong {
+  color: #e5eefb;
+}
+
+:root[data-theme='dark'] .private-detail-section h2 {
+  color: #dbeafe;
+}
+
+:root[data-theme='dark'] .private-detail-section p,
+:root[data-theme='dark'] .private-detail-section li {
+  color: #c7d4e5;
+}
+
 :root[data-theme='dark'] .detail-card-private {
   background: linear-gradient(180deg, #2d2418 0%, #1f2633 100%);
   border-color: #68593d;
@@ -3326,6 +3427,10 @@ a:hover {
     grid-template-columns: 1fr;
   }
 
+  .private-detail-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .job-row {
     grid-template-columns: 1.05fr 0.95fr;
   }
@@ -3431,6 +3536,10 @@ a:hover {
     bottom: 12px;
   }
   .admin-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .private-detail-grid {
     grid-template-columns: 1fr;
   }
 }
