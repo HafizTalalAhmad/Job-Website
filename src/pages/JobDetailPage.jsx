@@ -59,12 +59,11 @@ function JobDetailPage() {
     `How to Apply, Application Deadline / Procedure, Last Date to Apply`
   ]
   const displayKeywords = job.keywords && job.keywords.length ? job.keywords : keywordItems
-  const privateHeroTags = [
+  const privateHeaderMeta = [
     job.organization,
-    job.city,
-    provinceText,
-    job.employmentType || 'Private Job',
-    `Deadline: ${formatDate(job.deadline)}`
+    `${job.city}, ${provinceText}`,
+    job.category,
+    job.employmentType || 'Private Job'
   ]
   const privateRoleOverview = job.summary && job.summary !== job.description ? job.summary : job.description
 
@@ -78,10 +77,20 @@ function JobDetailPage() {
             <div className={`section-kicker private-job-kicker`}>{heroLabel}</div>
             <h1>{job.title}</h1>
             <p className="private-job-summary">{privateRoleOverview}</p>
-            <div className="private-job-tag-row">
-              {privateHeroTags.map((tag) => (
-                <span key={tag} className="private-job-tag">{tag}</span>
-              ))}
+            <p className="private-job-meta-line">{privateHeaderMeta.join(' | ')}</p>
+            <div className="private-job-facts-row">
+              <div className="private-job-fact">
+                <span>Posted</span>
+                <strong>{formatDate(job.postDate)}</strong>
+              </div>
+              <div className="private-job-fact">
+                <span>Deadline</span>
+                <strong>{formatDate(job.deadline)}</strong>
+              </div>
+              <div className="private-job-fact">
+                <span>Source</span>
+                <strong>{job.source}</strong>
+              </div>
             </div>
           </div>
 
@@ -114,8 +123,7 @@ function JobDetailPage() {
                 <p><strong>Category</strong><span>{job.category}</span></p>
                 <p><strong>Industry</strong><span>{job.industry}</span></p>
                 <p><strong>Location</strong><span>{job.city}, {provinceText}</span></p>
-                <p><strong>Source</strong><span>{job.source}</span></p>
-                <p><strong>Posted</strong><span>{formatDate(job.postDate)}</span></p>
+                <p><strong>Country</strong><span>{countryText}</span></p>
               </div>
 
               <div className="detail-actions">
