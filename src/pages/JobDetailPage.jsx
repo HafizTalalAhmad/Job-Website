@@ -59,49 +59,41 @@ function JobDetailPage() {
     `How to Apply, Application Deadline / Procedure, Last Date to Apply`
   ]
   const displayKeywords = job.keywords && job.keywords.length ? job.keywords : keywordItems
-  const privateSummaryItems = [
-    { label: 'Company', value: job.organization },
-    { label: 'City', value: job.city },
-    { label: 'Province', value: provinceText },
-    { label: 'Category', value: job.category },
-    { label: 'Industry', value: job.industry },
-    { label: 'Job Type', value: job.employmentType || '-' },
-    { label: 'Posted', value: formatDate(job.postDate) },
-    { label: 'Deadline', value: formatDate(job.deadline) }
+  const privateHeroTags = [
+    job.organization,
+    job.city,
+    provinceText,
+    job.employmentType || 'Private Job',
+    `Deadline: ${formatDate(job.deadline)}`
   ]
+  const privateRoleOverview = job.summary && job.summary !== job.description ? job.summary : job.description
 
   return (
     <main className="container page-block">
       <Breadcrumbs jobTitle={job.title} parentTo={parentTo} parentLabel={parentLabel} />
 
-      <article className={`job-detail ${isPrivateJob ? 'job-detail-private' : ''}`}>
-        <div className={`section-kicker ${isPrivateJob ? 'private-job-kicker' : ''}`}>{heroLabel}</div>
-        <h1>{job.title}</h1>
-        <p className="detail-meta">
-          {job.organization} | {job.city} | {provinceText} | {countryText} | {job.type} | {job.industry}
-        </p>
+      {isPrivateJob ? (
+        <article className="job-detail job-detail-private">
+          <div className="private-job-hero">
+            <div className={`section-kicker private-job-kicker`}>{heroLabel}</div>
+            <h1>{job.title}</h1>
+            <p className="private-job-summary">{privateRoleOverview}</p>
+            <div className="private-job-tag-row">
+              {privateHeroTags.map((tag) => (
+                <span key={tag} className="private-job-tag">{tag}</span>
+              ))}
+            </div>
+          </div>
 
-        {isPrivateJob ? (
-          <div className="private-detail-layout">
-            <section className="private-detail-summary">
-              <div className="private-detail-grid">
-                {privateSummaryItems.map((item) => (
-                  <div key={item.label} className="private-detail-item">
-                    <span>{item.label}</span>
-                    <strong>{item.value}</strong>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            <section className="private-detail-copy">
+          <div className="private-job-main">
+            <div className="private-detail-copy">
               <div className="private-detail-section">
                 <h2>Role Overview</h2>
-                <p>{job.summary || job.description}</p>
+                <p>{job.description}</p>
               </div>
 
               <div className="private-detail-section">
-                <h2>What You Will Do</h2>
+                <h2>Key Responsibilities</h2>
                 <ul>
                   {(job.jobPositions || job.requirements || []).map((req) => (
                     <li key={req}>{req}</li>
@@ -110,16 +102,21 @@ function JobDetailPage() {
               </div>
 
               <div className="private-detail-section">
-                <h2>How to Apply</h2>
+                <h2>Application Process</h2>
                 <p>{job.applyProcedure}</p>
               </div>
-            </section>
+            </div>
 
-            <aside className="detail-card detail-card-private">
+            <aside className="detail-card detail-card-private private-apply-card">
               <h3>{factsTitle}</h3>
-              <p><strong>Source:</strong> {job.source}</p>
-              <p><strong>Location:</strong> {job.city}, {provinceText}</p>
-              <p><strong>Apply Link:</strong> Open the official company page below.</p>
+              <div className="private-apply-facts">
+                <p><strong>Company</strong><span>{job.organization}</span></p>
+                <p><strong>Category</strong><span>{job.category}</span></p>
+                <p><strong>Industry</strong><span>{job.industry}</span></p>
+                <p><strong>Location</strong><span>{job.city}, {provinceText}</span></p>
+                <p><strong>Source</strong><span>{job.source}</span></p>
+                <p><strong>Posted</strong><span>{formatDate(job.postDate)}</span></p>
+              </div>
 
               <div className="detail-actions">
                 <a href={job.applyLink} target="_blank" rel="noreferrer" className="action-btn">{applyButtonLabel}</a>
@@ -127,7 +124,15 @@ function JobDetailPage() {
               </div>
             </aside>
           </div>
-        ) : (
+        </article>
+      ) : (
+        <article className="job-detail">
+          <div className="section-kicker">{heroLabel}</div>
+          <h1>{job.title}</h1>
+          <p className="detail-meta">
+            {job.organization} | {job.city} | {provinceText} | {countryText} | {job.type} | {job.industry}
+          </p>
+
           <div className="detail-grid">
             <div>
               <h2>Job Description</h2>
@@ -159,8 +164,8 @@ function JobDetailPage() {
               </div>
             </aside>
           </div>
-        )}
-      </article>
+        </article>
+      )}
 
       {!isPrivateJob && (
         <>
