@@ -19,8 +19,24 @@ function JobDetailPage() {
     )
   }
 
+  const isPrivateJob = job.type === 'private'
+  const parentTo = isPrivateJob ? '/jobs/private' : '/jobs/government'
+  const parentLabel = isPrivateJob ? 'Private Jobs' : 'Government Jobs'
+  const heroLabel = isPrivateJob ? 'Private Sector Opportunity' : 'Government Opportunity'
+  const factsTitle = isPrivateJob ? 'Private Job Snapshot' : 'Job Facts'
+  const applyButtonLabel = isPrivateJob ? 'Open Company Apply Link' : 'Apply Now'
+  const backButtonLabel = isPrivateJob ? 'Back to Private Jobs' : 'Back to Government Jobs'
+  const posterTitle = isPrivateJob ? 'Private Job Poster' : 'Job Poster'
+  const bottomApplyCopy = isPrivateJob
+    ? `Please visit the company link below to apply for ${job.organization} ${job.title}:`
+    : `Please visit the link given below to Apply Online for ${job.organization} ${job.title}:`
   const relatedJobs = allJobs
-    .filter((item) => item.id !== job.id && (item.category === job.category || item.organization === job.organization))
+    .filter(
+      (item) =>
+        item.id !== job.id &&
+        item.type === job.type &&
+        (item.category === job.category || item.organization === job.organization)
+    )
     .slice(0, 4)
   const provinceText = job.province || (job.location ? String(job.location).split(',')[0].trim() : '-')
   const countryText = job.country || 'In Pakistan'
@@ -46,9 +62,10 @@ function JobDetailPage() {
 
   return (
     <main className="container page-block">
-      <Breadcrumbs jobTitle={job.title} />
+      <Breadcrumbs jobTitle={job.title} parentTo={parentTo} parentLabel={parentLabel} />
 
-      <article className="job-detail">
+      <article className={`job-detail ${isPrivateJob ? 'job-detail-private' : ''}`}>
+        <div className={`section-kicker ${isPrivateJob ? 'private-job-kicker' : ''}`}>{heroLabel}</div>
         <h1>{job.title}</h1>
         <p className="detail-meta">
           {job.organization} | {job.city} | {provinceText} | {countryText} | {job.type} | {job.industry}
@@ -70,8 +87,8 @@ function JobDetailPage() {
             <p>{job.applyProcedure}</p>
           </div>
 
-          <aside className="detail-card">
-            <h3>Job Facts</h3>
+          <aside className={`detail-card ${isPrivateJob ? 'detail-card-private' : ''}`}>
+            <h3>{factsTitle}</h3>
             <p><strong>Posting Date:</strong> {formatDate(job.postDate)}</p>
             <p><strong>Deadline:</strong> {formatDate(job.deadline)}</p>
             <p><strong>Source:</strong> {job.source}</p>
@@ -80,15 +97,15 @@ function JobDetailPage() {
             <p><strong>Location:</strong> {job.city}, {provinceText}, {countryText}</p>
 
             <div className="detail-actions">
-              <a href={job.applyLink} target="_blank" rel="noreferrer" className="action-btn">Apply Now</a>
-              <Link to="/" className="action-btn secondary">Back to Jobs</Link>
+              <a href={job.applyLink} target="_blank" rel="noreferrer" className="action-btn">{applyButtonLabel}</a>
+              <Link to={parentTo} className="action-btn secondary">{backButtonLabel}</Link>
             </div>
           </aside>
         </div>
       </article>
 
       <section className="panel">
-        <h2 className="panel-title">Job Poster</h2>
+        <h2 className="panel-title">{posterTitle}</h2>
         <div className="poster-page">
           <p className="poster-note-green">Please click the image to view it in original size.</p>
           <div className="poster-wrap">
@@ -121,9 +138,7 @@ function JobDetailPage() {
 
       <section className="panel bottom-apply-panel">
         <h2>{job.title}</h2>
-        <p>
-          Please visit the link given below to Apply Online for {job.organization} {job.title}:
-        </p>
+        <p>{bottomApplyCopy}</p>
         <p>
           <a href={job.applyLink} target="_blank" rel="noreferrer">{job.applyLink}</a>
         </p>

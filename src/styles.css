@@ -1576,6 +1576,11 @@ a:hover {
   padding: 14px;
 }
 
+.job-detail-private {
+  background: linear-gradient(180deg, #fffdf8 0%, #f7fbff 100%);
+  border-color: #d8dbe6;
+}
+
 .job-detail h1 {
   margin: 0;
   font-size: 28px;
@@ -1620,12 +1625,23 @@ a:hover {
   padding: 10px;
 }
 
+.detail-card-private {
+  background: linear-gradient(180deg, #fff9ee 0%, #f8fbff 100%);
+  border-color: #dec8a4;
+}
+
 .detail-card h3 {
   margin: 0 0 8px;
 }
 
 .detail-card p {
   margin: 4px 0;
+}
+
+.private-job-kicker {
+  background: #eef4ff;
+  border-color: #c3d5f1;
+  color: #1c4f96;
 }
 
 .detail-actions {
@@ -2927,6 +2943,22 @@ a:hover {
 :root[data-theme='dark'] .admin-stat-card {
   background: var(--surface-soft);
   border-color: var(--line);
+}
+
+:root[data-theme='dark'] .job-detail-private {
+  background: linear-gradient(180deg, #172334 0%, #121c2b 100%);
+  border-color: #38506d;
+}
+
+:root[data-theme='dark'] .detail-card-private {
+  background: linear-gradient(180deg, #2d2418 0%, #1f2633 100%);
+  border-color: #68593d;
+}
+
+:root[data-theme='dark'] .private-job-kicker {
+  background: #17304d;
+  border-color: #35537a;
+  color: #dbeafe;
 }
 
 :root[data-theme='dark'] .disclaimer-strip {
