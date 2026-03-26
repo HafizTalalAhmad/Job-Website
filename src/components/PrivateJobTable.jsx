@@ -120,9 +120,9 @@ function PrivateJobTable({ jobs }) {
                   <td>{job.category || '-'}</td>
                   <td>{job.industry || '-'}</td>
                   <td>{job.source || '-'}</td>
-                  <td>{job.postDate ? formatDate(job.postDate) : '-'}</td>
-                  <td>{job.deadline ? formatDate(job.deadline) : '-'}</td>
-                  <td>
+                  <td className="private-job-posted-cell">{job.postDate ? formatDate(job.postDate) : '-'}</td>
+                  <td className="private-job-deadline-cell">{job.deadline ? formatDate(job.deadline) : '-'}</td>
+                  <td className="private-job-status-cell">
                     <span className={`private-job-status-pill status-${status.toLowerCase().replace(/\s+/g, '-')}`}>
                       {status}
                     </span>

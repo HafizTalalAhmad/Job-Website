@@ -846,6 +846,14 @@ a:hover {
   opacity: 0.78;
 }
 
+.private-job-grid-table tbody tr td:first-child {
+  border-left: 3px solid transparent;
+}
+
+.private-job-grid-table tbody tr:hover td:first-child {
+  border-left-color: #2f67bb;
+}
+
 .private-job-grid-table tbody tr:last-child td {
   border-bottom: none;
 }
@@ -901,6 +909,21 @@ a:hover {
   overflow-wrap: break-word;
   white-space: normal;
   hyphens: none;
+}
+
+.private-job-posted-cell {
+  color: #58708a;
+  font-size: 13px;
+}
+
+.private-job-deadline-cell {
+  color: #8b5b00;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.private-job-status-cell {
+  text-align: center;
 }
 
 .private-job-empty-cell {
@@ -1035,6 +1058,10 @@ a:hover {
   background: #2f1d23;
 }
 
+:root[data-theme='dark'] .private-job-grid-table tbody tr:hover td:first-child {
+  border-left-color: #74a6ff;
+}
+
 :root[data-theme='dark'] .private-job-grid-table td {
   color: #dbeafe;
 }
@@ -1056,6 +1083,14 @@ a:hover {
 
 :root[data-theme='dark'] .private-job-bookmark-btn.is-saved {
   color: #facc15;
+}
+
+:root[data-theme='dark'] .private-job-posted-cell {
+  color: #9fb2c9;
+}
+
+:root[data-theme='dark'] .private-job-deadline-cell {
+  color: #f7d48f;
 }
 
 :root[data-theme='dark'] .private-job-status-pill.status-active {
