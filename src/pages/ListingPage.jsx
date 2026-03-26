@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import FilterPanel from '../components/FilterPanel'
 import JobGroupByDate from '../components/JobGroupByDate'
+import PrivateJobTable from '../components/PrivateJobTable'
 import { applyFilters, getUniqueOptions, groupJobs, sortJobs } from '../utils/jobs'
 import { useJobs } from '../context/JobsContext'
 
@@ -25,6 +26,7 @@ function ListingPage({ mode, title, description }) {
   const [toDate, setToDate] = useState('')
   const pageSize = 50
   const query = new URLSearchParams(location.search).get('q') || ''
+  const isPrivatePage = mode === 'private'
 
   const options = useMemo(
     () => ({
@@ -110,8 +112,8 @@ function ListingPage({ mode, title, description }) {
         )}
 
         <section className="panel grouped-listing">
-          <JobGroupByDate grouped={groupedByDate} />
-          {!groupedByDate.length && <p className="empty-state">No jobs matched your criteria.</p>}
+          {isPrivatePage ? <PrivateJobTable jobs={pagedJobs} /> : <JobGroupByDate grouped={groupedByDate} />}
+          {!isPrivatePage && !groupedByDate.length && <p className="empty-state">No jobs matched your criteria.</p>}
           <div className="pagination-wrap">
             <div className="pagination">
               <button
