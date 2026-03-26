@@ -748,6 +748,13 @@ a:hover {
   align-items: start;
 }
 
+.private-job-role-content {
+  min-width: 0;
+  display: grid;
+  gap: 6px;
+  align-content: start;
+}
+
 .private-job-mark {
   width: 46px;
   height: 46px;
@@ -765,11 +772,10 @@ a:hover {
 
 .private-job-title-link {
   display: inline-block;
-  margin-bottom: 4px;
   color: #1c4f96;
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 700;
-  line-height: 1.28;
+  line-height: 1.25;
 }
 
 .private-job-title-link:hover {
@@ -779,8 +785,9 @@ a:hover {
 .private-job-role-cell p {
   margin: 0;
   color: #4f6782;
-  font-size: 12px;
-  line-height: 1.45;
+  font-size: 13px;
+  line-height: 1.5;
+  max-width: 52ch;
 }
 
 .private-job-col {
@@ -792,12 +799,19 @@ a:hover {
 .private-job-col strong {
   color: #1f3553;
   font-size: 14px;
+  line-height: 1.35;
 }
 
 .private-job-col span {
   color: #607086;
   font-size: 12px;
   line-height: 1.45;
+}
+
+.private-job-company strong,
+.private-job-date strong,
+.private-job-type strong {
+  font-size: 15px;
 }
 
 .private-job-date strong {
@@ -812,6 +826,9 @@ a:hover {
 .private-job-actions .action-btn.secondary {
   min-width: 94px;
   justify-content: center;
+  border-radius: 999px;
+  font-weight: 700;
+  padding-inline: 18px;
 }
 
 .private-listing-hero {

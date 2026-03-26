@@ -35,10 +35,12 @@ function PrivateJobTable({ jobs }) {
             <article key={job.id} className="private-job-row">
               <div className="private-job-role-cell">
                 <div className="private-job-mark">{companyMark}</div>
-                <Link to={`/job/${job.id}`} className="private-job-title-link">
-                  {job.title}
-                </Link>
-                <p>{job.summary}</p>
+                <div className="private-job-role-content">
+                  <Link to={`/job/${job.id}`} className="private-job-title-link">
+                    {job.title}
+                  </Link>
+                  <p>{job.summary}</p>
+                </div>
               </div>
 
               <div className="private-job-col private-job-company">
