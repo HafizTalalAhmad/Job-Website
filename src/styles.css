@@ -693,22 +693,23 @@ a:hover {
 
 .private-job-table {
   border: 1px solid #d7e0eb;
-  background: #ffffff;
-  border-radius: 10px;
+  background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+  border-radius: 14px;
   overflow: hidden;
+  box-shadow: 0 10px 24px rgba(19, 52, 101, 0.05);
 }
 
 .private-job-table-head,
 .private-job-row {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(150px, 1fr) minmax(150px, 1fr) minmax(150px, 0.9fr) auto;
-  gap: 12px;
+  grid-template-columns: 56px minmax(0, 2.2fr) minmax(160px, 1fr) minmax(160px, 1fr) minmax(170px, 1fr) auto;
+  gap: 14px;
   align-items: center;
 }
 
 .private-job-table-head {
-  padding: 12px 16px;
-  background: #f4f8fc;
+  padding: 14px 18px;
+  background: linear-gradient(180deg, #f5f9fd 0%, #eef4fb 100%);
   border-bottom: 1px solid #d7e0eb;
 }
 
@@ -720,17 +721,46 @@ a:hover {
   color: #607086;
 }
 
+.private-job-table-head span:first-child {
+  grid-column: 1 / span 4;
+}
+
+.private-job-table-head span:last-child {
+  justify-self: end;
+}
+
 .private-job-table-body {
   display: grid;
 }
 
 .private-job-row {
-  padding: 16px;
+  padding: 18px;
   border-bottom: 1px solid #e5ecf4;
+  background: #ffffff;
+  transition: background-color 0.18s ease, transform 0.18s ease;
+}
+
+.private-job-row:hover {
+  background: #f9fbff;
 }
 
 .private-job-row:last-child {
   border-bottom: none;
+}
+
+.private-job-mark {
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #1c4f96 0%, #173f7d 100%);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  box-shadow: 0 10px 18px rgba(28, 79, 150, 0.18);
 }
 
 .private-job-role {
@@ -741,7 +771,7 @@ a:hover {
   display: inline-block;
   margin-bottom: 6px;
   color: #1c4f96;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   line-height: 1.3;
 }
@@ -762,6 +792,10 @@ a:hover {
   gap: 4px;
 }
 
+.private-job-company {
+  align-content: start;
+}
+
 .private-job-col strong {
   color: #1f3553;
   font-size: 14px;
@@ -773,9 +807,61 @@ a:hover {
   line-height: 1.45;
 }
 
+.private-job-col small {
+  color: #7b8da4;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.private-job-date strong {
+  color: #8b5b00;
+}
+
 .private-job-actions {
   display: flex;
   justify-content: flex-end;
+}
+
+.private-listing-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: end;
+}
+
+.private-listing-copy .panel-title {
+  margin-bottom: 8px;
+}
+
+.private-listing-stats {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.private-listing-stat {
+  min-width: 118px;
+  border: 1px solid #d7e0eb;
+  background: linear-gradient(180deg, #ffffff 0%, #f6faff 100%);
+  border-radius: 12px;
+  padding: 12px 14px;
+  text-align: center;
+}
+
+.private-listing-stat strong {
+  display: block;
+  color: #1c4f96;
+  font-size: 24px;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.private-listing-stat span {
+  color: #607086;
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .home-highlight-card {
@@ -3380,7 +3466,7 @@ a:hover {
 }
 
 :root[data-theme='dark'] .private-job-table {
-  background: #162437;
+  background: linear-gradient(180deg, #162437 0%, #101a29 100%);
   border-color: #32475f;
 }
 
@@ -3391,17 +3477,42 @@ a:hover {
 
 :root[data-theme='dark'] .private-job-table-head span,
 :root[data-theme='dark'] .private-job-col span,
-:root[data-theme='dark'] .private-job-role p {
+:root[data-theme='dark'] .private-job-role p,
+:root[data-theme='dark'] .private-listing-stat span {
   color: #b9c9db;
 }
 
 :root[data-theme='dark'] .private-job-row {
   border-bottom-color: #2f4259;
+  background: #142234;
+}
+
+:root[data-theme='dark'] .private-job-row:hover {
+  background: #18283d;
 }
 
 :root[data-theme='dark'] .private-job-title-link,
-:root[data-theme='dark'] .private-job-col strong {
+:root[data-theme='dark'] .private-job-col strong,
+:root[data-theme='dark'] .private-listing-stat strong {
   color: #dbeafe;
+}
+
+:root[data-theme='dark'] .private-job-mark {
+  background: linear-gradient(180deg, #284d84 0%, #1b3d70 100%);
+  box-shadow: none;
+}
+
+:root[data-theme='dark'] .private-job-col small {
+  color: #8fa4bf;
+}
+
+:root[data-theme='dark'] .private-job-date strong {
+  color: #f3d29a;
+}
+
+:root[data-theme='dark'] .private-listing-stat {
+  background: #17283b;
+  border-color: #3a536f;
 }
 
 :root[data-theme='dark'] .home-news-meta,
@@ -3617,6 +3728,38 @@ a:hover {
   }
 
   .private-job-table-head {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .private-job-table-head span:first-child,
+  .private-job-table-head span:last-child {
+    grid-column: auto;
+    justify-self: start;
+  }
+
+  .private-job-row {
+    grid-template-columns: 44px 1fr;
+    gap: 10px;
+  }
+
+  .private-job-role,
+  .private-job-company,
+  .private-job-col,
+  .private-job-actions {
+    grid-column: 2;
+  }
+
+  .private-job-actions {
+    justify-content: flex-start;
+  }
+
+  .private-listing-hero {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .private-job-table-head {
     display: none;
   }
 
@@ -3745,6 +3888,10 @@ a:hover {
 
   .private-job-title-link {
     font-size: 18px;
+  }
+
+  .private-listing-stat {
+    min-width: 0;
   }
 }
 

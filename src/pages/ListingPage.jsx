@@ -66,6 +66,14 @@ function ListingPage({ mode, title, description }) {
   const end = start + pageSize
   const pagedJobs = filtered.slice(start, end)
   const groupedByDate = useMemo(() => groupJobs(pagedJobs, 'postDate'), [pagedJobs])
+  const privateStats = useMemo(
+    () => ({
+      total: filtered.length,
+      pageStart: filtered.length ? start + 1 : 0,
+      pageEnd: Math.min(end, filtered.length)
+    }),
+    [filtered.length, start, end]
+  )
 
   useEffect(() => {
     setCurrentPage(1)
@@ -75,16 +83,41 @@ function ListingPage({ mode, title, description }) {
     <main className="container layout inner-layout">
       <section className="content">
         <section className="panel">
-          <h1 className="panel-title">{title}</h1>
-          <p className="panel-intro">{description}</p>
-          <p className="panel-intro listing-helper-line">
-            {showsFilters
-              ? 'Tip: use the filters below if needed, then click any blue job headline to open full details.'
-              : 'Tip: click any blue job headline below to open full details.'}
-          </p>
+          {isPrivatePage ? (
+            <div className="private-listing-hero">
+              <div className="private-listing-copy">
+                <span className="section-kicker">Private Sector Jobs</span>
+                <h1 className="panel-title">{title}</h1>
+                <p className="panel-intro">
+                  Find company jobs in a cleaner board layout. Each row gives you the role, company, location, deadline,
+                  and direct next step.
+                </p>
+              </div>
+              <div className="private-listing-stats">
+                <div className="private-listing-stat">
+                  <strong>{privateStats.total}</strong>
+                  <span>Total jobs</span>
+                </div>
+                <div className="private-listing-stat">
+                  <strong>{privateStats.pageStart}-{privateStats.pageEnd}</strong>
+                  <span>Shown now</span>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <>
+              <h1 className="panel-title">{title}</h1>
+              <p className="panel-intro">{description}</p>
+              <p className="panel-intro listing-helper-line">
+                {showsFilters
+                  ? 'Tip: use the filters below if needed, then click any blue job headline to open full details.'
+                  : 'Tip: click any blue job headline below to open full details.'}
+              </p>
+            </>
+          )}
         </section>
 
-        {showsFilters && (
+        {(showsFilters || isPrivatePage) && (
           <FilterPanel
             mode={mode}
             filters={filters}
