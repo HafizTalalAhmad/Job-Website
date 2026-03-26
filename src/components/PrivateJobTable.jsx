@@ -102,8 +102,8 @@ function PrivateJobTable({ jobs }) {
               const isSaved = bookmarks.includes(job.id)
               const fallbackParts = job.location ? String(job.location).split(',').map((part) => part.trim()) : []
               const cityText = job.city || fallbackParts[0] || 'Pakistan'
-              const rawProvinceText = job.province || fallbackParts[1] || ''
-              const provinceText = /pakistan/i.test(rawProvinceText) ? '' : rawProvinceText
+              const rawProvinceText = job.province || (job.city ? fallbackParts[0] : fallbackParts[1]) || ''
+              const provinceText = /^(pakistan|remote)$/i.test(rawProvinceText) ? '' : rawProvinceText
 
               return (
                 <tr key={job.id} className={status === 'Expired' ? 'is-expired' : ''}>
