@@ -11,6 +11,17 @@ function PrivateJobTable({ jobs }) {
     <div className="private-job-table">
       <div className="private-job-table-wrap">
         <table className="private-job-grid-table">
+          <colgroup>
+            <col className="private-col-role" />
+            <col className="private-col-company" />
+            <col className="private-col-location" />
+            <col className="private-col-profession" />
+            <col className="private-col-industry" />
+            <col className="private-col-source" />
+            <col className="private-col-type" />
+            <col className="private-col-deadline" />
+            <col className="private-col-action" />
+          </colgroup>
           <thead>
             <tr>
               <th>Role</th>
