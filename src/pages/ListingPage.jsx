@@ -117,7 +117,7 @@ function ListingPage({ mode, title, description }) {
           )}
         </section>
 
-        {(showsFilters || isPrivatePage) && (
+        {showsFilters && (
           <FilterPanel
             mode={mode}
             filters={filters}

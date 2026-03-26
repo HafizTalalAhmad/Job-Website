@@ -1,267 +1,175 @@
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { formatDate } from '../utils/jobs'
 
-function PrivateJobTable({ jobs }) {
-  const [filters, setFilters] = useState({
-    role: '',
-    company: '',
-    location: '',
-    profession: '',
-    industry: '',
-    source: '',
-    deadline: ''
-  })
-  const [sortConfig, setSortConfig] = useState({ key: 'deadline', direction: 'asc' })
+const BOOKMARK_STORAGE_KEY = 'privateJobBookmarks'
 
-  const options = useMemo(
-    () => ({
-      companies: [...new Set(jobs.map((job) => job.organization).filter(Boolean))].sort(),
-      professions: [...new Set(jobs.map((job) => job.category).filter(Boolean))].sort(),
-      industries: [...new Set(jobs.map((job) => job.industry).filter(Boolean))].sort(),
-      sources: [...new Set(jobs.map((job) => job.source).filter(Boolean))].sort()
-    }),
-    [jobs]
-  )
+function getStatus(deadline) {
+  if (!deadline) return 'Active'
+
+  const today = new Date()
+  const dueDate = new Date(`${deadline}T00:00:00`)
+  today.setHours(0, 0, 0, 0)
+
+  const diff = (dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+
+  if (diff < 0) return 'Expired'
+  if (diff <= 2) return 'Closing Soon'
+  return 'Active'
+}
+
+function PrivateJobTable({ jobs }) {
+  const [search, setSearch] = useState('')
+  const [bookmarks, setBookmarks] = useState([])
+  const [showSavedOnly, setShowSavedOnly] = useState(false)
+
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(BOOKMARK_STORAGE_KEY)) || []
+      setBookmarks(Array.isArray(saved) ? saved : [])
+    } catch {
+      setBookmarks([])
+    }
+  }, [])
+
+  useEffect(() => {
+    localStorage.setItem(BOOKMARK_STORAGE_KEY, JSON.stringify(bookmarks))
+  }, [bookmarks])
 
   const filteredJobs = useMemo(() => {
-    const filtered = jobs.filter((job) => {
-      const provinceText = job.province || (job.location ? String(job.location).split(',')[0].trim() : '')
-      const locationLine = [job.city, provinceText].filter(Boolean).join(', ')
-      const safeSummary = (job.summary || '').trim()
-      const roleText = `${job.title} ${safeSummary}`.toLowerCase()
+    const normalizedSearch = search.trim().toLowerCase()
 
-      const matchesRole = !filters.role || roleText.includes(filters.role.toLowerCase())
-      const matchesCompany = !filters.company || job.organization === filters.company
-      const matchesLocation =
-        !filters.location || locationLine.toLowerCase().includes(filters.location.toLowerCase())
-      const matchesProfession = !filters.profession || job.category === filters.profession
-      const matchesIndustry = !filters.industry || job.industry === filters.industry
-      const matchesSource = !filters.source || job.source === filters.source
-      const matchesDeadline = !filters.deadline || job.deadline === filters.deadline
+    return jobs.filter((job) => {
+      const searchableText = [
+        job.title,
+        job.organization,
+        job.city,
+        job.province,
+        job.category,
+        job.industry,
+        job.source,
+        job.summary
+      ]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase()
 
-      return (
-        matchesRole &&
-        matchesCompany &&
-        matchesLocation &&
-        matchesProfession &&
-        matchesIndustry &&
-        matchesSource &&
-        matchesDeadline
-      )
+      const matchesSearch = !normalizedSearch || searchableText.includes(normalizedSearch)
+      const matchesSaved = !showSavedOnly || bookmarks.includes(job.id)
+
+      return matchesSearch && matchesSaved
     })
+  }, [bookmarks, jobs, search, showSavedOnly])
 
-    const directionFactor = sortConfig.direction === 'asc' ? 1 : -1
-    return [...filtered].sort((a, b) => {
-      const provinceA = a.province || (a.location ? String(a.location).split(',')[0].trim() : '')
-      const provinceB = b.province || (b.location ? String(b.location).split(',')[0].trim() : '')
-      const locationA = [a.city, provinceA].filter(Boolean).join(', ')
-      const locationB = [b.city, provinceB].filter(Boolean).join(', ')
-
-      const valueMapA = {
-        role: a.title || '',
-        company: a.organization || '',
-        location: locationA,
-        profession: a.category || '',
-        industry: a.industry || '',
-        source: a.source || '',
-        deadline: a.deadline || ''
-      }
-      const valueMapB = {
-        role: b.title || '',
-        company: b.organization || '',
-        location: locationB,
-        profession: b.category || '',
-        industry: b.industry || '',
-        source: b.source || '',
-        deadline: b.deadline || ''
-      }
-
-      const left = String(valueMapA[sortConfig.key] || '').toLowerCase()
-      const right = String(valueMapB[sortConfig.key] || '').toLowerCase()
-      return left.localeCompare(right) * directionFactor
-    })
-  }, [filters, jobs, sortConfig])
+  const toggleBookmark = (jobId) => {
+    setBookmarks((current) =>
+      current.includes(jobId) ? current.filter((savedId) => savedId !== jobId) : [...current, jobId]
+    )
+  }
 
   if (!jobs.length) {
     return <p className="empty-state">No private jobs matched your criteria.</p>
   }
 
-  const updateFilter = (key, value) => {
-    setFilters((current) => ({ ...current, [key]: value }))
-  }
-
-  const clearFilters = () => {
-    setFilters({
-      role: '',
-      company: '',
-      location: '',
-      profession: '',
-      industry: '',
-      source: '',
-      deadline: ''
-    })
-  }
-
-  const toggleSort = (key) => {
-    setSortConfig((current) => ({
-      key,
-      direction: current.key === key && current.direction === 'asc' ? 'desc' : 'asc'
-    }))
-  }
-
-  const sortIndicator = (key) => {
-    if (sortConfig.key !== key) return ''
-    return sortConfig.direction === 'asc' ? ' ^' : ' v'
-  }
-
   return (
-    <div className="private-job-table">
+    <div className="private-job-board">
+      <div className="private-job-toolbar">
+        <div className="private-job-toolbar-copy">
+          <h2>Private Job Listings</h2>
+          <p>Search quickly, bookmark useful roles, and check job status before you open the full page.</p>
+        </div>
+        <div className="private-job-toolbar-actions">
+          <input
+            type="text"
+            placeholder="Search jobs, companies, or industries..."
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            className="private-job-search"
+          />
+          <button
+            type="button"
+            onClick={() => setShowSavedOnly((current) => !current)}
+            className={`private-job-saved-toggle${showSavedOnly ? ' is-active' : ''}`}
+          >
+            Saved Jobs
+          </button>
+        </div>
+      </div>
+
       <div className="private-job-table-wrap">
-        <table className="private-job-grid-table">
-          <colgroup>
-            <col className="private-col-role" />
-            <col className="private-col-company" />
-            <col className="private-col-location" />
-            <col className="private-col-profession" />
-            <col className="private-col-industry" />
-            <col className="private-col-source" />
-            <col className="private-col-deadline" />
-            <col className="private-col-action" />
-          </colgroup>
+        <table className="private-job-grid-table private-job-simple-table">
           <thead>
             <tr>
-              <th><button type="button" className="private-job-sort-btn" onClick={() => toggleSort('role')}>Role{sortIndicator('role')}</button></th>
-              <th><button type="button" className="private-job-sort-btn" onClick={() => toggleSort('company')}>Company{sortIndicator('company')}</button></th>
-              <th><button type="button" className="private-job-sort-btn" onClick={() => toggleSort('location')}>Location{sortIndicator('location')}</button></th>
-              <th><button type="button" className="private-job-sort-btn" onClick={() => toggleSort('profession')}>Profession{sortIndicator('profession')}</button></th>
-              <th><button type="button" className="private-job-sort-btn" onClick={() => toggleSort('industry')}>Industry{sortIndicator('industry')}</button></th>
-              <th><button type="button" className="private-job-sort-btn" onClick={() => toggleSort('source')}>Source{sortIndicator('source')}</button></th>
-              <th><button type="button" className="private-job-sort-btn" onClick={() => toggleSort('deadline')}>Deadline{sortIndicator('deadline')}</button></th>
+              <th className="private-job-bookmark-col"></th>
+              <th>Job Role</th>
+              <th>Company</th>
+              <th>Location</th>
+              <th>Profession</th>
+              <th>Industry</th>
+              <th>Source</th>
+              <th>Posting Date</th>
+              <th>Deadline</th>
+              <th>Status</th>
               <th>Action</th>
-            </tr>
-            <tr className="private-job-filter-row">
-              <th>
-                <input
-                  type="text"
-                  value={filters.role}
-                  onChange={(e) => updateFilter('role', e.target.value)}
-                  placeholder="Search role"
-                />
-              </th>
-              <th>
-                <select value={filters.company} onChange={(e) => updateFilter('company', e.target.value)}>
-                  <option value="">All</option>
-                  {options.companies.map((value) => (
-                    <option key={value} value={value}>
-                      {value}
-                    </option>
-                  ))}
-                </select>
-              </th>
-              <th>
-                <input
-                  type="text"
-                  value={filters.location}
-                  onChange={(e) => updateFilter('location', e.target.value)}
-                  placeholder="City or province"
-                />
-              </th>
-              <th>
-                <select value={filters.profession} onChange={(e) => updateFilter('profession', e.target.value)}>
-                  <option value="">All</option>
-                  {options.professions.map((value) => (
-                    <option key={value} value={value}>
-                      {value}
-                    </option>
-                  ))}
-                </select>
-              </th>
-              <th>
-                <select value={filters.industry} onChange={(e) => updateFilter('industry', e.target.value)}>
-                  <option value="">All</option>
-                  {options.industries.map((value) => (
-                    <option key={value} value={value}>
-                      {value}
-                    </option>
-                  ))}
-                </select>
-              </th>
-              <th>
-                <select value={filters.source} onChange={(e) => updateFilter('source', e.target.value)}>
-                  <option value="">All</option>
-                  {options.sources.map((value) => (
-                    <option key={value} value={value}>
-                      {value}
-                    </option>
-                  ))}
-                </select>
-              </th>
-              <th>
-                <input
-                  type="date"
-                  value={filters.deadline}
-                  onChange={(e) => updateFilter('deadline', e.target.value)}
-                />
-              </th>
-              <th>
-                <button type="button" className="private-job-clear-btn" onClick={clearFilters}>
-                  Clear
-                </button>
-              </th>
             </tr>
           </thead>
           <tbody>
-        {filteredJobs.map((job) => {
-          const provinceText = job.province || (job.location ? String(job.location).split(',')[0].trim() : '')
-          const safeSummary = (job.summary || '').trim()
-          const isClosed = Boolean(job.deadline && job.deadline < new Date().toISOString().slice(0, 10))
+            {filteredJobs.map((job) => {
+              const status = getStatus(job.deadline)
+              const isSaved = bookmarks.includes(job.id)
 
-          return (
-            <tr key={job.id}>
-              <td>
-                <div className="private-job-cell-title">
-                  <Link to={`/job/${job.id}`} className="private-job-title-link">
-                    {job.title}
-                  </Link>
-                  <p>{safeSummary}</p>
-                </div>
-              </td>
-              <td>{job.organization}</td>
-              <td>
-                <div className="private-job-location-cell">
-                  <strong>{job.city || 'Pakistan'}</strong>
-                  {provinceText && <span>{provinceText}</span>}
-                </div>
-              </td>
-              <td>{job.category}</td>
-              <td>{job.industry}</td>
-              <td>{job.source}</td>
-              <td>
-                <div className="private-job-deadline-cell">
-                  <strong>{formatDate(job.deadline)}</strong>
-                  <span>Posted {formatDate(job.postDate)}</span>
-                </div>
-              </td>
-              <td>
-                {isClosed ? (
-                  <span className="private-job-status-btn is-closed">Closed</span>
-                ) : (
-                  <Link to={`/job/${job.id}`} className="action-btn secondary private-job-open-btn">
-                    Open
-                  </Link>
-                )}
-              </td>
-            </tr>
-          )
-        })}
-        {!filteredJobs.length && (
-          <tr>
-            <td colSpan="8" className="private-job-empty-cell">
-              No private jobs matched the table filters.
-            </td>
-          </tr>
-        )}
+              return (
+                <tr key={job.id} className={status === 'Expired' ? 'is-expired' : ''}>
+                  <td className="private-job-bookmark-cell">
+                    <button
+                      type="button"
+                      className={`private-job-bookmark-btn${isSaved ? ' is-saved' : ''}`}
+                      onClick={() => toggleBookmark(job.id)}
+                      aria-label={isSaved ? 'Remove bookmark' : 'Save job'}
+                    >
+                      {isSaved ? '★' : '☆'}
+                    </button>
+                  </td>
+                  <td className="private-job-role-cell">
+                    <Link to={`/job/${job.id}`} className="private-job-title-link">
+                      {job.title}
+                    </Link>
+                    {job.summary && <p>{job.summary}</p>}
+                  </td>
+                  <td>{job.organization || '-'}</td>
+                  <td className="private-job-location-cell">
+                    <span>{job.city || 'Pakistan'}</span>
+                    {job.province && <span>{job.province}</span>}
+                  </td>
+                  <td>{job.category || '-'}</td>
+                  <td>{job.industry || '-'}</td>
+                  <td>{job.source || '-'}</td>
+                  <td>{job.postDate ? formatDate(job.postDate) : '-'}</td>
+                  <td>{job.deadline ? formatDate(job.deadline) : '-'}</td>
+                  <td>
+                    <span className={`private-job-status-pill status-${status.toLowerCase().replace(/\s+/g, '-')}`}>
+                      {status}
+                    </span>
+                  </td>
+                  <td>
+                    {status === 'Expired' ? (
+                      <span className="private-job-table-action is-closed">Closed</span>
+                    ) : (
+                      <Link to={`/job/${job.id}`} className="private-job-table-action">
+                        Open
+                      </Link>
+                    )}
+                  </td>
+                </tr>
+              )
+            })}
+            {!filteredJobs.length && (
+              <tr>
+                <td colSpan="11" className="private-job-empty-cell">
+                  No jobs found.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
@@ -270,4 +178,3 @@ function PrivateJobTable({ jobs }) {
 }
 
 export default PrivateJobTable
-
