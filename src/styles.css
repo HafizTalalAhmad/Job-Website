@@ -759,7 +759,47 @@ a:hover {
 .private-job-grid-table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 1280px;
+  min-width: 1240px;
+}
+
+.private-col-role {
+  width: 24%;
+}
+
+.private-col-company {
+  width: 14%;
+}
+
+.private-col-location {
+  width: 13%;
+}
+
+.private-col-profession {
+  width: 11%;
+}
+
+.private-col-industry {
+  width: 11%;
+}
+
+.private-col-source {
+  width: 9%;
+}
+
+.private-col-posted {
+  width: 9%;
+}
+
+.private-col-deadline {
+  width: 9%;
+}
+
+.private-col-status {
+  width: 8%;
+}
+
+.private-col-bookmark {
+  width: 4%;
 }
 
 .private-job-grid-table th,
@@ -886,7 +926,7 @@ a:hover {
 }
 
 .private-job-role-cell {
-  min-width: 240px;
+  min-width: 260px;
 }
 
 .private-job-status-pill {

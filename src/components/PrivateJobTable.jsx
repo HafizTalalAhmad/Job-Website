@@ -55,7 +55,7 @@ function PrivateJobTable({ jobs }) {
       <div className="private-job-toolbar">
         <div className="private-job-toolbar-copy">
           <h2>Job Listings</h2>
-          <p>Review private-sector roles, save the useful ones, and check whether a role is still active.</p>
+          <p>Review private-sector roles, save useful ones, and quickly see which jobs are still active.</p>
         </div>
         <div className="private-job-toolbar-actions">
           <button
@@ -70,6 +70,18 @@ function PrivateJobTable({ jobs }) {
 
       <div className="private-job-table-wrap">
         <table className="private-job-grid-table private-job-simple-table">
+          <colgroup>
+            <col className="private-col-role" />
+            <col className="private-col-company" />
+            <col className="private-col-location" />
+            <col className="private-col-profession" />
+            <col className="private-col-industry" />
+            <col className="private-col-source" />
+            <col className="private-col-posted" />
+            <col className="private-col-deadline" />
+            <col className="private-col-status" />
+            <col className="private-col-bookmark" />
+          </colgroup>
           <thead>
             <tr>
               <th>Job Role</th>
@@ -120,7 +132,7 @@ function PrivateJobTable({ jobs }) {
                       title={isSaved ? 'Unsave job' : 'Save job'}
                       aria-label={isSaved ? 'Unsave job' : 'Save job'}
                     >
-                      {isSaved ? '⭐' : '☆'}
+                      {isSaved ? '\u2605' : '\u2606'}
                     </button>
                   </td>
                 </tr>
