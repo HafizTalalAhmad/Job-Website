@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { formatDate } from '../utils/jobs'
 
-const BOOKMARK_STORAGE_KEY = 'privateJobBookmarks'
+const BOOKMARK_STORAGE_KEY = 'savedJobs'
 
 function getStatus(deadline) {
   if (!deadline) return 'Active'
@@ -19,7 +19,6 @@ function getStatus(deadline) {
 }
 
 function PrivateJobTable({ jobs }) {
-  const [search, setSearch] = useState('')
   const [bookmarks, setBookmarks] = useState([])
   const [showSavedOnly, setShowSavedOnly] = useState(false)
 
@@ -36,30 +35,10 @@ function PrivateJobTable({ jobs }) {
     localStorage.setItem(BOOKMARK_STORAGE_KEY, JSON.stringify(bookmarks))
   }, [bookmarks])
 
-  const filteredJobs = useMemo(() => {
-    const normalizedSearch = search.trim().toLowerCase()
-
-    return jobs.filter((job) => {
-      const searchableText = [
-        job.title,
-        job.organization,
-        job.city,
-        job.province,
-        job.category,
-        job.industry,
-        job.source,
-        job.summary
-      ]
-        .filter(Boolean)
-        .join(' ')
-        .toLowerCase()
-
-      const matchesSearch = !normalizedSearch || searchableText.includes(normalizedSearch)
-      const matchesSaved = !showSavedOnly || bookmarks.includes(job.id)
-
-      return matchesSearch && matchesSaved
-    })
-  }, [bookmarks, jobs, search, showSavedOnly])
+  const filteredJobs = useMemo(
+    () => jobs.filter((job) => (!showSavedOnly ? true : bookmarks.includes(job.id))),
+    [bookmarks, jobs, showSavedOnly]
+  )
 
   const toggleBookmark = (jobId) => {
     setBookmarks((current) =>
@@ -75,23 +54,16 @@ function PrivateJobTable({ jobs }) {
     <div className="private-job-board">
       <div className="private-job-toolbar">
         <div className="private-job-toolbar-copy">
-          <h2>Private Job Listings</h2>
-          <p>Search quickly, bookmark useful roles, and check job status before you open the full page.</p>
+          <h2>Job Listings</h2>
+          <p>Review private-sector roles, save the useful ones, and check whether a role is still active.</p>
         </div>
         <div className="private-job-toolbar-actions">
-          <input
-            type="text"
-            placeholder="Search jobs, companies, or industries..."
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            className="private-job-search"
-          />
           <button
             type="button"
             onClick={() => setShowSavedOnly((current) => !current)}
             className={`private-job-saved-toggle${showSavedOnly ? ' is-active' : ''}`}
           >
-            Saved Jobs
+            Saved Jobs ({bookmarks.length})
           </button>
         </div>
       </div>
@@ -100,7 +72,6 @@ function PrivateJobTable({ jobs }) {
         <table className="private-job-grid-table private-job-simple-table">
           <thead>
             <tr>
-              <th className="private-job-bookmark-col"></th>
               <th>Job Role</th>
               <th>Company</th>
               <th>Location</th>
@@ -110,7 +81,7 @@ function PrivateJobTable({ jobs }) {
               <th>Posting Date</th>
               <th>Deadline</th>
               <th>Status</th>
-              <th>Action</th>
+              <th className="private-job-bookmark-col"></th>
             </tr>
           </thead>
           <tbody>
@@ -120,16 +91,6 @@ function PrivateJobTable({ jobs }) {
 
               return (
                 <tr key={job.id} className={status === 'Expired' ? 'is-expired' : ''}>
-                  <td className="private-job-bookmark-cell">
-                    <button
-                      type="button"
-                      className={`private-job-bookmark-btn${isSaved ? ' is-saved' : ''}`}
-                      onClick={() => toggleBookmark(job.id)}
-                      aria-label={isSaved ? 'Remove bookmark' : 'Save job'}
-                    >
-                      {isSaved ? '★' : '☆'}
-                    </button>
-                  </td>
                   <td className="private-job-role-cell">
                     <Link to={`/job/${job.id}`} className="private-job-title-link">
                       {job.title}
@@ -151,22 +112,24 @@ function PrivateJobTable({ jobs }) {
                       {status}
                     </span>
                   </td>
-                  <td>
-                    {status === 'Expired' ? (
-                      <span className="private-job-table-action is-closed">Closed</span>
-                    ) : (
-                      <Link to={`/job/${job.id}`} className="private-job-table-action">
-                        Open
-                      </Link>
-                    )}
+                  <td className="private-job-bookmark-cell">
+                    <button
+                      type="button"
+                      className={`private-job-bookmark-btn${isSaved ? ' is-saved' : ''}`}
+                      onClick={() => toggleBookmark(job.id)}
+                      title={isSaved ? 'Unsave job' : 'Save job'}
+                      aria-label={isSaved ? 'Unsave job' : 'Save job'}
+                    >
+                      {isSaved ? '⭐' : '☆'}
+                    </button>
                   </td>
                 </tr>
               )
             })}
             {!filteredJobs.length && (
               <tr>
-                <td colSpan="11" className="private-job-empty-cell">
-                  No jobs found.
+                <td colSpan="10" className="private-job-empty-cell">
+                  No jobs available.
                 </td>
               </tr>
             )}
