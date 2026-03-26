@@ -707,22 +707,27 @@ a:hover {
 .private-job-grid-table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 1100px;
+  min-width: 1030px;
   table-layout: fixed;
 }
 
-.private-col-role { width: 29%; }
-.private-col-company { width: 13%; }
-.private-col-location { width: 13%; }
-.private-col-profession { width: 10%; }
+.private-col-role { width: 31%; }
+.private-col-company { width: 14%; }
+.private-col-location { width: 14%; }
+.private-col-profession { width: 11%; }
 .private-col-industry { width: 10%; }
 .private-col-source { width: 8%; }
-.private-col-type { width: 9%; }
 .private-col-deadline { width: 12%; }
 .private-col-action { width: 8%; }
 
 .private-job-grid-table thead {
   border-bottom: 2px solid #d7e0eb;
+}
+
+.private-job-grid-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
 }
 
 .private-job-grid-table th,
@@ -755,6 +760,23 @@ a:hover {
   background: #fcfdff;
   padding-top: 10px;
   padding-bottom: 10px;
+  top: 41px;
+}
+
+.private-job-sort-btn {
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+  padding: 0;
+  cursor: pointer;
+}
+
+.private-job-sort-btn:hover {
+  color: #1f4f97;
 }
 
 .private-job-filter-row input,
@@ -863,6 +885,7 @@ a:hover {
   font-size: 12px;
   line-height: 1.4;
   word-break: break-word;
+  white-space: normal;
 }
 
 .private-job-grid-table td:last-child {
@@ -902,6 +925,10 @@ a:hover {
 
 :root[data-theme='dark'] .private-job-filter-row th {
   background: #162437;
+}
+
+:root[data-theme='dark'] .private-job-sort-btn:hover {
+  color: #dbeafe;
 }
 
 :root[data-theme='dark'] .private-job-filter-row input,

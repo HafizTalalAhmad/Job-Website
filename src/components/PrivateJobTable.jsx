@@ -10,26 +10,24 @@ function PrivateJobTable({ jobs }) {
     profession: '',
     industry: '',
     source: '',
-    jobType: '',
     deadline: ''
   })
+  const [sortConfig, setSortConfig] = useState({ key: 'deadline', direction: 'asc' })
 
   const options = useMemo(
     () => ({
       companies: [...new Set(jobs.map((job) => job.organization).filter(Boolean))].sort(),
       professions: [...new Set(jobs.map((job) => job.category).filter(Boolean))].sort(),
       industries: [...new Set(jobs.map((job) => job.industry).filter(Boolean))].sort(),
-      sources: [...new Set(jobs.map((job) => job.source).filter(Boolean))].sort(),
-      jobTypes: [...new Set(jobs.map((job) => job.employmentType || 'Private Job').filter(Boolean))].sort()
+      sources: [...new Set(jobs.map((job) => job.source).filter(Boolean))].sort()
     }),
     [jobs]
   )
 
   const filteredJobs = useMemo(() => {
-    return jobs.filter((job) => {
+    const filtered = jobs.filter((job) => {
       const provinceText = job.province || (job.location ? String(job.location).split(',')[0].trim() : '')
       const locationLine = [job.city, provinceText].filter(Boolean).join(', ')
-      const typeLabel = job.employmentType || 'Private Job'
       const safeSummary = (job.summary || '').trim()
       const roleText = `${job.title} ${safeSummary}`.toLowerCase()
 
@@ -40,7 +38,6 @@ function PrivateJobTable({ jobs }) {
       const matchesProfession = !filters.profession || job.category === filters.profession
       const matchesIndustry = !filters.industry || job.industry === filters.industry
       const matchesSource = !filters.source || job.source === filters.source
-      const matchesType = !filters.jobType || typeLabel === filters.jobType
       const matchesDeadline = !filters.deadline || job.deadline === filters.deadline
 
       return (
@@ -50,11 +47,41 @@ function PrivateJobTable({ jobs }) {
         matchesProfession &&
         matchesIndustry &&
         matchesSource &&
-        matchesType &&
         matchesDeadline
       )
     })
-  }, [filters, jobs])
+
+    const directionFactor = sortConfig.direction === 'asc' ? 1 : -1
+    return [...filtered].sort((a, b) => {
+      const provinceA = a.province || (a.location ? String(a.location).split(',')[0].trim() : '')
+      const provinceB = b.province || (b.location ? String(b.location).split(',')[0].trim() : '')
+      const locationA = [a.city, provinceA].filter(Boolean).join(', ')
+      const locationB = [b.city, provinceB].filter(Boolean).join(', ')
+
+      const valueMapA = {
+        role: a.title || '',
+        company: a.organization || '',
+        location: locationA,
+        profession: a.category || '',
+        industry: a.industry || '',
+        source: a.source || '',
+        deadline: a.deadline || ''
+      }
+      const valueMapB = {
+        role: b.title || '',
+        company: b.organization || '',
+        location: locationB,
+        profession: b.category || '',
+        industry: b.industry || '',
+        source: b.source || '',
+        deadline: b.deadline || ''
+      }
+
+      const left = String(valueMapA[sortConfig.key] || '').toLowerCase()
+      const right = String(valueMapB[sortConfig.key] || '').toLowerCase()
+      return left.localeCompare(right) * directionFactor
+    })
+  }, [filters, jobs, sortConfig])
 
   if (!jobs.length) {
     return <p className="empty-state">No private jobs matched your criteria.</p>
@@ -77,6 +104,18 @@ function PrivateJobTable({ jobs }) {
     })
   }
 
+  const toggleSort = (key) => {
+    setSortConfig((current) => ({
+      key,
+      direction: current.key === key && current.direction === 'asc' ? 'desc' : 'asc'
+    }))
+  }
+
+  const sortIndicator = (key) => {
+    if (sortConfig.key !== key) return ''
+    return sortConfig.direction === 'asc' ? ' ▲' : ' ▼'
+  }
+
   return (
     <div className="private-job-table">
       <div className="private-job-table-wrap">
@@ -88,20 +127,18 @@ function PrivateJobTable({ jobs }) {
             <col className="private-col-profession" />
             <col className="private-col-industry" />
             <col className="private-col-source" />
-            <col className="private-col-type" />
             <col className="private-col-deadline" />
             <col className="private-col-action" />
           </colgroup>
           <thead>
             <tr>
-              <th>Role</th>
-              <th>Company</th>
-              <th>Location</th>
-              <th>Profession</th>
-              <th>Industry</th>
-              <th>Source</th>
-              <th>Job Type</th>
-              <th>Deadline</th>
+              <th><button type="button" className="private-job-sort-btn" onClick={() => toggleSort('role')}>Role{sortIndicator('role')}</button></th>
+              <th><button type="button" className="private-job-sort-btn" onClick={() => toggleSort('company')}>Company{sortIndicator('company')}</button></th>
+              <th><button type="button" className="private-job-sort-btn" onClick={() => toggleSort('location')}>Location{sortIndicator('location')}</button></th>
+              <th><button type="button" className="private-job-sort-btn" onClick={() => toggleSort('profession')}>Profession{sortIndicator('profession')}</button></th>
+              <th><button type="button" className="private-job-sort-btn" onClick={() => toggleSort('industry')}>Industry{sortIndicator('industry')}</button></th>
+              <th><button type="button" className="private-job-sort-btn" onClick={() => toggleSort('source')}>Source{sortIndicator('source')}</button></th>
+              <th><button type="button" className="private-job-sort-btn" onClick={() => toggleSort('deadline')}>Deadline{sortIndicator('deadline')}</button></th>
               <th>Action</th>
             </tr>
             <tr className="private-job-filter-row">
@@ -162,16 +199,6 @@ function PrivateJobTable({ jobs }) {
                 </select>
               </th>
               <th>
-                <select value={filters.jobType} onChange={(e) => updateFilter('jobType', e.target.value)}>
-                  <option value="">All</option>
-                  {options.jobTypes.map((value) => (
-                    <option key={value} value={value}>
-                      {value}
-                    </option>
-                  ))}
-                </select>
-              </th>
-              <th>
                 <input
                   type="date"
                   value={filters.deadline}
@@ -207,7 +234,6 @@ function PrivateJobTable({ jobs }) {
               <td>{job.category}</td>
               <td>{job.industry}</td>
               <td>{job.source}</td>
-              <td>{typeLabel}</td>
               <td>
                 <div className="private-job-deadline-cell">
                   <strong>{formatDate(job.deadline)}</strong>
@@ -224,7 +250,7 @@ function PrivateJobTable({ jobs }) {
         })}
         {!filteredJobs.length && (
           <tr>
-            <td colSpan="9" className="private-job-empty-cell">
+            <td colSpan="8" className="private-job-empty-cell">
               No private jobs matched the table filters.
             </td>
           </tr>
