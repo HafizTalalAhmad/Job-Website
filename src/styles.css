@@ -718,7 +718,7 @@ a:hover {
 .private-col-industry { width: 10%; }
 .private-col-source { width: 9%; }
 .private-col-deadline { width: 12%; }
-.private-col-action { width: 10%; }
+.private-col-action { width: 11%; }
 
 .private-job-grid-table thead {
   border-bottom: 2px solid #d7e0eb;
@@ -856,13 +856,15 @@ a:hover {
 
 .private-job-location-cell {
   display: grid;
-  gap: 2px;
+  gap: 3px;
+  white-space: normal;
 }
 
 .private-job-location-cell strong {
   color: #1f3553;
   font-size: 12px;
   line-height: 1.35;
+  font-weight: 700;
 }
 
 .private-job-location-cell span {
@@ -889,24 +891,32 @@ a:hover {
 }
 
 .private-job-open-btn {
-  min-width: 88px;
+  min-width: 96px;
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
   border-radius: 6px;
   font-weight: 700;
   padding-inline: 10px;
   min-height: 36px;
+  white-space: nowrap;
+  word-break: normal;
+  overflow-wrap: normal;
 }
 
 .private-job-grid-table td {
   color: #1f3553;
   font-size: 12px;
   line-height: 1.4;
-  word-break: break-word;
+  word-break: normal;
+  overflow-wrap: normal;
   white-space: normal;
+  hyphens: none;
 }
 
 .private-job-grid-table td:last-child {
   vertical-align: middle;
+  text-align: center;
 }
 
 .private-job-empty-cell {
