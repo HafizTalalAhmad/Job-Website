@@ -693,23 +693,23 @@ a:hover {
 
 .private-job-table {
   border: 1px solid #d7e0eb;
-  background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
-  border-radius: 14px;
+  background: #ffffff;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 10px 24px rgba(19, 52, 101, 0.05);
+  box-shadow: 0 14px 32px rgba(19, 52, 101, 0.06);
 }
 
 .private-job-table-head,
 .private-job-row {
   display: grid;
-  grid-template-columns: 56px minmax(0, 2.2fr) minmax(160px, 1fr) minmax(160px, 1fr) minmax(170px, 1fr) auto;
-  gap: 14px;
+  grid-template-columns: minmax(0, 2.4fr) minmax(160px, 1fr) minmax(150px, 0.9fr) minmax(130px, 0.8fr) minmax(130px, 0.8fr) auto;
+  gap: 16px;
   align-items: center;
 }
 
 .private-job-table-head {
-  padding: 14px 18px;
-  background: linear-gradient(180deg, #f5f9fd 0%, #eef4fb 100%);
+  padding: 14px 20px;
+  background: #f6f9fc;
   border-bottom: 1px solid #d7e0eb;
 }
 
@@ -721,78 +721,71 @@ a:hover {
   color: #607086;
 }
 
-.private-job-table-head span:first-child {
-  grid-column: 1 / span 4;
-}
-
-.private-job-table-head span:last-child {
-  justify-self: end;
-}
-
 .private-job-table-body {
   display: grid;
 }
 
 .private-job-row {
-  padding: 18px;
+  padding: 18px 20px;
   border-bottom: 1px solid #e5ecf4;
   background: #ffffff;
   transition: background-color 0.18s ease, transform 0.18s ease;
 }
 
 .private-job-row:hover {
-  background: #f9fbff;
+  background: #f8fbff;
 }
 
 .private-job-row:last-child {
   border-bottom: none;
 }
 
+.private-job-role-cell {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
 .private-job-mark {
-  width: 44px;
-  height: 44px;
+  width: 46px;
+  height: 46px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 14px;
+  border-radius: 12px;
   background: linear-gradient(180deg, #1c4f96 0%, #173f7d 100%);
   color: #ffffff;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.04em;
-  box-shadow: 0 10px 18px rgba(28, 79, 150, 0.18);
-}
-
-.private-job-role {
-  min-width: 0;
+  box-shadow: 0 8px 16px rgba(28, 79, 150, 0.16);
 }
 
 .private-job-title-link {
   display: inline-block;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   color: #1c4f96;
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
-  line-height: 1.3;
+  line-height: 1.28;
 }
 
 .private-job-title-link:hover {
   text-decoration: underline;
 }
 
-.private-job-role p {
+.private-job-role-cell p {
   margin: 0;
   color: #4f6782;
-  font-size: 13px;
-  line-height: 1.5;
+  font-size: 12px;
+  line-height: 1.45;
 }
 
 .private-job-col {
   display: grid;
   gap: 4px;
-}
-
-.private-job-company {
   align-content: start;
 }
 
@@ -807,14 +800,6 @@ a:hover {
   line-height: 1.45;
 }
 
-.private-job-col small {
-  color: #7b8da4;
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
 .private-job-date strong {
   color: #8b5b00;
 }
@@ -822,6 +807,11 @@ a:hover {
 .private-job-actions {
   display: flex;
   justify-content: flex-end;
+}
+
+.private-job-actions .action-btn.secondary {
+  min-width: 94px;
+  justify-content: center;
 }
 
 .private-listing-hero {
@@ -3466,18 +3456,18 @@ a:hover {
 }
 
 :root[data-theme='dark'] .private-job-table {
-  background: linear-gradient(180deg, #162437 0%, #101a29 100%);
+  background: #142234;
   border-color: #32475f;
 }
 
 :root[data-theme='dark'] .private-job-table-head {
-  background: #1b2a3d;
+  background: #1a2a3f;
   border-bottom-color: #32475f;
 }
 
 :root[data-theme='dark'] .private-job-table-head span,
 :root[data-theme='dark'] .private-job-col span,
-:root[data-theme='dark'] .private-job-role p,
+:root[data-theme='dark'] .private-job-role-cell p,
 :root[data-theme='dark'] .private-listing-stat span {
   color: #b9c9db;
 }
@@ -3500,10 +3490,6 @@ a:hover {
 :root[data-theme='dark'] .private-job-mark {
   background: linear-gradient(180deg, #284d84 0%, #1b3d70 100%);
   box-shadow: none;
-}
-
-:root[data-theme='dark'] .private-job-col small {
-  color: #8fa4bf;
 }
 
 :root[data-theme='dark'] .private-job-date strong {
@@ -3727,33 +3713,6 @@ a:hover {
     grid-template-columns: 1fr;
   }
 
-  .private-job-table-head {
-    grid-template-columns: 1fr;
-    gap: 4px;
-  }
-
-  .private-job-table-head span:first-child,
-  .private-job-table-head span:last-child {
-    grid-column: auto;
-    justify-self: start;
-  }
-
-  .private-job-row {
-    grid-template-columns: 44px 1fr;
-    gap: 10px;
-  }
-
-  .private-job-role,
-  .private-job-company,
-  .private-job-col,
-  .private-job-actions {
-    grid-column: 2;
-  }
-
-  .private-job-actions {
-    justify-content: flex-start;
-  }
-
   .private-listing-hero {
     grid-template-columns: 1fr;
     align-items: start;
@@ -3765,7 +3724,11 @@ a:hover {
 
   .private-job-row {
     grid-template-columns: 1fr;
-    gap: 10px;
+    gap: 12px;
+  }
+
+  .private-job-role-cell {
+    grid-template-columns: 42px minmax(0, 1fr);
   }
 
   .private-job-actions {
