@@ -702,8 +702,8 @@ a:hover {
 .private-job-table-head,
 .private-job-row {
   display: grid;
-  grid-template-columns: minmax(0, 2.9fr) minmax(180px, 1fr) minmax(170px, 0.95fr) minmax(170px, 0.95fr) auto;
-  gap: 18px;
+  grid-template-columns: minmax(0, 2.7fr) minmax(150px, 1fr) minmax(150px, 1fr) minmax(130px, 0.85fr) minmax(130px, 0.85fr) minmax(120px, 0.8fr) minmax(120px, 0.8fr) minmax(150px, 0.95fr) auto;
+  gap: 14px;
   align-items: center;
 }
 
@@ -714,7 +714,7 @@ a:hover {
 }
 
 .private-job-table-head span {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -752,7 +752,7 @@ a:hover {
 .private-job-role-content {
   min-width: 0;
   display: grid;
-  gap: 8px;
+  gap: 7px;
   align-content: start;
 }
 
@@ -774,7 +774,7 @@ a:hover {
 .private-job-title-link {
   display: inline-block;
   color: #1c4f96;
-  font-size: 19px;
+  font-size: 18px;
   font-weight: 700;
   line-height: 1.22;
 }
@@ -786,57 +786,35 @@ a:hover {
 .private-job-role-cell p {
   margin: 0;
   color: #4f6782;
-  font-size: 13px;
-  line-height: 1.5;
-  max-width: 60ch;
-}
-
-.private-job-tag-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.private-job-tag {
-  display: inline-flex;
-  align-items: center;
-  border: 1px solid #c9daf0;
-  background: #f5f9ff;
-  color: #234f8e;
-  border-radius: 999px;
-  padding: 5px 10px;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-}
-
-.private-job-tag-muted {
-  border-color: #d8e2ef;
-  background: #f8fafc;
-  color: #5f748d;
+  font-size: 12px;
+  line-height: 1.45;
+  max-width: 44ch;
 }
 
 .private-job-col {
   display: grid;
   gap: 4px;
   align-content: start;
+  min-width: 0;
 }
 
 .private-job-col strong {
   color: #1f3553;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.35;
+  word-break: break-word;
 }
 
 .private-job-col span {
   color: #607086;
-  font-size: 12px;
+  font-size: 11px;
   line-height: 1.45;
 }
 
 .private-job-company strong,
-.private-job-date strong {
-  font-size: 15px;
+.private-job-date strong,
+.private-job-type strong {
+  font-size: 14px;
 }
 
 .private-job-date strong {
@@ -849,11 +827,11 @@ a:hover {
 }
 
 .private-job-actions .action-btn.secondary {
-  min-width: 100px;
+  min-width: 86px;
   justify-content: center;
   border-radius: 999px;
   font-weight: 700;
-  padding-inline: 18px;
+  padding-inline: 14px;
   box-shadow: 0 10px 22px rgba(16, 48, 96, 0.08);
 }
 
@@ -3511,7 +3489,6 @@ a:hover {
 :root[data-theme='dark'] .private-job-table-head span,
 :root[data-theme='dark'] .private-job-col span,
 :root[data-theme='dark'] .private-job-role-cell p,
-:root[data-theme='dark'] .private-job-tag-muted,
 :root[data-theme='dark'] .private-listing-stat span {
   color: #b9c9db;
 }
@@ -3529,17 +3506,6 @@ a:hover {
 :root[data-theme='dark'] .private-job-col strong,
 :root[data-theme='dark'] .private-listing-stat strong {
   color: #dbeafe;
-}
-
-:root[data-theme='dark'] .private-job-tag {
-  background: #1d3552;
-  border-color: #355c89;
-  color: #dbeafe;
-}
-
-:root[data-theme='dark'] .private-job-tag-muted {
-  background: #192738;
-  border-color: #41556f;
 }
 
 :root[data-theme='dark'] .private-job-mark {
@@ -3784,10 +3750,6 @@ a:hover {
 
   .private-job-role-cell {
     grid-template-columns: 42px minmax(0, 1fr);
-  }
-
-  .private-job-tag-row {
-    gap: 6px;
   }
 
   .private-job-actions {

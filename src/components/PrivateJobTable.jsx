@@ -13,6 +13,10 @@ function PrivateJobTable({ jobs }) {
         <span>Role</span>
         <span>Company</span>
         <span>Location</span>
+        <span>Profession</span>
+        <span>Industry</span>
+        <span>Source</span>
+        <span>Job Type</span>
         <span>Deadline</span>
         <span>Action</span>
       </div>
@@ -40,22 +44,37 @@ function PrivateJobTable({ jobs }) {
                     {job.title}
                   </Link>
                   <p>{safeSummary}</p>
-                  <div className="private-job-tag-row">
-                    <span className="private-job-tag">{typeLabel}</span>
-                    <span className="private-job-tag">{job.category}</span>
-                    <span className="private-job-tag private-job-tag-muted">{job.source}</span>
-                  </div>
                 </div>
               </div>
 
               <div className="private-job-col private-job-company">
                 <strong>{job.organization}</strong>
-                <span>{job.industry}</span>
+                <span>{job.type}</span>
               </div>
 
               <div className="private-job-col">
                 <strong>{locationLine}</strong>
                 <span>In Pakistan</span>
+              </div>
+
+              <div className="private-job-col">
+                <strong>{job.category}</strong>
+                <span>Profession</span>
+              </div>
+
+              <div className="private-job-col">
+                <strong>{job.industry}</strong>
+                <span>Industry</span>
+              </div>
+
+              <div className="private-job-col">
+                <strong>{job.source}</strong>
+                <span>Source</span>
+              </div>
+
+              <div className="private-job-col private-job-type">
+                <strong>{typeLabel}</strong>
+                <span>Job type</span>
               </div>
 
               <div className="private-job-col private-job-date">
