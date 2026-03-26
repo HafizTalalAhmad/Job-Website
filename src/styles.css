@@ -767,19 +767,19 @@ a:hover {
 .private-job-grid-table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 1240px;
+  min-width: 1160px;
 }
 
 .private-col-role {
-  width: 24%;
+  width: 26%;
 }
 
 .private-col-company {
-  width: 14%;
+  width: 13%;
 }
 
 .private-col-location {
-  width: 13%;
+  width: 12%;
 }
 
 .private-col-profession {
@@ -791,11 +791,11 @@ a:hover {
 }
 
 .private-col-source {
-  width: 9%;
+  width: 8%;
 }
 
 .private-col-posted {
-  width: 9%;
+  width: 8%;
 }
 
 .private-col-deadline {
@@ -803,7 +803,7 @@ a:hover {
 }
 
 .private-col-status {
-  width: 8%;
+  width: 9%;
 }
 
 .private-col-bookmark {
