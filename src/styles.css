@@ -702,8 +702,8 @@ a:hover {
 .private-job-table-head,
 .private-job-row {
   display: grid;
-  grid-template-columns: minmax(0, 2.4fr) minmax(160px, 1fr) minmax(150px, 0.9fr) minmax(130px, 0.8fr) minmax(130px, 0.8fr) auto;
-  gap: 16px;
+  grid-template-columns: minmax(0, 2.9fr) minmax(180px, 1fr) minmax(170px, 0.95fr) minmax(170px, 0.95fr) auto;
+  gap: 18px;
   align-items: center;
 }
 
@@ -726,14 +726,15 @@ a:hover {
 }
 
 .private-job-row {
-  padding: 18px 20px;
+  padding: 20px;
   border-bottom: 1px solid #e5ecf4;
   background: #ffffff;
-  transition: background-color 0.18s ease, transform 0.18s ease;
+  transition: background-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
 }
 
 .private-job-row:hover {
-  background: #f8fbff;
+  background: #fbfdff;
+  box-shadow: inset 0 0 0 1px rgba(28, 79, 150, 0.06);
 }
 
 .private-job-row:last-child {
@@ -751,7 +752,7 @@ a:hover {
 .private-job-role-content {
   min-width: 0;
   display: grid;
-  gap: 6px;
+  gap: 8px;
   align-content: start;
 }
 
@@ -773,9 +774,9 @@ a:hover {
 .private-job-title-link {
   display: inline-block;
   color: #1c4f96;
-  font-size: 18px;
+  font-size: 19px;
   font-weight: 700;
-  line-height: 1.25;
+  line-height: 1.22;
 }
 
 .private-job-title-link:hover {
@@ -787,7 +788,32 @@ a:hover {
   color: #4f6782;
   font-size: 13px;
   line-height: 1.5;
-  max-width: 52ch;
+  max-width: 60ch;
+}
+
+.private-job-tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.private-job-tag {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #c9daf0;
+  background: #f5f9ff;
+  color: #234f8e;
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.private-job-tag-muted {
+  border-color: #d8e2ef;
+  background: #f8fafc;
+  color: #5f748d;
 }
 
 .private-job-col {
@@ -809,8 +835,7 @@ a:hover {
 }
 
 .private-job-company strong,
-.private-job-date strong,
-.private-job-type strong {
+.private-job-date strong {
   font-size: 15px;
 }
 
@@ -824,11 +849,12 @@ a:hover {
 }
 
 .private-job-actions .action-btn.secondary {
-  min-width: 94px;
+  min-width: 100px;
   justify-content: center;
   border-radius: 999px;
   font-weight: 700;
   padding-inline: 18px;
+  box-shadow: 0 10px 22px rgba(16, 48, 96, 0.08);
 }
 
 .private-listing-hero {
@@ -3485,6 +3511,7 @@ a:hover {
 :root[data-theme='dark'] .private-job-table-head span,
 :root[data-theme='dark'] .private-job-col span,
 :root[data-theme='dark'] .private-job-role-cell p,
+:root[data-theme='dark'] .private-job-tag-muted,
 :root[data-theme='dark'] .private-listing-stat span {
   color: #b9c9db;
 }
@@ -3502,6 +3529,17 @@ a:hover {
 :root[data-theme='dark'] .private-job-col strong,
 :root[data-theme='dark'] .private-listing-stat strong {
   color: #dbeafe;
+}
+
+:root[data-theme='dark'] .private-job-tag {
+  background: #1d3552;
+  border-color: #355c89;
+  color: #dbeafe;
+}
+
+:root[data-theme='dark'] .private-job-tag-muted {
+  background: #192738;
+  border-color: #41556f;
 }
 
 :root[data-theme='dark'] .private-job-mark {
@@ -3746,6 +3784,10 @@ a:hover {
 
   .private-job-role-cell {
     grid-template-columns: 42px minmax(0, 1fr);
+  }
+
+  .private-job-tag-row {
+    gap: 6px;
   }
 
   .private-job-actions {

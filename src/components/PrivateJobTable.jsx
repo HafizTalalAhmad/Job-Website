@@ -13,7 +13,6 @@ function PrivateJobTable({ jobs }) {
         <span>Role</span>
         <span>Company</span>
         <span>Location</span>
-        <span>Job Type</span>
         <span>Deadline</span>
         <span>Action</span>
       </div>
@@ -23,6 +22,7 @@ function PrivateJobTable({ jobs }) {
           const provinceText = job.province || (job.location ? String(job.location).split(',')[0].trim() : '')
           const locationLine = [job.city, provinceText].filter(Boolean).join(', ')
           const typeLabel = job.employmentType || 'Private Job'
+          const safeSummary = (job.summary || '').trim()
           const companyMark = (job.organization || '?')
             .split(' ')
             .slice(0, 2)
@@ -39,27 +39,27 @@ function PrivateJobTable({ jobs }) {
                   <Link to={`/job/${job.id}`} className="private-job-title-link">
                     {job.title}
                   </Link>
-                  <p>{job.summary}</p>
+                  <p>{safeSummary}</p>
+                  <div className="private-job-tag-row">
+                    <span className="private-job-tag">{typeLabel}</span>
+                    <span className="private-job-tag">{job.category}</span>
+                    <span className="private-job-tag private-job-tag-muted">{job.source}</span>
+                  </div>
                 </div>
               </div>
 
               <div className="private-job-col private-job-company">
                 <strong>{job.organization}</strong>
-                <span>{job.category}</span>
+                <span>{job.industry}</span>
               </div>
 
               <div className="private-job-col">
                 <strong>{locationLine}</strong>
-                <span>{job.province || 'Pakistan'}</span>
-              </div>
-
-              <div className="private-job-col private-job-type">
-                <strong>{typeLabel}</strong>
-                <span>{job.source}</span>
+                <span>In Pakistan</span>
               </div>
 
               <div className="private-job-col private-job-date">
-                <strong>{formatDate(job.deadline)}</strong>
+                <strong>Apply by {formatDate(job.deadline)}</strong>
                 <span>Posted {formatDate(job.postDate)}</span>
               </div>
 
