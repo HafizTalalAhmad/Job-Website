@@ -751,6 +751,45 @@ a:hover {
   padding-bottom: 13px;
 }
 
+.private-job-filter-row th {
+  background: #fcfdff;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.private-job-filter-row input,
+.private-job-filter-row select {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #cfdae8;
+  background: #ffffff;
+  color: #1f3553;
+  border-radius: 6px;
+  padding: 8px 9px;
+  font-size: 11px;
+  line-height: 1.2;
+}
+
+.private-job-filter-row input::placeholder {
+  color: #7b8da4;
+}
+
+.private-job-clear-btn {
+  width: 100%;
+  border: 1px solid #cfdae8;
+  background: #eef4fb;
+  color: #1f4f97;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.private-job-clear-btn:hover {
+  background: #e3edf9;
+}
+
 .private-job-grid-table tbody tr {
   background: #ffffff;
   transition: background-color 0.18s ease;
@@ -830,6 +869,12 @@ a:hover {
   vertical-align: middle;
 }
 
+.private-job-empty-cell {
+  text-align: center;
+  color: #607086;
+  padding: 24px 16px !important;
+}
+
 .private-job-grid-table td:nth-child(2),
 .private-job-grid-table td:nth-child(3),
 .private-job-grid-table td:nth-child(4),
@@ -853,6 +898,31 @@ a:hover {
 :root[data-theme='dark'] .private-job-grid-table thead th {
   background: #1a2a3f;
   color: #b9c9db;
+}
+
+:root[data-theme='dark'] .private-job-filter-row th {
+  background: #162437;
+}
+
+:root[data-theme='dark'] .private-job-filter-row input,
+:root[data-theme='dark'] .private-job-filter-row select {
+  background: #0f1928;
+  border-color: #334b6a;
+  color: #e8edf5;
+}
+
+:root[data-theme='dark'] .private-job-filter-row input::placeholder {
+  color: #8fa4bf;
+}
+
+:root[data-theme='dark'] .private-job-clear-btn {
+  background: #1a2a40;
+  border-color: #3f5e82;
+  color: #dbeafe;
+}
+
+:root[data-theme='dark'] .private-job-clear-btn:hover {
+  background: #223349;
 }
 
 :root[data-theme='dark'] .private-job-grid-table tbody tr {
