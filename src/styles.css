@@ -2055,14 +2055,19 @@ a:hover {
 }
 
 .job-detail-private {
-  background: #ffffff;
-  border-color: #d7e0eb;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(247, 250, 255, 0.98) 100%);
+  border: 1px solid #dbe5f0;
+  border-radius: 18px;
+  box-shadow: 0 20px 44px rgba(23, 53, 93, 0.08);
 }
 
 .private-job-hero {
-  border-bottom: 1px solid #e1e8f1;
-  padding: 4px 0 18px;
-  margin-bottom: 14px;
+  border: 1px solid #dfe7f1;
+  background: linear-gradient(180deg, #f9fbfe 0%, #eef4fb 100%);
+  border-radius: 16px;
+  padding: 18px 20px 20px;
+  margin-bottom: 18px;
 }
 
 .job-detail h1 {
@@ -2123,53 +2128,53 @@ a:hover {
 }
 
 .private-job-kicker {
-  background: #eef4ff;
-  border-color: #c3d5f1;
+  background: #edf4ff;
+  border-color: #c7d8f3;
   color: #1c4f96;
 }
 
 .private-job-summary {
-  margin: 10px 0 0;
-  max-width: 720px;
+  margin: 12px 0 0;
+  max-width: 760px;
   color: #4f637a;
-  font-size: 15px;
-  line-height: 1.65;
+  font-size: 16px;
+  line-height: 1.75;
 }
 
 .private-job-meta-line {
-  margin: 10px 0 0;
+  margin: 12px 0 0;
   color: #607086;
-  font-size: 13px;
-  line-height: 1.5;
+  font-size: 14px;
+  line-height: 1.6;
 }
 
 .detail-actions {
   display: grid;
-  gap: 8px;
-  margin-top: 8px;
+  gap: 10px;
+  margin-top: 10px;
 }
 
 .private-job-main {
   display: grid;
   grid-template-columns: minmax(0, 1.65fr) minmax(280px, 0.85fr);
-  gap: 18px;
+  gap: 20px;
   align-items: start;
 }
 
 .private-job-facts-row {
-  margin-top: 14px;
+  margin-top: 16px;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
+  gap: 12px;
 }
 
 .private-job-fact {
-  border: 1px solid #dde5ef;
-  background: #f8fbff;
-  border-radius: 10px;
-  padding: 10px 12px;
+  border: 1px solid #d8e3ef;
+  background: rgba(255, 255, 255, 0.88);
+  border-radius: 12px;
+  padding: 12px 14px;
   display: grid;
-  gap: 4px;
+  gap: 5px;
 }
 
 .private-job-fact span {
@@ -2182,25 +2187,26 @@ a:hover {
 
 .private-job-fact strong {
   color: #1f3553;
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .private-detail-copy {
   display: grid;
-  gap: 12px;
+  gap: 14px;
 }
 
 .private-detail-section {
   border: 1px solid #e1e8f1;
   background: #fbfdff;
-  border-radius: 10px;
-  padding: 16px;
+  border-radius: 14px;
+  padding: 18px 18px 20px;
+  box-shadow: 0 10px 24px rgba(26, 53, 92, 0.04);
 }
 
 .private-detail-section h2 {
-  margin: 0 0 10px;
-  font-size: 15px;
-  color: #1f3553;
+  margin: 0 0 12px;
+  font-size: 17px;
+  color: #15396b;
 }
 
 .private-detail-section p,
@@ -2214,27 +2220,28 @@ a:hover {
   margin: 0;
   padding-left: 18px;
   display: grid;
-  gap: 6px;
+  gap: 8px;
 }
 
 .private-apply-card {
-  border-radius: 12px;
-  padding: 18px;
+  border-radius: 16px;
+  padding: 20px;
   position: sticky;
   top: 84px;
+  box-shadow: 0 14px 32px rgba(26, 53, 92, 0.08);
 }
 
 .private-apply-facts {
   display: grid;
-  gap: 10px;
-  margin-top: 12px;
+  gap: 12px;
+  margin-top: 14px;
 }
 
 .private-apply-facts p {
   margin: 0;
   display: grid;
-  gap: 2px;
-  padding-bottom: 10px;
+  gap: 4px;
+  padding-bottom: 12px;
   border-bottom: 1px solid #e7edf5;
 }
 
@@ -2254,7 +2261,7 @@ a:hover {
 .private-apply-facts span {
   color: #1f3553;
   font-size: 14px;
-  line-height: 1.45;
+  line-height: 1.55;
 }
 
 .poster-page {
@@ -3553,7 +3560,7 @@ a:hover {
 }
 
 :root[data-theme='dark'] .job-detail-private {
-  background: #121c2b;
+  background: linear-gradient(180deg, #121c2b 0%, #0f1826 100%);
   border-color: #38506d;
 }
 
@@ -3588,6 +3595,10 @@ a:hover {
 :root[data-theme='dark'] .private-detail-section p,
 :root[data-theme='dark'] .private-detail-section li {
   color: #c7d4e5;
+}
+
+:root[data-theme='dark'] .private-apply-card {
+  box-shadow: none;
 }
 
 :root[data-theme='dark'] .private-apply-facts strong {
