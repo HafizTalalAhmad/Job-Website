@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { formatDate } from '../utils/jobs'
+import { formatDate, toDate } from '../utils/jobs'
 
 const BOOKMARK_STORAGE_KEY = 'savedJobs'
 
@@ -18,9 +18,31 @@ function getStatus(deadline) {
   return 'Active'
 }
 
+function getTimeSince(postDate) {
+  if (!postDate) return ''
+
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const post = toDate(postDate)
+  const diff = Math.max(0, Math.floor((today.getTime() - post.getTime()) / (1000 * 60 * 60 * 24)))
+
+  if (diff === 0) return 'Today'
+  if (diff === 1) return '1 day ago'
+  if (diff < 7) return `${diff} days ago`
+  return formatDate(postDate)
+}
+
+function getCompanyInitials(name) {
+  if (!name) return 'PJ'
+  const words = name.split(' ').filter(Boolean)
+  if (words.length === 1) return words[0].slice(0, 2).toUpperCase()
+  return `${words[0][0] || ''}${words[1][0] || ''}`.toUpperCase()
+}
+
 function PrivateJobTable({ jobs }) {
   const [bookmarks, setBookmarks] = useState([])
   const [showSavedOnly, setShowSavedOnly] = useState(false)
+  const [search, setSearch] = useState('')
 
   useEffect(() => {
     try {
@@ -35,10 +57,31 @@ function PrivateJobTable({ jobs }) {
     localStorage.setItem(BOOKMARK_STORAGE_KEY, JSON.stringify(bookmarks))
   }, [bookmarks])
 
-  const filteredJobs = useMemo(
-    () => jobs.filter((job) => (!showSavedOnly ? true : bookmarks.includes(job.id))),
-    [bookmarks, jobs, showSavedOnly]
-  )
+  const filteredJobs = useMemo(() => {
+    const searchText = search.trim().toLowerCase()
+
+    return jobs.filter((job) => {
+      const matchesSaved = !showSavedOnly || bookmarks.includes(job.id)
+      const matchesSearch =
+        !searchText ||
+        [
+          job.title,
+          job.organization,
+          job.city,
+          job.province,
+          job.category,
+          job.industry,
+          job.source,
+          job.summary
+        ]
+          .filter(Boolean)
+          .join(' ')
+          .toLowerCase()
+          .includes(searchText)
+
+      return matchesSaved && matchesSearch
+    })
+  }, [bookmarks, jobs, search, showSavedOnly])
 
   const toggleBookmark = (jobId) => {
     setBookmarks((current) =>
@@ -52,12 +95,21 @@ function PrivateJobTable({ jobs }) {
 
   return (
     <div className="private-job-board">
-      <div className="private-job-toolbar">
+      <div className="private-job-toolbar private-job-toolbar-card">
         <div className="private-job-toolbar-copy">
-          <h2>Job Listings</h2>
-          <p>Review private-sector roles, save useful ones, and quickly see which jobs are still active.</p>
+          <h2>Private Job Listings</h2>
+          <p>Search company opportunities, save interesting roles, and open a cleaner second page for full details.</p>
         </div>
         <div className="private-job-toolbar-actions">
+          <label className="private-job-search">
+            <span>Search</span>
+            <input
+              type="text"
+              placeholder="Search private jobs..."
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+            />
+          </label>
           <button
             type="button"
             onClick={() => setShowSavedOnly((current) => !current)}
@@ -68,90 +120,70 @@ function PrivateJobTable({ jobs }) {
         </div>
       </div>
 
-      <div className="private-job-table-wrap">
-        <table className="private-job-grid-table private-job-simple-table">
-          <colgroup>
-            <col className="private-col-role" />
-            <col className="private-col-company" />
-            <col className="private-col-location" />
-            <col className="private-col-profession" />
-            <col className="private-col-industry" />
-            <col className="private-col-source" />
-            <col className="private-col-posted" />
-            <col className="private-col-deadline" />
-            <col className="private-col-status" />
-            <col className="private-col-bookmark" />
-          </colgroup>
-          <thead>
-            <tr>
-              <th>Job Role</th>
-              <th>Company</th>
-              <th>Location</th>
-              <th>Profession</th>
-              <th>Industry</th>
-              <th>Source</th>
-              <th>Posting Date</th>
-              <th>Deadline</th>
-              <th>Status</th>
-              <th className="private-job-bookmark-col"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredJobs.map((job) => {
-              const status = getStatus(job.deadline)
-              const isSaved = bookmarks.includes(job.id)
-              const fallbackParts = job.location ? String(job.location).split(',').map((part) => part.trim()) : []
-              const cityText = job.city || fallbackParts[0] || 'Pakistan'
-              const rawProvinceText = job.province || (job.city ? fallbackParts[0] : fallbackParts[1]) || ''
-              const provinceText = /^(pakistan|remote)$/i.test(rawProvinceText) ? '' : rawProvinceText
-
-              return (
-                <tr key={job.id} className={status === 'Expired' ? 'is-expired' : ''}>
-                  <td className="private-job-role-cell">
-                    <Link to={`/job/${job.id}`} className="private-job-title-link">
-                      {job.title}
-                    </Link>
-                    {job.summary && <p>{job.summary}</p>}
-                  </td>
-                  <td>{job.organization || '-'}</td>
-                  <td className="private-job-location-cell">
-                    <span>{cityText}</span>
-                    {provinceText && <span>{provinceText}</span>}
-                  </td>
-                  <td>{job.category || '-'}</td>
-                  <td>{job.industry || '-'}</td>
-                  <td>{job.source || '-'}</td>
-                  <td className="private-job-posted-cell">{job.postDate ? formatDate(job.postDate) : '-'}</td>
-                  <td className="private-job-deadline-cell">{job.deadline ? formatDate(job.deadline) : '-'}</td>
-                  <td className="private-job-status-cell">
-                    <span className={`private-job-status-pill status-${status.toLowerCase().replace(/\s+/g, '-')}`}>
-                      {status}
-                    </span>
-                  </td>
-                  <td className="private-job-bookmark-cell">
-                    <button
-                      type="button"
-                      className={`private-job-bookmark-btn${isSaved ? ' is-saved' : ''}`}
-                      onClick={() => toggleBookmark(job.id)}
-                      title={isSaved ? 'Unsave job' : 'Save job'}
-                      aria-label={isSaved ? 'Unsave job' : 'Save job'}
-                    >
-                      {isSaved ? '\u2605' : '\u2606'}
-                    </button>
-                  </td>
-                </tr>
-              )
-            })}
-            {!filteredJobs.length && (
-              <tr>
-                <td colSpan="10" className="private-job-empty-cell">
-                  No jobs available.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+      <div className="private-job-board-meta">
+        <div className="private-job-board-chip">
+          <strong>{filteredJobs.length}</strong>
+          <span>{filteredJobs.length === 1 ? 'job found' : 'jobs found'}</span>
+        </div>
+        {showSavedOnly && <div className="private-job-board-chip private-job-board-chip-soft">Showing saved jobs</div>}
       </div>
+
+      <div className="private-job-card-grid">
+        {filteredJobs.map((job) => {
+          const status = getStatus(job.deadline)
+          const isSaved = bookmarks.includes(job.id)
+          const fallbackParts = job.location ? String(job.location).split(',').map((part) => part.trim()) : []
+          const cityText = job.city || fallbackParts[0] || 'Pakistan'
+          const rawProvinceText = job.province || (job.city ? fallbackParts[0] : fallbackParts[1]) || ''
+          const provinceText = /^(pakistan|remote)$/i.test(rawProvinceText) ? '' : rawProvinceText
+          const locationText = provinceText ? `${cityText}, ${provinceText}` : cityText
+
+          return (
+            <article key={job.id} className={`private-job-card${status === 'Expired' ? ' is-expired' : ''}`}>
+              <div className="private-job-card-topline">
+                <span className="private-job-age">{getTimeSince(job.postDate)}</span>
+                <button
+                  type="button"
+                  className={`private-job-card-save${isSaved ? ' is-saved' : ''}`}
+                  onClick={() => toggleBookmark(job.id)}
+                  title={isSaved ? 'Unsave job' : 'Save job'}
+                  aria-label={isSaved ? 'Unsave job' : 'Save job'}
+                >
+                  {isSaved ? '\u2665' : '\u2661'}
+                </button>
+              </div>
+
+              <div className="private-job-company-mark">{getCompanyInitials(job.organization)}</div>
+
+              <Link to={`/job/${job.id}`} className="private-job-card-title">
+                {job.title}
+              </Link>
+
+              <p className="private-job-card-company">{job.organization}</p>
+
+              <p className="private-job-card-summary">{job.summary}</p>
+
+              <div className="private-job-card-tags">
+                <span>{locationText}</span>
+                <span>{job.category}</span>
+                <span>{job.source}</span>
+              </div>
+
+              <div className="private-job-card-bottom">
+                <div className="private-job-card-deadline">
+                  <strong>{formatDate(job.deadline)}</strong>
+                  <span>{status}</span>
+                </div>
+                <Link to={`/job/${job.id}`} className="private-job-card-open">
+                  View Job
+                </Link>
+              </div>
+            </article>
+          )
+        })}
+      </div>
+
+      {!filteredJobs.length && <p className="private-job-empty-message">No jobs matched your current search.</p>}
     </div>
   )
 }

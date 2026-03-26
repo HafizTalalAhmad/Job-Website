@@ -38,6 +38,9 @@ function JobDetailPage() {
         (item.category === job.category || item.organization === job.organization)
     )
     .slice(0, 4)
+  const otherPrivateJobs = allJobs
+    .filter((item) => item.id !== job.id && item.type === 'private' && item.organization === job.organization)
+    .slice(0, 4)
   const provinceText = job.province || (job.location ? String(job.location).split(',')[0].trim() : '-')
   const countryText = job.country || 'In Pakistan'
   const posterImage = job.posterImage || `https://placehold.co/800x1100/eef5ee/1a3f24?text=${encodeURIComponent(
@@ -66,6 +69,16 @@ function JobDetailPage() {
     job.employmentType || 'Private Job'
   ]
   const privateRoleOverview = job.summary && job.summary !== job.description ? job.summary : job.description
+  const privateTags = Array.from(
+    new Set([job.category, job.industry, job.source, job.city, provinceText].filter(Boolean).concat(job.keywords || []))
+  ).slice(0, 8)
+  const companyMonogram = (job.organization || 'PJ')
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join('')
+    .toUpperCase()
 
   return (
     <main className="container page-block">
@@ -73,65 +86,157 @@ function JobDetailPage() {
 
       {isPrivateJob ? (
         <article className="job-detail job-detail-private">
-          <div className="private-job-hero">
-            <div className={`section-kicker private-job-kicker`}>{heroLabel}</div>
-            <h1>{job.title}</h1>
-            <p className="private-job-summary">{privateRoleOverview}</p>
-            <p className="private-job-meta-line">{privateHeaderMeta.join(' | ')}</p>
-            <div className="private-job-facts-row">
-              <div className="private-job-fact">
-                <span>Posted</span>
-                <strong>{formatDate(job.postDate)}</strong>
-              </div>
-              <div className="private-job-fact">
-                <span>Deadline</span>
-                <strong>{formatDate(job.deadline)}</strong>
-              </div>
-              <div className="private-job-fact">
-                <span>Source</span>
-                <strong>{job.source}</strong>
-              </div>
-            </div>
-          </div>
+          <div className="private-detail-shell">
+            <div className="private-detail-main">
+              <section className="private-company-hero">
+                <div className="private-company-head">
+                  <div className="private-company-mark">{companyMonogram}</div>
+                  <div className="private-company-copy">
+                    <div className={`section-kicker private-job-kicker`}>{heroLabel}</div>
+                    <p className="private-company-name">{job.organization}</p>
+                    <h1>{job.title}</h1>
+                    <p className="private-job-summary">{privateRoleOverview}</p>
+                    <p className="private-job-meta-line">{privateHeaderMeta.join(' | ')}</p>
+                  </div>
+                  <a href={job.applyLink} target="_blank" rel="noreferrer" className="private-company-about">
+                    Apply
+                  </a>
+                </div>
+              </section>
 
-          <div className="private-job-main">
-            <div className="private-detail-copy">
-              <div className="private-detail-section">
-                <h2>Role Overview</h2>
+              <section className="private-detail-section private-detail-section-lead">
+                <h2>About This Opportunity</h2>
                 <p>{job.description}</p>
-              </div>
+              </section>
 
-              <div className="private-detail-section">
-                <h2>Key Responsibilities</h2>
+              <section className="private-detail-section">
+                <h2>Your Mission</h2>
                 <ul>
                   {(job.jobPositions || job.requirements || []).map((req) => (
                     <li key={req}>{req}</li>
                   ))}
                 </ul>
-              </div>
+              </section>
 
-              <div className="private-detail-section">
+              <section className="private-detail-section">
                 <h2>Application Process</h2>
                 <p>{job.applyProcedure}</p>
-              </div>
+              </section>
+
+              <section className="private-detail-section private-detail-section-cta">
+                <h2>Ready to Make an Impact?</h2>
+                <p>
+                  If this role aligns with your goals, open the company application link and complete your submission
+                  before the deadline.
+                </p>
+              </section>
             </div>
 
-            <aside className="detail-card detail-card-private private-apply-card">
-              <h3>{factsTitle}</h3>
-              <div className="private-apply-facts">
-                <p><strong>Company</strong><span>{job.organization}</span></p>
-                <p><strong>Category</strong><span>{job.category}</span></p>
-                <p><strong>Industry</strong><span>{job.industry}</span></p>
-                <p><strong>Location</strong><span>{job.city}, {provinceText}</span></p>
-                <p><strong>Country</strong><span>{countryText}</span></p>
+            <aside className="private-detail-side">
+              <div className="detail-card detail-card-private private-apply-card">
+                <div className="private-sidebar-row">
+                  <strong>Advertisement published</strong>
+                  <span>{formatDate(job.postDate)}</span>
+                </div>
+                <div className="private-sidebar-row">
+                  <strong>Application deadline</strong>
+                  <span>{formatDate(job.deadline)}</span>
+                </div>
+
+                <div className="detail-actions private-detail-actions">
+                  <a href={job.applyLink} target="_blank" rel="noreferrer" className="action-btn private-apply-main-btn">
+                    {applyButtonLabel}
+                  </a>
+                  <div className="private-side-actions">
+                    <button
+                      type="button"
+                      className="private-side-action-btn"
+                      onClick={() => navigator.clipboard?.writeText(currentPageUrl)}
+                    >
+                      Save Link
+                    </button>
+                    <a href={xShare} target="_blank" rel="noreferrer" className="private-side-action-btn">
+                      Share
+                    </a>
+                  </div>
+                </div>
               </div>
 
-              <div className="detail-actions">
-                <a href={job.applyLink} target="_blank" rel="noreferrer" className="action-btn">{applyButtonLabel}</a>
-                <Link to={parentTo} className="action-btn secondary">{backButtonLabel}</Link>
+              <div className="detail-card detail-card-private private-sidebar-card">
+                <h3>Location</h3>
+                <p>{job.city}, {provinceText}</p>
+              </div>
+
+              <div className="detail-card detail-card-private private-sidebar-card">
+                <h3>Type of work</h3>
+                <div className="private-side-pill-row">
+                  <span className="private-side-pill">{job.employmentType || 'Private Job'}</span>
+                </div>
+              </div>
+
+              <div className="detail-card detail-card-private private-sidebar-card">
+                <h3>Professions</h3>
+                <div className="private-side-pill-row">
+                  <span className="private-side-pill">{job.category}</span>
+                </div>
+              </div>
+
+              <div className="detail-card detail-card-private private-sidebar-card">
+                <h3>Job Tags</h3>
+                <div className="private-side-pill-row">
+                  {privateTags.map((item) => (
+                    <span key={item} className="private-side-pill">{item}</span>
+                  ))}
+                </div>
               </div>
             </aside>
           </div>
+
+          {otherPrivateJobs.length > 0 && (
+            <section className="private-related-block">
+              <h2 className="private-related-title">Other jobs ({otherPrivateJobs.length})</h2>
+              <div className="private-related-grid">
+                {otherPrivateJobs.map((item) => (
+                  <Link key={item.id} to={`/job/${item.id}`} className="private-related-card">
+                    <span className="private-related-age">{formatDate(item.postDate)}</span>
+                    <div className="private-related-mark">
+                      {(item.organization || 'PJ')
+                        .split(' ')
+                        .filter(Boolean)
+                        .slice(0, 2)
+                        .map((part) => part[0])
+                        .join('')
+                        .toUpperCase()}
+                    </div>
+                    <strong>{item.title}</strong>
+                    <span>{item.organization}</span>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          )}
+
+          <section className="private-related-block">
+            <h2 className="private-related-title">Similar jobs ({relatedJobs.length})</h2>
+            <div className="private-related-grid">
+              {relatedJobs.map((item) => (
+                <Link key={item.id} to={`/job/${item.id}`} className="private-related-card">
+                  <span className="private-related-age">{formatDate(item.postDate)}</span>
+                  <div className="private-related-mark">
+                    {(item.organization || 'PJ')
+                      .split(' ')
+                      .filter(Boolean)
+                      .slice(0, 2)
+                      .map((part) => part[0])
+                      .join('')
+                      .toUpperCase()}
+                  </div>
+                  <strong>{item.title}</strong>
+                  <span>{item.organization}</span>
+                </Link>
+              ))}
+            </div>
+          </section>
         </article>
       ) : (
         <article className="job-detail">
@@ -219,17 +324,19 @@ function JobDetailPage() {
         </>
       )}
 
-      <section className="panel related-panel">
-        <h2 className="panel-title">{isPrivateJob ? 'Similar Private Jobs' : 'Related Jobs'}</h2>
-        <ul className="related-list">
-          {relatedJobs.map((item) => (
-            <li key={item.id}>
-              <Link to={`/job/${item.id}`}>{item.title}</Link>
-              <span>{item.organization}</span>
-            </li>
-          ))}
-        </ul>
-      </section>
+      {!isPrivateJob && (
+        <section className="panel related-panel">
+          <h2 className="panel-title">Related Jobs</h2>
+          <ul className="related-list">
+            {relatedJobs.map((item) => (
+              <li key={item.id}>
+                <Link to={`/job/${item.id}`}>{item.title}</Link>
+                <span>{item.organization}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
     </main>
   )
 }
