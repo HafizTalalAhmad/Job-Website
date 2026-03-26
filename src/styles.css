@@ -711,11 +711,11 @@ a:hover {
   table-layout: fixed;
 }
 
-.private-col-role { width: 31%; }
-.private-col-company { width: 15%; }
+.private-col-role { width: 29%; }
+.private-col-company { width: 14%; }
 .private-col-location { width: 12%; }
 .private-col-profession { width: 11%; }
-.private-col-industry { width: 10%; }
+.private-col-industry { width: 12%; }
 .private-col-source { width: 9%; }
 .private-col-deadline { width: 12%; }
 .private-col-action { width: 11%; }
@@ -909,7 +909,7 @@ a:hover {
   font-size: 12px;
   line-height: 1.4;
   word-break: normal;
-  overflow-wrap: normal;
+  overflow-wrap: anywhere;
   white-space: normal;
   hyphens: none;
 }
@@ -923,6 +923,25 @@ a:hover {
   text-align: center;
   color: #607086;
   padding: 24px 16px !important;
+}
+
+.private-job-status-btn {
+  min-width: 96px;
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  padding-inline: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.private-job-status-btn.is-closed {
+  border: 1px solid #d46a6a;
+  background: #fff0f0;
+  color: #b42318;
 }
 
 .private-job-grid-table td:nth-child(2),
@@ -988,6 +1007,12 @@ a:hover {
 
 :root[data-theme='dark'] .private-job-grid-table td {
   color: #dbeafe;
+}
+
+:root[data-theme='dark'] .private-job-status-btn.is-closed {
+  border-color: #b95b5b;
+  background: #3a1e22;
+  color: #fecaca;
 }
 
 :root[data-theme='dark'] .private-job-cell-title p,

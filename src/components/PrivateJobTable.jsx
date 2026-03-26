@@ -215,6 +215,7 @@ function PrivateJobTable({ jobs }) {
         {filteredJobs.map((job) => {
           const provinceText = job.province || (job.location ? String(job.location).split(',')[0].trim() : '')
           const safeSummary = (job.summary || '').trim()
+          const isClosed = Boolean(job.deadline && job.deadline < new Date().toISOString().slice(0, 10))
 
           return (
             <tr key={job.id}>
@@ -243,9 +244,13 @@ function PrivateJobTable({ jobs }) {
                 </div>
               </td>
               <td>
-                <Link to={`/job/${job.id}`} className="action-btn secondary private-job-open-btn">
-                  Open
-                </Link>
+                {isClosed ? (
+                  <span className="private-job-status-btn is-closed">Closed</span>
+                ) : (
+                  <Link to={`/job/${job.id}`} className="action-btn secondary private-job-open-btn">
+                    Open
+                  </Link>
+                )}
               </td>
             </tr>
           )
