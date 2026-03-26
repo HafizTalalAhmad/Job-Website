@@ -712,13 +712,13 @@ a:hover {
 }
 
 .private-col-role { width: 31%; }
-.private-col-company { width: 14%; }
-.private-col-location { width: 14%; }
+.private-col-company { width: 15%; }
+.private-col-location { width: 12%; }
 .private-col-profession { width: 11%; }
 .private-col-industry { width: 10%; }
-.private-col-source { width: 8%; }
+.private-col-source { width: 9%; }
 .private-col-deadline { width: 12%; }
-.private-col-action { width: 8%; }
+.private-col-action { width: 10%; }
 
 .private-job-grid-table thead {
   border-bottom: 2px solid #d7e0eb;
@@ -854,6 +854,23 @@ a:hover {
   overflow: hidden;
 }
 
+.private-job-location-cell {
+  display: grid;
+  gap: 2px;
+}
+
+.private-job-location-cell strong {
+  color: #1f3553;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.private-job-location-cell span {
+  color: #607086;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
 .private-job-deadline-cell {
   display: grid;
   gap: 3px;
@@ -872,7 +889,7 @@ a:hover {
 }
 
 .private-job-open-btn {
-  min-width: 78px;
+  min-width: 88px;
   justify-content: center;
   border-radius: 6px;
   font-weight: 700;
@@ -899,7 +916,6 @@ a:hover {
 }
 
 .private-job-grid-table td:nth-child(2),
-.private-job-grid-table td:nth-child(3),
 .private-job-grid-table td:nth-child(4),
 .private-job-grid-table td:nth-child(5),
 .private-job-grid-table td:nth-child(6),
@@ -965,6 +981,7 @@ a:hover {
 }
 
 :root[data-theme='dark'] .private-job-cell-title p,
+:root[data-theme='dark'] .private-job-location-cell span,
 :root[data-theme='dark'] .private-job-deadline-cell span,
 :root[data-theme='dark'] .private-listing-stat span {
   color: #b9c9db;

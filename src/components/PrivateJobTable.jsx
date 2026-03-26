@@ -99,7 +99,6 @@ function PrivateJobTable({ jobs }) {
       profession: '',
       industry: '',
       source: '',
-      jobType: '',
       deadline: ''
     })
   }
@@ -113,7 +112,7 @@ function PrivateJobTable({ jobs }) {
 
   const sortIndicator = (key) => {
     if (sortConfig.key !== key) return ''
-    return sortConfig.direction === 'asc' ? ' ▲' : ' ▼'
+    return sortConfig.direction === 'asc' ? ' ^' : ' v'
   }
 
   return (
@@ -215,8 +214,6 @@ function PrivateJobTable({ jobs }) {
           <tbody>
         {filteredJobs.map((job) => {
           const provinceText = job.province || (job.location ? String(job.location).split(',')[0].trim() : '')
-          const locationLine = [job.city, provinceText].filter(Boolean).join(', ')
-          const typeLabel = job.employmentType || 'Private Job'
           const safeSummary = (job.summary || '').trim()
 
           return (
@@ -230,7 +227,12 @@ function PrivateJobTable({ jobs }) {
                 </div>
               </td>
               <td>{job.organization}</td>
-              <td>{locationLine || 'Pakistan'}</td>
+              <td>
+                <div className="private-job-location-cell">
+                  <strong>{job.city || 'Pakistan'}</strong>
+                  {provinceText && <span>{provinceText}</span>}
+                </div>
+              </td>
               <td>{job.category}</td>
               <td>{job.industry}</td>
               <td>{job.source}</td>
@@ -263,3 +265,4 @@ function PrivateJobTable({ jobs }) {
 }
 
 export default PrivateJobTable
+
