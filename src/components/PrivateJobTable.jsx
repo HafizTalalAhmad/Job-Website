@@ -100,6 +100,9 @@ function PrivateJobTable({ jobs }) {
             {filteredJobs.map((job) => {
               const status = getStatus(job.deadline)
               const isSaved = bookmarks.includes(job.id)
+              const fallbackParts = job.location ? String(job.location).split(',').map((part) => part.trim()) : []
+              const cityText = job.city || fallbackParts[0] || 'Pakistan'
+              const provinceText = job.province || fallbackParts[1] || ''
 
               return (
                 <tr key={job.id} className={status === 'Expired' ? 'is-expired' : ''}>
@@ -111,8 +114,8 @@ function PrivateJobTable({ jobs }) {
                   </td>
                   <td>{job.organization || '-'}</td>
                   <td className="private-job-location-cell">
-                    <span>{job.city || 'Pakistan'}</span>
-                    {job.province && <span>{job.province}</span>}
+                    <span>{cityText}</span>
+                    {provinceText && <span>{provinceText}</span>}
                   </td>
                   <td>{job.category || '-'}</td>
                   <td>{job.industry || '-'}</td>

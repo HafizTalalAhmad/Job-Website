@@ -692,38 +692,41 @@ a:hover {
 }
 
 .private-job-table {
-  border: 1px solid #d7e0eb;
-  background: #ffffff;
-  border-radius: 14px;
+  border: 1px solid #dbe5f0;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(248, 251, 255, 0.98) 100%);
+  border-radius: 18px;
   overflow: hidden;
-  box-shadow: 0 16px 38px rgba(23, 53, 93, 0.08);
+  box-shadow: 0 20px 44px rgba(23, 53, 93, 0.08);
 }
 
 .private-job-board {
   display: grid;
-  gap: 18px;
+  gap: 22px;
 }
 
 .private-job-toolbar {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 16px;
+  gap: 18px;
   align-items: end;
-  padding: 20px 22px 0;
+  padding: 24px 26px 0;
 }
 
 .private-job-toolbar-copy h2 {
-  margin: 0 0 6px;
+  margin: 0 0 8px;
   color: #15396b;
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 800;
+  letter-spacing: -0.02em;
 }
 
 .private-job-toolbar-copy p {
   margin: 0;
-  color: #5f738c;
-  font-size: 14px;
-  line-height: 1.5;
+  color: #60728a;
+  font-size: 15px;
+  line-height: 1.6;
+  max-width: 760px;
 }
 
 .private-job-toolbar-actions {
@@ -734,19 +737,24 @@ a:hover {
 }
 
 .private-job-saved-toggle {
-  border: 1px solid #cfdae8;
-  background: #ffffff;
+  border: 1px solid #c8d6e7;
+  background: linear-gradient(180deg, #ffffff 0%, #eef5fd 100%);
   color: #1f3553;
-  border-radius: 10px;
-  padding: 11px 16px;
+  border-radius: 12px;
+  padding: 11px 18px;
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
-  transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+  box-shadow: 0 8px 18px rgba(34, 74, 121, 0.08);
+  transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+
+.private-job-saved-toggle:hover {
+  transform: translateY(-1px);
 }
 
 .private-job-saved-toggle.is-active {
-  background: #1f4f97;
+  background: linear-gradient(135deg, #1f4f97 0%, #2f67bb 100%);
   border-color: #1f4f97;
   color: #ffffff;
 }
@@ -805,7 +813,7 @@ a:hover {
 .private-job-grid-table th,
 .private-job-grid-table td {
   border-bottom: 1px solid #e5ecf4;
-  padding: 14px 12px;
+  padding: 16px 14px;
   vertical-align: middle;
   text-align: left;
 }
@@ -814,19 +822,19 @@ a:hover {
   position: sticky;
   top: 0;
   z-index: 2;
-  background: #f7fafc;
-  color: #5f738c;
+  background: linear-gradient(180deg, #f9fbfe 0%, #eef4fb 100%);
+  color: #5b7088;
   font-weight: 700;
   font-size: 12px;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  padding-top: 13px;
-  padding-bottom: 13px;
+  letter-spacing: 0.08em;
+  padding-top: 15px;
+  padding-bottom: 15px;
 }
 
 .private-job-grid-table tbody tr {
   background: #ffffff;
-  transition: background-color 0.18s ease;
+  transition: background-color 0.18s ease, box-shadow 0.18s ease;
 }
 
 .private-job-grid-table tbody tr:hover {
@@ -845,9 +853,9 @@ a:hover {
 .private-job-title-link {
   display: inline-block;
   color: #1c4f96;
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 700;
-  line-height: 1.32;
+  line-height: 1.28;
 }
 
 .private-job-title-link:hover {
@@ -858,11 +866,12 @@ a:hover {
   margin: 0;
   color: #4f6782;
   font-size: 13px;
-  line-height: 1.4;
+  line-height: 1.5;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  max-width: 360px;
 }
 
 .private-job-location-cell {
@@ -888,7 +897,7 @@ a:hover {
 .private-job-grid-table td {
   color: #1f3553;
   font-size: 14px;
-  line-height: 1.4;
+  line-height: 1.5;
   overflow-wrap: break-word;
   white-space: normal;
   hyphens: none;
@@ -915,7 +924,7 @@ a:hover {
   border: none;
   background: transparent;
   color: #aab8ca;
-  font-size: 22px;
+  font-size: 24px;
   line-height: 1;
   cursor: pointer;
   padding: 2px 0;
@@ -930,12 +939,12 @@ a:hover {
 }
 
 .private-job-status-pill {
-  min-width: 110px;
+  min-width: 116px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border-radius: 999px;
-  padding: 7px 12px;
+  padding: 8px 13px;
   font-size: 12px;
   font-weight: 700;
   white-space: nowrap;
@@ -957,18 +966,19 @@ a:hover {
 }
 
 .private-job-table-action {
-  min-width: 90px;
+  min-width: 94px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border: 1px solid #cfdae8;
-  background: #eef4fb;
+  background: linear-gradient(180deg, #f7fbff 0%, #e8f1fb 100%);
   color: #1f4f97;
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 10px 12px;
   font-size: 13px;
   font-weight: 700;
   text-decoration: none;
+  box-shadow: 0 8px 18px rgba(34, 74, 121, 0.08);
 }
 
 .private-job-table-action.is-closed {
@@ -978,8 +988,8 @@ a:hover {
 }
 
 :root[data-theme='dark'] .private-job-table {
-  background: #142234;
-  border-color: #32475f;
+  background: linear-gradient(180deg, #152436 0%, #101a28 100%);
+  border-color: #31465f;
 }
 
 :root[data-theme='dark'] .private-job-toolbar-copy h2 {
@@ -991,9 +1001,10 @@ a:hover {
 }
 
 :root[data-theme='dark'] .private-job-saved-toggle {
-  background: #1a2a40;
+  background: linear-gradient(180deg, #1a2a40 0%, #142234 100%);
   border-color: #3f5e82;
   color: #dbeafe;
+  box-shadow: none;
 }
 
 :root[data-theme='dark'] .private-job-saved-toggle.is-active {
@@ -1008,7 +1019,7 @@ a:hover {
 }
 
 :root[data-theme='dark'] .private-job-grid-table thead th {
-  background: #1a2a3f;
+  background: linear-gradient(180deg, #1b2b40 0%, #152234 100%);
   color: #b9c9db;
 }
 
@@ -1065,9 +1076,10 @@ a:hover {
 }
 
 :root[data-theme='dark'] .private-job-table-action {
-  background: #1a2a40;
+  background: linear-gradient(180deg, #1a2a40 0%, #152234 100%);
   border-color: #3f5e82;
   color: #dbeafe;
+  box-shadow: none;
 }
 
 @media (max-width: 920px) {
