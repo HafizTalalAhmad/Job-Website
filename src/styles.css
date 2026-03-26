@@ -692,12 +692,11 @@ a:hover {
 }
 
 .private-job-table {
-  border: 1px solid #dbe5f0;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(248, 251, 255, 0.98) 100%);
+  border: 1px solid #e7d8c2;
+  background: linear-gradient(180deg, #fffdfa 0%, #fff8ef 100%);
   border-radius: 18px;
   overflow: hidden;
-  box-shadow: 0 20px 44px rgba(23, 53, 93, 0.08);
+  box-shadow: 0 18px 40px rgba(73, 44, 16, 0.08);
 }
 
 .private-job-board {
@@ -715,7 +714,7 @@ a:hover {
 
 .private-job-toolbar-copy h2 {
   margin: 0 0 8px;
-  color: #15396b;
+  color: #17365f;
   font-size: 28px;
   font-weight: 800;
   letter-spacing: -0.02em;
@@ -723,7 +722,7 @@ a:hover {
 
 .private-job-toolbar-copy p {
   margin: 0;
-  color: #60728a;
+  color: #6a6257;
   font-size: 15px;
   line-height: 1.6;
   max-width: 760px;
@@ -737,15 +736,15 @@ a:hover {
 }
 
 .private-job-saved-toggle {
-  border: 1px solid #c8d6e7;
-  background: linear-gradient(180deg, #ffffff 0%, #eef5fd 100%);
-  color: #1f3553;
+  border: 1px solid #e2cfb0;
+  background: linear-gradient(180deg, #fffdf8 0%, #fff1db 100%);
+  color: #6b4d1f;
   border-radius: 12px;
   padding: 11px 18px;
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 8px 18px rgba(34, 74, 121, 0.08);
+  box-shadow: 0 8px 18px rgba(121, 82, 34, 0.08);
   transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
 }
 
@@ -754,8 +753,8 @@ a:hover {
 }
 
 .private-job-saved-toggle.is-active {
-  background: linear-gradient(135deg, #1f4f97 0%, #2f67bb 100%);
-  border-color: #1f4f97;
+  background: linear-gradient(135deg, #ef7c22 0%, #d76300 100%);
+  border-color: #d76300;
   color: #ffffff;
 }
 
@@ -812,7 +811,7 @@ a:hover {
 
 .private-job-grid-table th,
 .private-job-grid-table td {
-  border-bottom: 1px solid #e5ecf4;
+  border-bottom: 1px solid #ecdfcc;
   padding: 16px 14px;
   vertical-align: middle;
   text-align: left;
@@ -822,8 +821,8 @@ a:hover {
   position: sticky;
   top: 0;
   z-index: 2;
-  background: linear-gradient(180deg, #f9fbfe 0%, #eef4fb 100%);
-  color: #5b7088;
+  background: linear-gradient(180deg, #fff6e7 0%, #f9ecda 100%);
+  color: #745838;
   font-weight: 700;
   font-size: 12px;
   text-transform: uppercase;
@@ -833,16 +832,16 @@ a:hover {
 }
 
 .private-job-grid-table tbody tr {
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.82);
   transition: background-color 0.18s ease, box-shadow 0.18s ease;
 }
 
 .private-job-grid-table tbody tr:hover {
-  background: #f8fbff;
+  background: #fff8ef;
 }
 
 .private-job-grid-table tbody tr.is-expired {
-  background: #fff7f7;
+  background: #fff4f1;
   opacity: 0.78;
 }
 
@@ -851,7 +850,7 @@ a:hover {
 }
 
 .private-job-grid-table tbody tr:hover td:first-child {
-  border-left-color: #2f67bb;
+  border-left-color: #ef7c22;
 }
 
 .private-job-grid-table tbody tr:last-child td {
@@ -860,7 +859,7 @@ a:hover {
 
 .private-job-title-link {
   display: inline-block;
-  color: #1c4f96;
+  color: #17365f;
   font-size: 18px;
   font-weight: 700;
   line-height: 1.28;
@@ -872,7 +871,7 @@ a:hover {
 
 .private-job-role-cell p {
   margin: 0;
-  color: #4f6782;
+  color: #6c6358;
   font-size: 13px;
   line-height: 1.5;
   display: -webkit-box;
@@ -890,20 +889,20 @@ a:hover {
 }
 
 .private-job-location-cell span:first-child {
-  color: #1f3553;
+  color: #17365f;
   font-size: 14px;
   line-height: 1.35;
   font-weight: 700;
 }
 
 .private-job-location-cell span + span {
-  color: #607086;
+  color: #7b6d5c;
   font-size: 13px;
   line-height: 1.35;
 }
 
 .private-job-grid-table td {
-  color: #1f3553;
+  color: #31455f;
   font-size: 14px;
   line-height: 1.5;
   overflow-wrap: break-word;
@@ -912,12 +911,12 @@ a:hover {
 }
 
 .private-job-posted-cell {
-  color: #58708a;
+  color: #7d6b57;
   font-size: 13px;
 }
 
 .private-job-deadline-cell {
-  color: #8b5b00;
+  color: #b15f00;
   font-weight: 700;
   font-size: 15px;
 }
@@ -946,7 +945,7 @@ a:hover {
 .private-job-bookmark-btn {
   border: none;
   background: transparent;
-  color: #aab8ca;
+  color: #c4b49a;
   font-size: 24px;
   line-height: 1;
   cursor: pointer;
@@ -954,7 +953,7 @@ a:hover {
 }
 
 .private-job-bookmark-btn.is-saved {
-  color: #d59514;
+  color: #e37b10;
 }
 
 .private-job-role-cell {
@@ -974,17 +973,17 @@ a:hover {
 }
 
 .private-job-status-pill.status-active {
-  background: #e8f7ed;
-  color: #137333;
+  background: #edf7ef;
+  color: #1e6b3a;
 }
 
 .private-job-status-pill.status-closing-soon {
-  background: #fff4e5;
-  color: #b45309;
+  background: #fff2e0;
+  color: #b45a08;
 }
 
 .private-job-status-pill.status-expired {
-  background: #fdecec;
+  background: #fdeceb;
   color: #b42318;
 }
 
@@ -993,15 +992,15 @@ a:hover {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #cfdae8;
-  background: linear-gradient(180deg, #f7fbff 0%, #e8f1fb 100%);
-  color: #1f4f97;
+  border: 1px solid #e2cfb0;
+  background: linear-gradient(180deg, #fffdf8 0%, #fff1db 100%);
+  color: #8a5308;
   border-radius: 10px;
   padding: 10px 12px;
   font-size: 13px;
   font-weight: 700;
   text-decoration: none;
-  box-shadow: 0 8px 18px rgba(34, 74, 121, 0.08);
+  box-shadow: 0 8px 18px rgba(121, 82, 34, 0.08);
 }
 
 .private-job-table-action.is-closed {
@@ -1134,6 +1133,11 @@ a:hover {
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 18px;
   align-items: end;
+  border: 1px solid #e7d8c2;
+  background: linear-gradient(180deg, #fffdfa 0%, #fff4e6 100%);
+  border-radius: 18px;
+  padding: 20px 22px;
+  box-shadow: 0 16px 34px rgba(73, 44, 16, 0.06);
 }
 
 .private-listing-copy .panel-title {
@@ -1148,8 +1152,8 @@ a:hover {
 
 .private-listing-stat {
   min-width: 118px;
-  border: 1px solid #d7e0eb;
-  background: linear-gradient(180deg, #ffffff 0%, #f6faff 100%);
+  border: 1px solid #eadcc7;
+  background: linear-gradient(180deg, #ffffff 0%, #fff8ef 100%);
   border-radius: 12px;
   padding: 12px 14px;
   text-align: center;
@@ -1157,14 +1161,14 @@ a:hover {
 
 .private-listing-stat strong {
   display: block;
-  color: #1c4f96;
+  color: #d96f0c;
   font-size: 24px;
   line-height: 1;
   margin-bottom: 6px;
 }
 
 .private-listing-stat span {
-  color: #607086;
+  color: #72624f;
   font-size: 12px;
   font-weight: 700;
 }
@@ -2055,16 +2059,15 @@ a:hover {
 }
 
 .job-detail-private {
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(247, 250, 255, 0.98) 100%);
-  border: 1px solid #dbe5f0;
+  background: linear-gradient(180deg, #fffdfa 0%, #fff7ed 100%);
+  border: 1px solid #e7d8c2;
   border-radius: 18px;
-  box-shadow: 0 20px 44px rgba(23, 53, 93, 0.08);
+  box-shadow: 0 18px 40px rgba(73, 44, 16, 0.08);
 }
 
 .private-job-hero {
-  border: 1px solid #dfe7f1;
-  background: linear-gradient(180deg, #f9fbfe 0%, #eef4fb 100%);
+  border: 1px solid #eadcc7;
+  background: linear-gradient(180deg, #fffdf8 0%, #fff5e9 100%);
   border-radius: 16px;
   padding: 18px 20px 20px;
   margin-bottom: 18px;
@@ -2115,8 +2118,8 @@ a:hover {
 }
 
 .detail-card-private {
-  background: linear-gradient(180deg, #fff9ee 0%, #f8fbff 100%);
-  border-color: #dec8a4;
+  background: linear-gradient(180deg, #fffdf8 0%, #fff3e3 100%);
+  border-color: #e3cda6;
 }
 
 .detail-card h3 {
@@ -2128,22 +2131,22 @@ a:hover {
 }
 
 .private-job-kicker {
-  background: #edf4ff;
-  border-color: #c7d8f3;
-  color: #1c4f96;
+  background: #fff2dc;
+  border-color: #f0d2aa;
+  color: #b35b05;
 }
 
 .private-job-summary {
   margin: 12px 0 0;
   max-width: 760px;
-  color: #4f637a;
+  color: #5f574d;
   font-size: 16px;
   line-height: 1.75;
 }
 
 .private-job-meta-line {
   margin: 12px 0 0;
-  color: #607086;
+  color: #7b6d5c;
   font-size: 14px;
   line-height: 1.6;
 }
@@ -2169,7 +2172,7 @@ a:hover {
 }
 
 .private-job-fact {
-  border: 1px solid #d8e3ef;
+  border: 1px solid #eadcc7;
   background: rgba(255, 255, 255, 0.88);
   border-radius: 12px;
   padding: 12px 14px;
@@ -2182,11 +2185,11 @@ a:hover {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: #6b7d92;
+  color: #8a7458;
 }
 
 .private-job-fact strong {
-  color: #1f3553;
+  color: #17365f;
   font-size: 15px;
 }
 
@@ -2196,24 +2199,24 @@ a:hover {
 }
 
 .private-detail-section {
-  border: 1px solid #e1e8f1;
-  background: #fbfdff;
+  border: 1px solid #e9dcc9;
+  background: #fffdf9;
   border-radius: 14px;
   padding: 18px 18px 20px;
-  box-shadow: 0 10px 24px rgba(26, 53, 92, 0.04);
+  box-shadow: 0 10px 24px rgba(73, 44, 16, 0.04);
 }
 
 .private-detail-section h2 {
   margin: 0 0 12px;
   font-size: 17px;
-  color: #15396b;
+  color: #17365f;
 }
 
 .private-detail-section p,
 .private-detail-section li {
   font-size: 14px;
   line-height: 1.6;
-  color: #435972;
+  color: #5d564c;
 }
 
 .private-detail-section ul {
@@ -2228,7 +2231,7 @@ a:hover {
   padding: 20px;
   position: sticky;
   top: 84px;
-  box-shadow: 0 14px 32px rgba(26, 53, 92, 0.08);
+  box-shadow: 0 14px 32px rgba(73, 44, 16, 0.08);
 }
 
 .private-apply-facts {
