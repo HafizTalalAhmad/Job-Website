@@ -9,87 +9,60 @@ function PrivateJobTable({ jobs }) {
 
   return (
     <div className="private-job-table">
-      <div className="private-job-table-head">
-        <span>Role</span>
-        <span>Company</span>
-        <span>Location</span>
-        <span>Profession</span>
-        <span>Industry</span>
-        <span>Source</span>
-        <span>Job Type</span>
-        <span>Deadline</span>
-        <span>Action</span>
-      </div>
-
-      <div className="private-job-table-body">
+      <div className="private-job-table-wrap">
+        <table className="private-job-grid-table">
+          <thead>
+            <tr>
+              <th>Role</th>
+              <th>Company</th>
+              <th>Location</th>
+              <th>Profession</th>
+              <th>Industry</th>
+              <th>Source</th>
+              <th>Job Type</th>
+              <th>Deadline</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
         {jobs.map((job) => {
           const provinceText = job.province || (job.location ? String(job.location).split(',')[0].trim() : '')
           const locationLine = [job.city, provinceText].filter(Boolean).join(', ')
           const typeLabel = job.employmentType || 'Private Job'
           const safeSummary = (job.summary || '').trim()
-          const companyMark = (job.organization || '?')
-            .split(' ')
-            .slice(0, 2)
-            .map((part) => part[0] || '')
-            .join('')
-            .slice(0, 2)
-            .toUpperCase()
 
           return (
-            <article key={job.id} className="private-job-row">
-              <div className="private-job-role-cell">
-                <div className="private-job-mark">{companyMark}</div>
-                <div className="private-job-role-content">
+            <tr key={job.id}>
+              <td>
+                <div className="private-job-cell-title">
                   <Link to={`/job/${job.id}`} className="private-job-title-link">
                     {job.title}
                   </Link>
                   <p>{safeSummary}</p>
                 </div>
-              </div>
-
-              <div className="private-job-col private-job-company">
-                <strong>{job.organization}</strong>
-                <span>{job.type}</span>
-              </div>
-
-              <div className="private-job-col">
-                <strong>{locationLine}</strong>
-                <span>In Pakistan</span>
-              </div>
-
-              <div className="private-job-col">
-                <strong>{job.category}</strong>
-                <span>Profession</span>
-              </div>
-
-              <div className="private-job-col">
-                <strong>{job.industry}</strong>
-                <span>Industry</span>
-              </div>
-
-              <div className="private-job-col">
-                <strong>{job.source}</strong>
-                <span>Source</span>
-              </div>
-
-              <div className="private-job-col private-job-type">
-                <strong>{typeLabel}</strong>
-                <span>Job type</span>
-              </div>
-
-              <div className="private-job-col private-job-date">
-                <strong>Apply by {formatDate(job.deadline)}</strong>
-                <span>Posted {formatDate(job.postDate)}</span>
-              </div>
-
-              <div className="private-job-actions">
-                <Link to={`/job/${job.id}`} className="action-btn secondary">
+              </td>
+              <td>{job.organization}</td>
+              <td>{locationLine || 'Pakistan'}</td>
+              <td>{job.category}</td>
+              <td>{job.industry}</td>
+              <td>{job.source}</td>
+              <td>{typeLabel}</td>
+              <td>
+                <div className="private-job-deadline-cell">
+                  <strong>{formatDate(job.deadline)}</strong>
+                  <span>Posted {formatDate(job.postDate)}</span>
+                </div>
+              </td>
+              <td>
+                <Link to={`/job/${job.id}`} className="action-btn secondary private-job-open-btn">
                   Open
                 </Link>
-              </div>
-            </article>
+              </td>
+            </tr>
           )
         })}
+          </tbody>
+        </table>
       </div>
     </div>
   )
