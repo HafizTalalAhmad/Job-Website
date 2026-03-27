@@ -90,41 +90,30 @@ function JobDetailPage() {
             <div className="private-detail-main">
               <section className="private-company-hero">
                 <div className="private-company-head">
-                  <div className="private-company-mark">{companyMonogram}</div>
+                  <div className="private-company-mark" aria-label={`${job.organization} logo`}>
+                    {companyMonogram}
+                  </div>
                   <div className="private-company-copy">
-                    <div className={`section-kicker private-job-kicker`}>{heroLabel}</div>
-                    <p className="private-company-name">{job.organization}</p>
                     <h1>{job.title}</h1>
+                    <p className="private-company-name">{job.organization}</p>
                     <p className="private-job-summary">{privateRoleOverview}</p>
                     <p className="private-job-meta-line">{privateHeaderMeta.join(' | ')}</p>
                   </div>
-                  <a href={job.applyLink} target="_blank" rel="noreferrer" className="private-company-about">
-                    Apply
-                  </a>
                 </div>
               </section>
 
               <section className="private-detail-section private-detail-section-lead">
-                <h2>About This Opportunity</h2>
+                <h2>Job Details</h2>
                 <p>{job.description}</p>
-              </section>
-
-              <section className="private-detail-section">
-                <h2>Your Mission</h2>
+                <h3 className="private-detail-subhead">Key Responsibilities</h3>
                 <ul>
                   {(job.jobPositions || job.requirements || []).map((req) => (
                     <li key={req}>{req}</li>
                   ))}
                 </ul>
-              </section>
-
-              <section className="private-detail-section">
-                <h2>Application Process</h2>
+                <h3 className="private-detail-subhead">Application Process</h3>
                 <p>{job.applyProcedure}</p>
-              </section>
-
-              <section className="private-detail-section private-detail-section-cta">
-                <h2>Ready to Make an Impact?</h2>
+                <h3 className="private-detail-subhead">Ready to Apply?</h3>
                 <p>
                   If this role aligns with your goals, open the company application link and complete your submission
                   before the deadline.

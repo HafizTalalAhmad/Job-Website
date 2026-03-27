@@ -4804,7 +4804,7 @@ a:hover {
 
 .private-company-head {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: auto minmax(0, 1fr);
   gap: 18px;
   align-items: start;
 }
@@ -4825,31 +4825,17 @@ a:hover {
 }
 
 .private-company-copy h1 {
-  margin: 10px 0 10px;
+  margin: 0 0 8px;
   color: #1a2433;
   font-size: 36px;
   line-height: 1.08;
 }
 
 .private-company-name {
-  margin: 10px 0 0;
+  margin: 0 0 10px;
   color: #0f6a2f;
   font-size: 18px;
   font-weight: 700;
-}
-
-.private-company-about {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid #d7e3ef;
-  background: #ffffff;
-  border-radius: 999px;
-  padding: 12px 18px;
-  color: #1f4f97;
-  font-size: 15px;
-  font-weight: 700;
-  text-decoration: none;
 }
 
 .private-job-kicker {
@@ -4881,6 +4867,15 @@ a:hover {
   margin: 0 0 14px;
   color: #1a2433;
   font-size: 18px;
+}
+
+.private-detail-subhead {
+  margin: 20px 0 12px;
+  color: #1f4f97;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 
 .private-detail-section p,
@@ -4935,10 +4930,10 @@ a:hover {
   width: 100%;
   justify-content: center;
   border-radius: 999px;
-  background: linear-gradient(135deg, #ff8b17 0%, #ff6b00 100%);
-  border-color: #ff7d0a;
+  background: linear-gradient(135deg, #0f6a2f 0%, #0b4e22 100%);
+  border-color: #0f6a2f;
   font-size: 16px;
-  box-shadow: 0 12px 24px rgba(255, 107, 0, 0.22);
+  box-shadow: 0 12px 24px rgba(15, 106, 47, 0.22);
 }
 
 .private-side-actions {
@@ -5105,8 +5100,7 @@ a:hover {
 :root[data-theme='dark'] .private-company-mark,
 :root[data-theme='dark'] .private-related-mark,
 :root[data-theme='dark'] .private-job-card-tags span,
-:root[data-theme='dark'] .private-side-pill,
-:root[data-theme='dark'] .private-company-about {
+:root[data-theme='dark'] .private-side-pill {
   background: #15202d;
   border-color: #334455;
 }
@@ -5125,7 +5119,6 @@ a:hover {
 :root[data-theme='dark'] .private-company-name,
 :root[data-theme='dark'] .private-company-mark,
 :root[data-theme='dark'] .private-related-mark,
-:root[data-theme='dark'] .private-company-about,
 :root[data-theme='dark'] .private-side-action-btn {
   color: #9fd4b1;
 }
@@ -5140,12 +5133,6 @@ a:hover {
 
 :root[data-theme='dark'] .private-sidebar-row {
   border-color: #2c3b4c;
-}
-
-:root[data-theme='dark'] .private-job-kicker {
-  background: rgba(47, 103, 187, 0.18);
-  border-color: rgba(109, 156, 224, 0.28);
-  color: #dbeafe;
 }
 
 @media (max-width: 1180px) {
@@ -5173,10 +5160,6 @@ a:hover {
   .private-listing-stats,
   .private-job-toolbar-actions {
     justify-content: flex-start;
-  }
-
-  .private-company-about {
-    width: fit-content;
   }
 }
 
